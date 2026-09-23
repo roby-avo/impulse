@@ -118,3 +118,10 @@ for methodology and limits. Real Laya inference remains asynchronous and visible
 
 Custom generated robot icon is included in the universal Mac app bundle and
 HUD. Master image and exact generation prompt are preserved in the project.
+
+## 0.8.1 — Running macOS Dock icon
+
+The bundled ICNS was correct, but the user's running Dock tile remained generic.
+A universal AppKit plugin now assigns `NSApplication.applicationIconImage` at
+launch, after startup, and on focus. Mac builds compile and sign the plugin
+automatically. See `validation/DOCK_ICON.md` for runtime verification and limits.

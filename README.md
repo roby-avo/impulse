@@ -22,6 +22,7 @@ controls. **Escape → Graphics** switches between Balanced (default, 60 FPS cap
 85% 3D render scale / 2× MSAA) and High (120 FPS cap, full scale / 4× MSAA).
 The UI stays crisp at native resolution. Losing window focus pauses the match.
 The Mac app includes a custom robot icon for the Dock and Finder.
+Version 0.8.1 also explicitly refreshes the running Dock tile through AppKit.
 
 Telemetry writes and report exports run in the background. The new interface
 uses tabs for Setup, Actions, Observations and Recordings. See
@@ -124,6 +125,9 @@ scripts/unity-check.sh Playground.Editor.ProjectSetup.BuildMac -quit
 ```
 
 `UNITY_EDITOR` overrides the Unity executable path. The default matches this Mac.
+Mac builds require Xcode Command Line Tools (`xcode-select --install`) to compile
+the small universal AppKit plugin from `Native/DockIcon.m`. The build invokes
+`scripts/build-dock-plugin.sh` automatically.
 M7 runs M1–M6 acceptance checks plus real-model experiment/schema/rate/export checks in actual Play Mode.
 The live match test supplies scripted **human** inputs and keeps the Laya side
 model-controlled. Test drivers are compiled only in the editor and are excluded
