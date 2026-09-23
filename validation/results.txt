@@ -742,3 +742,81 @@ PASS UI background export completes while paused
 PASS UI resume restores time and input
 PASS UI app icon asset loaded
 UI STABILITY COMPLETE
+PASS M1 human grounded
+PASS M1 movement
+PASS M1 jump accepted
+PASS M1 jump rises
+PASS M1 dodge
+PASS M1 grab barrel
+PASS M1 held prop
+PASS M1 throw
+PASS M1 physical throw velocity
+PASS M1 push prop
+PASS M1 push impulse
+PASS M1 fall and reset
+PASS M1 props reset
+M1 COMPLETE
+PASS M2 symmetric physical avatar
+PASS M2 terminal outcome APPROACH_OPPONENT / arrived
+PASS M2 terminal outcome RETREAT_FROM_OPPONENT / arrived
+PASS M2 terminal outcome PUSH_OPPONENT / push
+PASS M2 terminal outcome GRAB_NEAREST_OBJECT / grab
+PASS M2 successful execution GRAB_NEAREST_OBJECT
+PASS M2 throw setup
+PASS M2 terminal outcome THROW_HELD_OBJECT_AT_OPPONENT / throw
+PASS M2 terminal outcome DODGE_LEFT / dodge
+PASS M2 terminal outcome DODGE_RIGHT / dodge
+PASS M2 terminal outcome MOVE_TOWARD_SAFETY / arrived
+PASS M2 successful execution MOVE_TOWARD_SAFETY
+PASS M2 terminal outcome TAKE_COVER / arrived
+PASS M2 terminal outcome JUMP / jump
+M2 COMPLETE
+PASS M3 real Laya action in Play Mode
+PASS M3 measured asynchronous latency
+M3 COMPLETE
+PASS M4 autonomous real Laya loop
+PASS M4 impossible interaction actions excluded
+PASS M4 simultaneous ring-out draw
+PASS M4 ring-out score round 1
+PASS M4 ring-out score round 2
+PASS M4 ring-out score round 3
+PASS M4 ring-out score round 4
+PASS M4 ring-out score round 5
+PASS M4 first-to-five match completed
+PASS M4 JSONL telemetry persisted
+PASS M4 clean rematch
+PASS M4 offline means wait, never fallback
+M4 COMPLETE
+PASS M5 HUD, audio/VFX and animated fighters
+PASS M5 pause freezes simulation
+PASS M5 resume
+PASS M5 shaders retained for build
+M5 AUTOMATED CHECKS COMPLETE
+PASS M6 authored Blender models instantiated
+PASS M6 visual meshes add no fighter colliders
+PASS M6 prop collision proxies preserved
+PASS M6 detailed robot replaces primitives
+PASS M6 meter scale and imported mesh bounds
+M6 COMPLETE
+PASS M7 valid restricted profile
+PASS M7 rejects empty action schema
+PASS M7 rejects unknown observation
+PASS M7 rejects nonfinite frequency
+PASS M7 observation projection omits unselected fields
+PASS M7 real Laya executes restricted schema
+PASS M7 exact request and experiment provenance
+PASS M7 request-start frequency cap respected
+PASS M7 offline report and CSV export with safe embedded data
+PASS M7 sampled spatial replay persisted
+PASS M7 mechanically empty schema waits without fallback or request
+PASS M7 request in flight for rematch isolation
+PASS M7 late response retains original match and experiment
+M7 COMPLETE
+PASS UI retained document initialized once
+PASS UI lab does not rebuild during idle frames 0
+PASS UI lab does not rebuild during idle frames 1
+PASS UI lab does not rebuild during idle frames 2
+PASS UI background export completes while paused
+PASS UI resume restores time and input
+PASS UI app icon asset loaded
+UI STABILITY COMPLETE

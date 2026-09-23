@@ -3,12 +3,14 @@ using UnityEngine.InputSystem;
 namespace Playground {
 public class HumanInput:MonoBehaviour {
  public Fighter Fighter; public OrbitCamera Rig; public bool Captured=true;int captureFrame;
- void Start(){Capture(true);}
- public void Capture(bool value){Captured=value;captureFrame=Time.frameCount;Cursor.lockState=value?CursorLockMode.Locked:CursorLockMode.None;Cursor.visible=!value;}
+ void Start(){Capture(!Arena.Instance.HUD.Paused&&!Arena.Instance.Setup.Open);}
+ public void Capture(bool value){value=value&&!Arena.Instance.Spectating;Captured=value;captureFrame=Time.frameCount;Cursor.lockState=value?CursorLockMode.Locked:CursorLockMode.None;Cursor.visible=!value;}
  void Update(){var k=Keyboard.current;var m=Mouse.current;if(k==null)return;
+  if(Arena.Instance.Setup.Open){if(k.escapeKey.wasPressedThisFrame)Arena.Instance.Setup.Close();return;}
   if(Arena.Instance.Research.Open){Fighter.Move=Vector3.zero;if(k.escapeKey.wasPressedThisFrame)Arena.Instance.Research.Close();return;}
   if(k.escapeKey.wasPressedThisFrame)Arena.Instance.HUD.Pause(!Arena.Instance.HUD.Paused);
-  if(k.rKey.wasPressedThisFrame){Arena.Instance.HUD.Pause(false);Arena.Instance.Match.NewMatch();}
+  if(!Arena.Instance.HUD.Paused&&k.rKey.wasPressedThisFrame){Arena.Instance.HUD.Pause(false);Arena.Instance.Match.NewMatch();}
+  if(Arena.Instance.Spectating)return;
   if(!Captured||Time.frameCount<=captureFrame||!Fighter.Active){Fighter.Move=Vector3.zero;return;}
   Vector2 axes=new((k.dKey.isPressed?1:0)-(k.aKey.isPressed?1:0),(k.wKey.isPressed?1:0)-(k.sKey.isPressed?1:0));
   var forward=Quaternion.Euler(0,Rig.Yaw,0)*Vector3.forward;var right=Quaternion.Euler(0,Rig.Yaw,0)*Vector3.right;

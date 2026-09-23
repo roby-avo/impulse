@@ -72,7 +72,7 @@ Button.selected { background-color: rgb(33,77,92); border-color: rgb(81,219,239)
 .lab-page { flex-grow: 1; }
 .lab-columns { flex-direction: row; align-items: stretch; }
 .lab-column { flex-grow: 1; flex-basis: 0; margin-right: 20px; background-color: rgb(15,31,45); border-radius: 14px; padding: 24px; }
-.lab-column:last-child { margin-right: 0; }
+
 .lab-section { font-size: 21px; -unity-font-style: bold; margin-bottom: 12px; }
 .description { font-size: 14px; white-space: normal; color: rgb(151,176,194); margin-bottom: 20px; }
 .lab-footer { margin-top: 16px; padding-top: 16px; border-top-width: 1px; border-top-color: rgb(36,58,76); }
@@ -106,3 +106,18 @@ Toggle > .unity-base-field__input { background-color: rgba(0,0,0,0); border-widt
 .unity-scroller RepeatButton { display: none; }
 .unity-scroller .unity-base-slider__dragger { background-color: rgb(57,94,117); border-width: 0; border-radius: 5px; }
 .unity-scroller .unity-base-slider__tracker { background-color: rgb(18,35,48); border-width: 0; }
+
+.setup-layer { position: absolute; left: 0; right: 0; top: 0; bottom: 0; }
+.setup-card { width: 700px; max-width: 94%; max-height: 94%; padding: 28px 34px; background-color: rgb(13,27,39); border-radius: 22px; border-width: 1px; border-color: rgb(42,65,82); }
+.setup-card > ScrollView { flex-shrink: 1; min-height: 0; }
+.setup-icon { width: 70px; height: 70px; margin-right: 18px; }
+.setup-title { font-size: 32px; -unity-font-style: bold; margin-bottom: 12px; }
+.setup-pairing { margin-top: 12px; margin-bottom: 8px; padding: 18px 22px; border-radius: 12px; background-color: rgb(20,44,59); }
+.setup-versus { font-size: 26px; color: rgb(104,230,242); -unity-font-style: bold; margin-bottom: 8px; }
+.setup-pairing .description { margin-bottom: 0; }
+.setup-cloud { padding: 14px 0; }
+.setup-message { font-size: 14px; white-space: normal; color: rgb(174,202,220); margin: 12px 0; }
+.score-side { width: 82px; }
+.score { width: 362px; }
+.ai { width: 342px; }
+.decision { white-space: normal; }

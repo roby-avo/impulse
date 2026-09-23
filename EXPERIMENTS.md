@@ -8,7 +8,8 @@ The validated profile is saved and used on the next launch. Use F2 or Escape to
 resume without applying changes. **Restore defaults** changes the draft only.
 
 The cap is request starts per **game second**, excluding pauses (0.25–10 Hz).
-There is one request in flight and one committed action at a time. Inference and
+Each AI player has at most one request in flight and one committed action at a time.
+In Laya-vs-TypeSafe mode the same cap and schema apply independently to both players. Inference and
 action duration can lower the actual rate. Neither inference latency nor model
 mistakes are hidden by a replacement policy.
 
@@ -39,7 +40,7 @@ related state fields. Account for this when designing observation ablations.
 The exact projected observations are in `request_state_json`; the exact choice
 question is in `questions_json`. `state_snapshot` and `resulting_state` retain
 full diagnostic observations for offline analysis. Those extra fields are **not**
-sent to Laya when omitted from the profile. Confidence is uncalibrated model
+sent to either model when omitted from the profile. Confidence is uncalibrated model
 output; the raw response retains any returned probability distribution.
 
 ## Inspect and export
@@ -49,8 +50,8 @@ The game pauses and opens a self-contained browser report. It works offline and
 has no CDN, analytics, server or network dependencies. It supports:
 
 - Top-down replay with play/pause, timeline scrubbing and round selection.
-- Human/Laya/prop positions, velocity arrows and recent events.
-- A decision table showing choice, latency and execution status.
+- Both players’ and props’ positions, velocity arrows and recent events.
+- A decision table showing player, choice, latency and execution status.
 - Exact request inputs, raw responses, action outcomes and resulting state.
 - Experiment metadata, profile hash and summary statistics.
 - Loading another JSONL file and downloading JSON or decision CSV.
@@ -72,7 +73,7 @@ authoritative append-only record;
 a response still in flight can arrive after an export or summary was written.
 The report recomputes latency statistics from all decision records it receives.
 Mean/median/p95 in the final JSON summary cover all completed requests (including
-errors/stale responses). The gameplay HUD and legacy `matches.csv` mean cover
+errors/stale responses). The gameplay HUD and `matches-v3.csv` mean cover
 executed decisions only. Request and response timestamps are UTC; simulation
 and action timestamps use game time.
 
@@ -82,3 +83,25 @@ Human event timestamps do not establish reaction times. No random seed makes
 human/model timing and physics deterministic. The pretrained model is not
 fine-tuned for the game; record model/service changes separately when comparing
 runs made with different checkpoints or installations.
+
+## Multi-model recordings (schema 3)
+
+Match metadata includes the matchup and both participants' actor, controller,
+requested model and endpoint. Decisions include `actor`, `provider`, `model`
+(requested alias), and `response_model` (the version returned by the service).
+Decision IDs include actor identity so the two independent loops cannot collide.
+Each request captures its original match, actor and profile; switching matchups
+aborts outstanding requests, and late results remain in the original recording.
+
+Summaries have `left_actor`, `right_actor`, `left_wins`, `right_wins`, `left` and
+`right` physical metrics, plus `ai_players` with separate executed counts, failure
+counts, stale counts, total executed latency and action distributions. Frames
+identify fighter `slot` as `left` or `right`. Historical `human`/`laya` and
+`human_wins`/`laya_wins` JSON fields remain compatibility aliases for left/right;
+use the explicit participant identities for new analysis. New aggregate CSVs
+use `matches-v3.csv` to avoid changing the header of existing recordings.
+
+Neither credentials nor authentication headers are recorded. HTTP error bodies
+are discarded; raw successful model responses are retained with key redaction.
+TypeSafe model latency includes the network round trip. No delay is added to
+artificially equalize the local and cloud models.

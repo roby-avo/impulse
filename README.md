@@ -1,19 +1,37 @@
 # Physics Playground
 
-A complete local **Human vs Laya** rooftop ring-out game built with Unity 6.4.
+A rooftop ring-out game built with Unity 6.4: **Human vs Laya**,
+**Human vs TypeSafe**, or **Laya vs TypeSafe**.
 
 ## Play on this Mac
 
 Double-click **Play Physics Playground.command**. It starts the local Laya
-service if needed, waits for readiness, and opens `Builds/Physics Playground.app`.
+service in the background if installed, and opens `Builds/Physics Playground.app`.
 The built game and Python environment are already available on this workstation.
 The launcher leaves Laya resident for quick rematches. Use
 **Stop Local Laya.command** to stop a launcher-managed service when finished.
 
-For a fresh checkout, run `./ai/setup.sh` once. The launcher can build the Mac app
+For local Laya on a fresh checkout, run `./ai/setup.sh` once.
+TypeSafe-only play does not require the local Python environment. The launcher can build the Mac app
 if it is missing; close the Unity editor before that first build. Python 3.13 and
 Unity **6000.4.0f1** were used for the validated build. The app includes Apple
 Silicon and Intel binaries; inference was tested on Apple Silicon CPU.
+
+## Choose who plays
+
+The game opens on **Choose your matchup**. Select a mode, then **Enter the arena**.
+
+- **Human vs Laya:** play against the local model; no API key required.
+- **Human vs TypeSafe:** enter your TypeSafe key, select **Check key & load models**,
+  choose an available model, then start.
+- **Laya vs TypeSafe:** watch local Laya (cyan) compete against TypeSafe (orange).
+  Right-drag to orbit the spectator camera; Escape pauses the match.
+
+Use **Escape → Change matchup / API key** to change players or credentials.
+Keys are masked and kept in session memory only; they are excluded from settings,
+recordings and exports. `TYPESAFE_API_KEY` is also read from the game's launch
+process environment. TypeSafe sends arena observations and action instructions to
+its cloud API and uses your account's request allowance. See [TYPESAFE.md](TYPESAFE.md).
 
 ## Smooth presentation
 
@@ -70,7 +88,7 @@ This manual panel is an execution diagnostic, never a fallback policy.
 
 ## Laya and fairness
 
-The orange opponent's tactical choices come **only** from locally running
+When Laya is selected, its tactical choices come **only** from locally running
 `convaiinnovations/laya`. The installed `laya==0.3.7` SDK is preloaded once, and its
 official HTTP interface binds to `127.0.0.1:8000`. Unity explicitly selects the
 English root checkpoint. Runtime defaults to offline cached weights.
@@ -82,7 +100,7 @@ with Laya's selected action. Responses for old rounds or interrupted states are
 discarded. Service errors/timeouts produce neutral wait and retries; there is
 no random, rule-based, behavior-tree, or other-model replacement.
 
-Human and Laya use the same Fighter component, movement speed, jump, dodge,
+Human, Laya and TypeSafe use the same Fighter component, movement speed, jump, dodge,
 interaction ranges, push cooldown, mass and impact response. Inference latency
 is measured and shown; it is not concealed. This pretrained model has not been
 fine-tuned for the game, and its tactical choices can be repetitive or weak.
@@ -100,7 +118,7 @@ On macOS, logs are saved under:
 Each match has JSONL records with state, offered actions, raw model probabilities,
 latency, execution times, outcome, interruptions and resulting state. Human
 jump/grab/drop/throw/push/dodge/impact and round events are recorded too.
-Completed matches append to `matches.csv`. These event timestamps do **not**
+Completed matches append to `matches-v3.csv`, with explicit player identities. These event timestamps do **not**
 claim to measure human reaction time. F1 practice is explicitly marked in logs.
 
 ## Experiment platform and upgraded art

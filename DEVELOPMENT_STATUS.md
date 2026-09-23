@@ -125,3 +125,28 @@ The bundled ICNS was correct, but the user's running Dock tile remained generic.
 A universal AppKit plugin now assigns `NSApplication.applicationIconImage` at
 launch, after startup, and on focus. Mac builds compile and sign the plugin
 automatically. See `validation/DOCK_ICON.md` for runtime verification and limits.
+
+## 0.9.0 — TypeSafe and selectable matchups
+
+Added a launch setup screen for Human vs Laya, Human vs TypeSafe, and Laya vs
+TypeSafe. Cloud play authenticates via model discovery, with a masked API-key
+field and account-specific model selection. Keys remain in session memory and
+are excluded from saved configuration and recordings. Local Laya remains fully
+local and does not require credentials.
+
+Both AI players have independent clients, execution state and decision loops,
+with symmetric observations/actions and a shared experiment profile. AI-vs-AI
+uses an orbitable spectator camera and model-aware scores, winners and statistics.
+Matchup changes cancel pending calls; failures never trigger a substitute policy.
+Authentication/quota/request errors require reconfiguration; transient failures
+and rate limits use bounded backoff.
+
+Schema-3 recordings and CSV exports identify each actor, requested model and
+served model, with per-player counts/latency/distributions. The launcher opens
+the game while local Laya starts in the background, and permits cloud-only play
+without installing the local inference environment.
+
+Validation: 31 dedicated matchup checks passed with real local Laya and a
+TypeSafe HTTP contract fixture. The existing M1–M7 and UI stability suite also
+passed. Authenticated live TypeSafe inference remains untested because no account
+key was supplied. See `TYPESAFE.md` and `validation/MATCHUPS.md`.

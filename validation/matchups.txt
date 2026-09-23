@@ -1,0 +1,31 @@
+PASS typed choice accepted
+PASS out-of-schema choice rejected
+PASS missing confidence rejected
+PASS out-of-range confidence rejected
+PASS wrong answer type rejected
+PASS authenticated model discovery uses official contract
+PASS bad key is actionable and redacted
+PASS cloud matchup rejects missing credentials
+PASS cloud request authenticated, model selected, response credential redacted
+PASS 401 blocks retries and drops error body
+PASS 429 enters timed backoff
+PASS 429 retries become eligible after delay
+PASS Human vs Laya mapping
+PASS Human vs TypeSafe mapping
+PASS Laya vs TypeSafe mapping
+PASS spectator disables player control and unlocks cursor
+PASS independent real-Laya and fixture-TypeSafe loops execute
+PASS per-player telemetry identifies provider and served model
+PASS dual controllers have unique decision IDs
+PASS credentials absent from complete match log
+PASS separate per-player distributions and latency
+PASS AI-vs-AI match ends with correct winner
+PASS opposite AI winner and rematch score reset
+PASS request in flight before matchup switch
+PASS switch aborts request without executing stale action
+PASS cancelled response keeps old match and actor provenance
+PASS setup pauses game
+PASS cannot bypass initial setup by unpausing
+PASS API key UI is masked
+PASS unverified cloud key cannot start paid requests
+PASS exports include actor provenance and exclude credentials
