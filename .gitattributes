@@ -1,0 +1,11 @@
+# Unity serializes empty YAML fields with trailing spaces.
+*.meta whitespace=-blank-at-eol
+*.asset whitespace=-blank-at-eol
+*.mat whitespace=-blank-at-eol
+*.unity whitespace=-blank-at-eol
+# Markdown trailing spaces can be intentional hard line breaks.
+*.md whitespace=-blank-at-eol
+*.cs text eol=lf
+*.py text eol=lf
+*.sh text eol=lf
+*.command text eol=lf

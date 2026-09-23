@@ -1,0 +1,16 @@
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Ll]ogs/
+UserSettings/
+Builds/
+.vscode/
+.DS_Store
+ai/.venv/
+__pycache__/
+*.pyc
+*.csproj
+*.sln
+*.slnx
+ai/.runtime/
+validation/*.log

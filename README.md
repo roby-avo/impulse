@@ -1,0 +1,108 @@
+# Physics Playground
+
+A complete local **Human vs Laya** rooftop ring-out game built with Unity 6.4.
+
+## Play on this Mac
+
+Double-click **Play Physics Playground.command**. It starts the local Laya
+service if needed, waits for readiness, and opens `Builds/Physics Playground.app`.
+The built game and Python environment are already available on this workstation.
+The launcher leaves Laya resident for quick rematches. Use
+**Stop Local Laya.command** to stop a launcher-managed service when finished.
+
+For a fresh checkout, run `./ai/setup.sh` once. The launcher can build the Mac app
+if it is missing; close the Unity editor before that first build. Python 3.13 and
+Unity **6000.4.0f1** were used for the validated build. The app includes Apple
+Silicon and Intel binaries; inference was tested on Apple Silicon CPU.
+
+## Controls
+
+| Input | Action |
+|---|---|
+| WASD / mouse | Move / look |
+| Space | Jump |
+| Left Shift | Dodge in movement direction |
+| E | Grab nearest reachable prop / drop held prop |
+| Left click | Throw held prop; push when empty-handed |
+| F / right click | Push |
+| Mouse wheel | Camera distance |
+| Tab (hold) | Match statistics and Laya action distribution |
+| Escape | Pause / resume and unlock / capture cursor |
+| R | Fresh match |
+| F1 | Developer executor lab; practice, no scoring |
+
+Knock the opponent off the roof. First to **five** round wins takes the match.
+Simultaneous ring-outs draw. Players and props reset between rounds. Crates,
+chairs, and barrels are throwable. Heavy boxes are pushable cover. Yellow
+stripes mark open edges. The crosshair while holding a prop projects its initial
+ballistic path approximately six metres ahead; it is not target lock-on.
+
+Edit `Assets/StreamingAssets/game-config.json` and rebuild to change the target
+number of wins (1–20). There is no health bar: impacts create knockback and a
+brief loss of balance.
+
+## Open in Unity
+
+Open this folder in Unity Hub, open `Assets/Scenes/Rooftop.unity`, start
+`./ai/start.sh` in a terminal, and press Play. The scene's Arena component builds
+the same deterministic rooftop used by the app. URP, Input System, Cinemachine,
+and AI Navigation are configured and pinned in `Packages/manifest.json`.
+
+All ten actions can be exercised through F1. Opening the panel suspends the
+model controller and marks practice. Closing it starts a fresh scored match.
+This manual panel is an execution diagnostic, never a fallback policy.
+
+## Laya and fairness
+
+The orange opponent's tactical choices come **only** from locally running
+`convaiinnovations/laya`. The installed `laya==0.3.7` SDK is preloaded once, and its
+official HTTP interface binds to `127.0.0.1:8000`. Unity explicitly selects the
+English root checkpoint. Runtime defaults to offline cached weights.
+
+Mechanical action filtering excludes throwing without an object, grabbing while
+holding one, pushes out of range/on cooldown, and unavailable jump/dodge actions.
+It never ranks tactics. NavMesh pathfinding only executes the target associated
+with Laya's selected action. Responses for old rounds or interrupted states are
+discarded. Service errors/timeouts produce neutral wait and retries; there is
+no random, rule-based, behavior-tree, or other-model replacement.
+
+Human and Laya use the same Fighter component, movement speed, jump, dodge,
+interaction ranges, push cooldown, mass and impact response. Inference latency
+is measured and shown; it is not concealed. This pretrained model has not been
+fine-tuned for the game, and its tactical choices can be repetitive or weak.
+Its confidence output is not validated game-specific calibration.
+
+See [ai/README.md](ai/README.md) for setup, offline inference, API details and
+`ai/.venv/bin/python ai/smoke_test.py`.
+
+## Telemetry
+
+On macOS, logs are saved under:
+
+`~/Library/Application Support/Impulse/Physics Playground/Telemetry`
+
+Each match has JSONL records with state, offered actions, raw model probabilities,
+latency, execution times, outcome, interruptions and resulting state. Human
+jump/grab/drop/throw/push/dodge/impact and round events are recorded too.
+Completed matches append to `matches.csv`. These event timestamps do **not**
+claim to measure human reaction time. F1 practice is explicitly marked in logs.
+
+## Reproduce validation and build
+
+Close the editor first and leave `./ai/start.sh` running:
+
+```sh
+scripts/unity-check.sh Playground.Editor.Validation.M5
+scripts/unity-check.sh Playground.Editor.LiveMatchLauncher.Run
+scripts/unity-check.sh Playground.Editor.ProjectSetup.BuildMac -quit
+```
+
+`UNITY_EDITOR` overrides the Unity executable path. The default matches this Mac.
+M5 runs M1–M4 acceptance checks plus presentation/pause checks in actual Play Mode.
+The live match test supplies scripted **human** inputs and keeps the Laya side
+model-controlled. Test drivers are compiled only in the editor and are excluded
+from the player. Latest logs are in `validation/unity.log`.
+
+See [validation/ACCEPTANCE.md](validation/ACCEPTANCE.md) for evidence and
+[DEVELOPMENT_STATUS.md](DEVELOPMENT_STATUS.md) for the milestone status.
+Asset provenance is documented in [ASSETS.md](ASSETS.md).

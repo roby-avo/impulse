@@ -1,0 +1,47 @@
+{
+  "health": {
+    "status": "ok",
+    "loaded": [
+      "english"
+    ],
+    "device": "cpu"
+  },
+  "action": "GRAB_NEAREST_OBJECT",
+  "latency_ms": 370.7,
+  "response": {
+    "model": "laya-rl-agent",
+    "answers": {
+      "action": {
+        "type": "choice",
+        "choice": "GRAB_NEAREST_OBJECT",
+        "probabilities": {
+          "APPROACH_OPPONENT": 0.1266,
+          "RETREAT_FROM_OPPONENT": 0.0978,
+          "PUSH_OPPONENT": 0.1237,
+          "GRAB_NEAREST_OBJECT": 0.1572,
+          "THROW_HELD_OBJECT_AT_OPPONENT": 0.1512,
+          "DODGE_LEFT": 0.0271,
+          "DODGE_RIGHT": 0.0143,
+          "MOVE_TOWARD_SAFETY": 0.155,
+          "TAKE_COVER": 0.0587,
+          "JUMP": 0.0884
+        },
+        "confidence": 0.0652,
+        "action": {
+          "act_probability": 1.0
+        }
+      }
+    },
+    "usage": {
+      "input_tokens": 296,
+      "output_tokens": 0
+    },
+    "routing": {
+      "model": "english",
+      "repo": "convaiinnovations/laya",
+      "reason": "explicit model='english'",
+      "detection": null,
+      "workflow": null
+    }
+  }
+}

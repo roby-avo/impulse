@@ -1,0 +1,15 @@
+{
+  "completed": true,
+  "human_wins": 5,
+  "laya_wins": 2,
+  "executed_laya_decisions": 118,
+  "mean_latency_ms": 522.4,
+  "laya_action_distribution": {
+    "APPROACH_OPPONENT": 63,
+    "PUSH_OPPONENT": 29,
+    "RETREAT_FROM_OPPONENT": 2,
+    "GRAB_NEAREST_OBJECT": 15,
+    "THROW_HELD_OBJECT_AT_OPPONENT": 9
+  },
+  "elapsed_game_seconds": 143.3
+}

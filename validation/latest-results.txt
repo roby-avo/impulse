@@ -1,0 +1,50 @@
+PASS M1 human grounded
+PASS M1 movement
+PASS M1 jump accepted
+PASS M1 jump rises
+PASS M1 dodge
+PASS M1 grab barrel
+PASS M1 held prop
+PASS M1 throw
+PASS M1 physical throw velocity
+PASS M1 push prop
+PASS M1 push impulse
+PASS M1 fall and reset
+PASS M1 props reset
+M1 COMPLETE
+PASS M2 symmetric physical avatar
+PASS M2 terminal outcome APPROACH_OPPONENT / arrived
+PASS M2 terminal outcome RETREAT_FROM_OPPONENT / arrived
+PASS M2 terminal outcome PUSH_OPPONENT / push
+PASS M2 terminal outcome GRAB_NEAREST_OBJECT / grab
+PASS M2 successful execution GRAB_NEAREST_OBJECT
+PASS M2 throw setup
+PASS M2 terminal outcome THROW_HELD_OBJECT_AT_OPPONENT / throw
+PASS M2 terminal outcome DODGE_LEFT / dodge
+PASS M2 terminal outcome DODGE_RIGHT / dodge
+PASS M2 terminal outcome MOVE_TOWARD_SAFETY / arrived
+PASS M2 successful execution MOVE_TOWARD_SAFETY
+PASS M2 terminal outcome TAKE_COVER / arrived
+PASS M2 terminal outcome JUMP / jump
+M2 COMPLETE
+PASS M3 real Laya action in Play Mode
+PASS M3 measured asynchronous latency
+M3 COMPLETE
+PASS M4 autonomous real Laya loop
+PASS M4 impossible interaction actions excluded
+PASS M4 simultaneous ring-out draw
+PASS M4 ring-out score round 1
+PASS M4 ring-out score round 2
+PASS M4 ring-out score round 3
+PASS M4 ring-out score round 4
+PASS M4 ring-out score round 5
+PASS M4 first-to-five match completed
+PASS M4 JSONL telemetry persisted
+PASS M4 clean rematch
+PASS M4 offline means wait, never fallback
+M4 COMPLETE
+PASS M5 HUD, audio/VFX and animated fighters
+PASS M5 pause freezes simulation
+PASS M5 resume
+PASS M5 shaders retained for build
+M5 AUTOMATED CHECKS COMPLETE
