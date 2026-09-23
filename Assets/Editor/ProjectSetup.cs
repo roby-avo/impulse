@@ -32,10 +32,10 @@ public static class ProjectSetup {
  }
  [MenuItem("Playground/Build Mac Game")]
  public static void BuildMac(){EnsureResources();
-  var scene=EditorSceneManager.OpenScene("Assets/Scenes/Rooftop.unity");if(!Object.FindFirstObjectByType<Arena>())new GameObject("Physics Playground · procedural rooftop").AddComponent<Arena>();EditorSceneManager.SaveScene(scene);PlayerSettings.fullScreenMode=FullScreenMode.Windowed;PlayerSettings.macOS.buildNumber="1";
+  var scene=EditorSceneManager.OpenScene("Assets/Scenes/Rooftop.unity");if(!Object.FindFirstObjectByType<Arena>())new GameObject("Physics Playground · procedural rooftop").AddComponent<Arena>();EditorSceneManager.SaveScene(scene);PlayerSettings.fullScreenMode=FullScreenMode.Windowed;PlayerSettings.macOS.buildNumber="7";PlayerSettings.bundleVersion="0.7.0";
   var report=BuildPipeline.BuildPlayer(new BuildPlayerOptions{scenes=new[]{"Assets/Scenes/Rooftop.unity"},locationPathName="Builds/Physics Playground.app",target=BuildTarget.StandaloneOSX,options=BuildOptions.None});
   if(report.summary.result!=UnityEditor.Build.Reporting.BuildResult.Succeeded)throw new System.Exception("Mac build failed: "+report.summary.result);
-  Debug.Log("M5 BUILD PASS: "+report.summary.outputPath);
+  Debug.Log("M7 BUILD PASS: "+report.summary.outputPath);
  }
 }
 }

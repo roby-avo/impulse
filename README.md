@@ -29,6 +29,8 @@ Silicon and Intel binaries; inference was tested on Apple Silicon CPU.
 | Tab (hold) | Match statistics and Laya action distribution |
 | Escape | Pause / resume and unlock / capture cursor |
 | R | Fresh match |
+| F2 | Experiment settings, schemas and saved-match inspection |
+| F3 | Export current/selected match and open offline inspector |
 | F1 | Developer executor lab; practice, no scoring |
 
 Knock the opponent off the roof. First to **five** round wins takes the match.
@@ -87,18 +89,29 @@ jump/grab/drop/throw/push/dodge/impact and round events are recorded too.
 Completed matches append to `matches.csv`. These event timestamps do **not**
 claim to measure human reaction time. F1 practice is explicitly marked in logs.
 
+## Experiment platform and upgraded art
+
+Press **F2** to configure experiment IDs, request frequency, action/observation
+schemas and question instructions. Press **F3** to export and inspect a match
+with a sampled spatial replay and per-decision details. See
+[EXPERIMENTS.md](EXPERIMENTS.md) for profiles, data definitions and limitations.
+
+The robots, props, rooftop and skyline are original Blender meshes. Editable
+source and regeneration instructions are in [ArtSource/README.md](ArtSource/README.md).
+Physics continues to use the validated simple collision proxies.
+
 ## Reproduce validation and build
 
 Close the editor first and leave `./ai/start.sh` running:
 
 ```sh
-scripts/unity-check.sh Playground.Editor.Validation.M5
+scripts/unity-check.sh Playground.Editor.Validation.M7
 scripts/unity-check.sh Playground.Editor.LiveMatchLauncher.Run
 scripts/unity-check.sh Playground.Editor.ProjectSetup.BuildMac -quit
 ```
 
 `UNITY_EDITOR` overrides the Unity executable path. The default matches this Mac.
-M5 runs M1–M4 acceptance checks plus presentation/pause checks in actual Play Mode.
+M7 runs M1–M6 acceptance checks plus real-model experiment/schema/rate/export checks in actual Play Mode.
 The live match test supplies scripted **human** inputs and keeps the Laya side
 model-controlled. Test drivers are compiled only in the editor and are excluded
 from the player. Latest logs are in `validation/unity.log`.

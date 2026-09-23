@@ -6,6 +6,7 @@ public class HumanInput:MonoBehaviour {
  void Start(){Capture(true);}
  public void Capture(bool value){Captured=value;Cursor.lockState=value?CursorLockMode.Locked:CursorLockMode.None;Cursor.visible=!value;}
  void Update(){var k=Keyboard.current;var m=Mouse.current;if(k==null)return;
+  if(Arena.Instance.Research.Open){Fighter.Move=Vector3.zero;if(k.escapeKey.wasPressedThisFrame)Arena.Instance.Research.Close();return;}
   if(k.escapeKey.wasPressedThisFrame)Arena.Instance.HUD.Pause(!Arena.Instance.HUD.Paused);
   if(k.rKey.wasPressedThisFrame){Arena.Instance.HUD.Pause(false);Arena.Instance.Match.NewMatch();}
   if(!Captured||!Fighter.Active){Fighter.Move=Vector3.zero;return;}

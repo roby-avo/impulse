@@ -1,0 +1,30 @@
+// Optional report regression: npm install --prefix /tmp/pg-inspector-tests jsdom
+// NODE_PATH=/tmp/pg-inspector-tests/node_modules node scripts/test-inspector.cjs
+const fs = require('node:fs');
+const assert = require('node:assert/strict');
+const {JSDOM, VirtualConsole} = require('jsdom');
+const errors=[];
+const virtualConsole=new VirtualConsole();
+virtualConsole.on('jsdomError', e=>errors.push(e.message));
+const html=fs.readFileSync(process.argv[2]||'validation/m7-report.html','utf8');
+const dom=new JSDOM(html,{runScripts:'dangerously',virtualConsole,beforeParse(w){w.alert=()=>errors.push('unexpected alert');}});
+const w=dom.window,d=w.document;
+const data=JSON.parse(d.getElementById('match-data').textContent);
+const decisions=data.filter(x=>x.type==='decision');
+assert.ok(decisions.length>=3);
+assert.equal(d.querySelectorAll('#decisions tr').length,decisions.length);
+assert.match(d.getElementById('identity').textContent,/validation-m7/);
+assert.equal(d.querySelectorAll('#arena circle').length,10);
+assert.match(d.getElementById('detail').textContent,/grounded/);
+assert.ok(!d.getElementById('detail').querySelector('script'));
+const slider=d.getElementById('timeline');slider.value=slider.max;slider.dispatchEvent(new w.Event('input'));
+assert.match(d.getElementById('clock').textContent,/Round 1/);
+d.querySelectorAll('#decisions tr')[1].click();
+assert.equal(d.getElementById('choice').textContent,decisions[1].selected_action||'No valid choice');
+const round=d.getElementById('round');round.value='1';round.dispatchEvent(new w.Event('change'));
+assert.ok(d.querySelectorAll('#decisions tr').length>0);
+d.getElementById('play').click();assert.equal(d.getElementById('play').textContent,'Pause');d.getElementById('play').click();assert.equal(d.getElementById('play').textContent,'Play');
+w.eval('init([])');assert.match(d.getElementById('clock').textContent,/No sampled frames/);
+assert.deepEqual(errors,[]);
+dom.window.close();
+console.log('PASS inspector: embedded data, decision selection, SVG bodies, scrubber, round filter, play/pause, empty log, no script injection/errors');

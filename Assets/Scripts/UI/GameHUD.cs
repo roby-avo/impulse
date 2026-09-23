@@ -11,7 +11,7 @@ public class GameHUD:MonoBehaviour {
  void Styles(){if(body!=null)return;pixel=Texture2D.whiteTexture;body=new GUIStyle(GUI.skin.label){fontSize=17,normal={textColor=Color.white}};small=new GUIStyle(body){fontSize=13,normal={textColor=muted}};title=new GUIStyle(body){fontSize=24,fontStyle=FontStyle.Bold};big=new GUIStyle(title){fontSize=44,alignment=TextAnchor.MiddleCenter};center=new GUIStyle(body){alignment=TextAnchor.MiddleCenter};button=new GUIStyle(GUI.skin.button){fontSize=18,padding=new RectOffset(10,10,12,12)};button.normal.background=ButtonTexture(new Color(.1f,.22f,.29f));button.hover.background=ButtonTexture(new Color(.14f,.34f,.42f));button.active.background=ButtonTexture(new Color(.12f,.48f,.56f));button.normal.textColor=button.hover.textColor=button.active.textColor=Color.white;}
  void Box(float x,float y,float w,float h,Color c){GUI.color=c;GUI.DrawTexture(new Rect(x,y,w,h),pixel);GUI.color=Color.white;}
  void Text(float x,float y,float w,float h,string text,GUIStyle style,Color? color=null){var old=GUI.color;GUI.color=color??Color.white;GUI.Label(new Rect(x,y,w,h),text,style);GUI.color=old;}
- void OnGUI(){if(!a)return;Styles();GUI.matrix=Matrix4x4.TRS(Vector3.zero,Quaternion.identity,new Vector3(Screen.width/1440f,Screen.height/900f,1));
+ void OnGUI(){if(!a||a.Research.Open)return;Styles();GUI.matrix=Matrix4x4.TRS(Vector3.zero,Quaternion.identity,new Vector3(Screen.width/1440f,Screen.height/900f,1));
   Box(24,22,315,78,panel);Box(24,22,4,78,cyan);Text(42,31,280,30,"PHYSICS / PLAYGROUND",body);Text(42,65,280,24,"ROOFTOP 01   /   RING-OUT DUEL",small);
   Box(539,22,362,88,panel);Text(554,34,85,25,"YOU",center,cyan);Text(801,34,85,25,"LAYA",center,orange);Text(629,23,182,60,$"{a.Match.HumanWins}  :  {a.Match.AIWins}",big);Text(569,80,302,20,$"FIRST TO {a.Match.WinsRequired}     ·     ROUND {a.Match.Round}",small);
   Box(1060,22,356,98,panel);Box(1077,41,7,7,a.Client.Failures>0&&!a.Client.Busy&&a.Client.Status.Contains("unavailable")?orange:cyan);Text(1093,32,305,23,"LOCAL LAYA  /  SYSTEM 1",small);Text(1077,58,320,25,a.Client.Busy?"Thinking…":(a.Brain.ExecutedDecisions>0?a.Executor.Selected.ToString().Replace('_',' '):"Connecting to local model"),small);Text(1077,86,320,22,a.Client.Status.Contains("unavailable")?"OFFLINE · Waiting and retrying":$"Decision latency  {a.Client.LastLatency:0} ms",small);
@@ -24,9 +24,10 @@ public class GameHUD:MonoBehaviour {
    if(a.Human.Edge<1.8f){Text(535,698,370,34,"OPEN EDGE · WATCH YOUR STEP",center,orange);Box(0,0,6,900,orange);Box(1434,0,6,900,orange);}
   }
   Box(24,789,286,69,panel);Text(40,798,260,22,a.Human.Held?"HOLDING  /  "+a.Human.Held.Kind.ToUpper():"HANDS FREE",body,cyan);Text(40,826,260,22,Time.time<a.Human.StunnedUntil?"OFF BALANCE":Time.time<a.Human.NextDodge?$"Dodge ready in {a.Human.NextDodge-Time.time:0.0}s":"DODGE READY  /  LEFT SHIFT",small);
-  Box(334,810,1082,48,panel);Text(354,822,1040,30,"WASD move   ·   Mouse look   ·   Space jump   ·   E grab / drop   ·   Click throw   ·   F push   ·   Tab stats   ·   Esc pause",small);
+  Box(334,810,1082,48,panel);Text(354,822,1040,30,"WASD move   ·   Mouse look   ·   Space jump   ·   E grab / drop   ·   Click throw   ·   F push   ·   Tab stats   ·   Esc pause   ·   F2 experiments",small);
   if(Time.unscaledTime<HitUntil){Box(0,0,1440,7,new Color(1,.5f,.2f,.7f));Box(0,893,1440,7,new Color(1,.5f,.2f,.7f));}
   bool stats=(Keyboard.current!=null&&Keyboard.current.tabKey.isPressed)||a.Match.Phase==RoundPhase.MatchOver;
+  if(!a.Experiments.Ready){Box(350,155,740,55,panel);Text(370,166,700,35,"INVALID EXPERIMENT PROFILE · Press F2 to review and apply settings",center,orange);}
   if(stats)Results();if(Paused)PausePanel();
  }
  void Results(){Box(24,147,247,390,panel);Text(42,168,210,26,"LAYA DECISIONS",body);string[] names={"Approach","Retreat","Push","Grab","Throw","Dodge left","Dodge right","Move to safety","Take cover","Jump"};for(int j=0;j<10;j++){Text(42,207+j*30,170,26,names[j],small);Text(210,207+j*30,50,26,a.Telemetry.Distribution[j].ToString(),body,orange);}

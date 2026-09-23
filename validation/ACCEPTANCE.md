@@ -39,3 +39,35 @@ English model loaded, and the standalone game resumed valid model decisions.
 The ready game was left open on a fresh paused match. Launcher shell syntax and
 Git whitespace checks passed. Generated Unity YAML uses its standard empty-field
 spacing, documented in `.gitattributes`.
+
+
+## M6 and M7 (2026-09-23)
+
+- Original Blender meshes generated successfully; Unity M1–M6 regression passed
+  before proceeding to M7. Authored mesh bounds and single collider proxies verified.
+- Standalone M6 build inspected: robot armor, props, roof, vents and skyline render
+  in correct scale/orientation with intended materials.
+- M1–M7 Play Mode regression passed using the real local model. Restricted action
+  choices, exact two-field state projection, 0.5 Hz request cap, invalid profile
+  rejection, zero-legal-action neutral wait, export encoding and late-response
+  attribution to the original experiment after a rematch verified.
+- `m7-experiment.jsonl` and `m7-report.html` capture the restricted-profile test.
+- `m7-live-match.jsonl`: full physical match, Human 5–0, nine executed model
+  decisions, 22 total responses, 13 stale, zero failed requests, 402 frames.
+  Mean executed latency 648 ms; mean all requests 688 ms, p95 807 ms.
+- `scripts/test-inspector.cjs` passes with jsdom: decision selection, SVG samples,
+  timeline scrubbing, round filtering, play/pause, empty logs, injection handling.
+  Browser automation refuses local HTML URLs; no browser visual preview is claimed.
+
+Reproduce inspector checks after `Validation.M7`:
+
+```sh
+npm install --prefix /tmp/pg-inspector-tests --no-audit --no-fund jsdom
+NODE_PATH=/tmp/pg-inspector-tests/node_modules node scripts/test-inspector.cjs
+```
+
+
+Standalone M7 UI check: F2 opens the lab; Apply & start new match saves the
+baseline profile with ten actions and 22 fields, resets the score and starts the
+countdown. Player.log contained no runtime exceptions. Universal Mac build
+succeeded as version 0.7.0, build 7.

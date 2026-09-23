@@ -18,7 +18,7 @@ public static class ActionSchema {
    } if(executable)list.Add(action.ToString());
   }return list.ToArray();
  }
- static string Quote(string v)=>"\""+v.Replace("\\","\\\\").Replace("\"","\\\"").Replace("\n","\\n").Replace("\r","\\r")+"\"";
+ static string Quote(string v)=>StateSchema.Quote(v);
  public static string Build(QuestionFile file,string[] allowed){var options=new List<string>();foreach(var key in allowed){var field=typeof(ChoiceCriteria).GetField(key);if(field==null)throw new ArgumentException("Unknown action");options.Add(Quote(key)+":"+Quote((string)field.GetValue(file.action.criteria)));}return "{\"action\":{\"type\":\"choice\",\"instructions\":"+Quote(file.action.instructions)+",\"criteria\":{"+string.Join(",",options)+"}}}";}
 }
 }

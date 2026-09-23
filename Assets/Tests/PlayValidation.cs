@@ -37,6 +37,31 @@ public class PlayValidation:MonoBehaviour {
   File.AppendAllText("validation/results.txt","M4 COMPLETE\n");
  }
  if(SessionState.GetInt("PG.Milestone",1)>=5){Check(a.HUD&&a.Feedback&&a.Human.GetComponent<FighterPresentation>(),"M5 HUD, audio/VFX and animated fighters");a.HUD.Pause(true);Check(Time.timeScale==0,"M5 pause freezes simulation");a.HUD.Pause(false);Check(Time.timeScale==1,"M5 resume");Check(Resources.Load<Material>("Surface")&&Resources.Load<Material>("Particles"),"M5 shaders retained for build");File.AppendAllText("validation/results.txt","M5 AUTOMATED CHECKS COMPLETE\n");}
+ if(SessionState.GetInt("PG.Milestone",1)>=6){
+  Check(VisualAssets.SpawnedModels>=30,"M6 authored Blender models instantiated");
+  Check(a.Human.GetComponentsInChildren<Collider>().Length==1&&a.AI.GetComponentsInChildren<Collider>().Length==1,"M6 visual meshes add no fighter colliders");
+  Check(Arena.Props.TrueForAll(p=>p.GetComponentsInChildren<Collider>().Length==1),"M6 prop collision proxies preserved");
+  Check(a.Human.GetComponentsInChildren<MeshFilter>().Length>20,"M6 detailed robot replaces primitives");
+  var bounds=new Bounds(a.Human.transform.position,Vector3.zero);foreach(var r in a.Human.GetComponentsInChildren<Renderer>())bounds.Encapsulate(r.bounds);
+  Check(bounds.size.y>1.5f&&bounds.size.y<2.3f&&bounds.size.x<1.8f,"M6 meter scale and imported mesh bounds");
+  File.AppendAllText("validation/results.txt","M6 COMPLETE\n");
+ }
+ if(SessionState.GetInt("PG.Milestone",1)>=7){
+  a.Brain.Enabled=false;while(a.Client.Busy)yield return null;a.Executor.Finish(false,"validation");a.Client.Endpoint="http://127.0.0.1:8000";a.Client.TimeoutSeconds=8;
+  var original=a.Experiments.Current;var profile=a.Experiments.Defaults();profile.experiment_id="validation-m7";profile.condition_id="restricted";profile.actions=new[]{"JUMP","MOVE_TOWARD_SAFETY"};profile.state_fields=new[]{"self.grounded","opponent.distance_m"};profile.max_decisions_per_second=.5f;profile.notes="</script><script>alert(1)</script>";
+  Check(profile.Validate()==null,"M7 valid restricted profile");var bad=profile.Copy();bad.actions=new string[0];Check(bad.Validate()!=null,"M7 rejects empty action schema");bad=profile.Copy();bad.state_fields=new[]{"secret"};Check(bad.Validate()!=null,"M7 rejects unknown observation");bad=profile.Copy();bad.max_decisions_per_second=float.NaN;Check(bad.Validate()!=null,"M7 rejects nonfinite frequency");
+  var projected=StateSchema.Project(AIPerception.Capture(a.Executor,a.Executor.ObserveContext()),profile.state_fields);Check(projected.Contains("grounded")&&projected.Contains("distance_m")&&!projected.Contains("near_edge")&&!projected.Contains("nearest_object"),"M7 observation projection omits unselected fields");
+  a.Experiments.Apply(profile,false);a.Match.NewMatch();a.Brain.Enabled=true;int before=a.Brain.ExecutedDecisions;float deadline=Time.time+25;while(a.Brain.ExecutedDecisions<before+3&&Time.time<deadline)yield return null;a.Brain.Enabled=false;while(a.Client.Busy)yield return null;a.Executor.Finish(false,"validation");
+  Check(a.Brain.ExecutedDecisions>=before+3,"M7 real Laya executes restricted schema");
+  var records=new System.Collections.Generic.List<DecisionRecord>();foreach(var line in File.ReadAllLines(a.Telemetry.FilePath))if(JsonUtility.FromJson<EventRecord>(line).type=="decision")records.Add(JsonUtility.FromJson<DecisionRecord>(line));records.Sort((x,y)=>x.game_time.CompareTo(y.game_time));
+  Check(records.Count>=3&&records.TrueForAll(d=>d.experiment_id=="validation-m7"&&d.profile_hash==profile.Hash()&&d.available_actions.Length<=2&&!d.request_state_json.Contains("near_edge")),"M7 exact request and experiment provenance");
+  bool rate=true;for(int n=1;n<records.Count;n++)if(records[n].game_time-records[n-1].game_time<1.98f)rate=false;Check(rate,"M7 request-start frequency cap respected");
+  string report=MatchExport.Export(a.Telemetry.FilePath);string html=File.ReadAllText(report);Check(File.Exists(report)&&File.Exists(Path.Combine(Path.GetDirectoryName(report),"decisions.csv"))&&html.Contains("SPATIAL REPLAY")&&!html.Contains("</script><script>alert(1)</script>"),"M7 offline report and CSV export with safe embedded data");
+  Check(File.ReadAllText(a.Telemetry.FilePath).Contains("\"type\":\"frame\""),"M7 sampled spatial replay persisted");File.Copy(a.Telemetry.FilePath,"validation/m7-experiment.jsonl",true);File.Copy(report,"validation/m7-report.html",true);
+  profile.actions=new[]{"THROW_HELD_OBJECT_AT_OPPONENT"};a.Experiments.Apply(profile,false);a.Match.NewMatch();before=a.Brain.ExecutedDecisions;int valid=a.Client.ValidResponses;a.Brain.Enabled=true;yield return new WaitForSeconds(5);Check(a.Brain.ExecutedDecisions==before&&a.Client.ValidResponses==valid&&!a.Executor.Running,"M7 mechanically empty schema waits without fallback or request");
+  a.Brain.Enabled=false;profile.actions=new[]{"JUMP","MOVE_TOWARD_SAFETY"};profile.max_decisions_per_second=2;a.Experiments.Apply(profile,false);a.Match.NewMatch();a.Brain.Enabled=true;deadline=Time.time+15;while(!a.Client.Busy&&Time.time<deadline)yield return null;Check(a.Client.Busy,"M7 request in flight for rematch isolation");string oldLog=a.Telemetry.FilePath;string oldId=a.Telemetry.MatchId;var changed=profile.Copy();changed.condition_id="changed";a.Experiments.Apply(changed,false);a.Match.NewMatch();while(a.Client.Busy)yield return null;yield return null;bool isolated=false;foreach(var line in File.ReadAllLines(oldLog)){if(JsonUtility.FromJson<EventRecord>(line).type!="decision")continue;var decision=JsonUtility.FromJson<DecisionRecord>(line);if(decision.execution_status=="stale"&&decision.match_id==oldId&&decision.condition_id=="restricted")isolated=true;}Check(isolated,"M7 late response retains original match and experiment");
+  a.Brain.Enabled=false;a.Experiments.Apply(original,false);a.Match.NewMatch();File.AppendAllText("validation/results.txt","M7 COMPLETE\n");
+ }
  SessionState.SetBool("PG.Validate",false);EditorApplication.Exit(0);
  }
 }

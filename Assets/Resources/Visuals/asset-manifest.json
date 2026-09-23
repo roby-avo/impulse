@@ -1,0 +1,56 @@
+{
+  "units": "meters",
+  "source": "ArtSource/build_assets.py",
+  "assets": [
+    {
+      "asset": "robot_body",
+      "objects": 21,
+      "vertices": 2448
+    },
+    {
+      "asset": "robot_glove",
+      "objects": 3,
+      "vertices": 288
+    },
+    {
+      "asset": "robot_boot",
+      "objects": 3,
+      "vertices": 288
+    },
+    {
+      "asset": "crate",
+      "objects": 13,
+      "vertices": 3360
+    },
+    {
+      "asset": "barrel",
+      "objects": 10,
+      "vertices": 2676
+    },
+    {
+      "asset": "chair",
+      "objects": 9,
+      "vertices": 864
+    },
+    {
+      "asset": "cargo",
+      "objects": 13,
+      "vertices": 1356
+    },
+    {
+      "asset": "vent",
+      "objects": 27,
+      "vertices": 4052
+    },
+    {
+      "asset": "rooftop",
+      "objects": 185,
+      "vertices": 21284
+    },
+    {
+      "asset": "skyline",
+      "objects": 51,
+      "vertices": 4896
+    }
+  ]
+}

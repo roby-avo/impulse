@@ -1,8 +1,16 @@
 # Asset provenance
 
-Arena geometry, robot shapes, prop silhouettes, HUD, synthesized sound waveforms,
-and impact effects are original procedural assets created for this project.
-No external art, music, textures, or Blender files are required.
+All art is original to this project. M6 replaces prototype visuals with ten
+modular Blender models: armored robot body, glove, boot, crate, barrel, chair,
+cargo box, vent, rooftop and skyline tower. Generated FBX meshes and their
+manifest are in `Assets/Resources/Visuals`. Editable source is in
+`ArtSource/PhysicsPlayground.blend`; `ArtSource/build_assets.py` regenerates it
+with Blender 5.2.2 LTS. Blender is only required to modify/regenerate assets,
+not to play or build the game from the committed FBX files.
+
+HUD, synthesized sounds, impact effects and role-based URP materials are also
+original. No third-party art, textures or music were downloaded. Runtime visual
+meshes are combined by material; physics uses unchanged primitive proxies.
 
 Unity packages are installed through Unity Package Manager under their respective
 licenses. Local Laya uses `convaiinnovations/laya` (Apache-2.0 model); weights live
