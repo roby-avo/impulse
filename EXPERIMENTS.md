@@ -1,7 +1,8 @@
 # Experiments and match inspection
 
 Launch with `Play Physics Playground.command`, then press **F2**. The game pauses
-and releases the cursor. Set an experiment ID and condition ID, choose a request
+and releases the cursor. The lab has Setup, Actions, Observations and Recordings
+tabs. Set an experiment ID and condition ID, choose a request
 rate cap, toggle actions and observations, and choose **Apply & start new match**.
 The validated profile is saved and used on the next launch. Use F2 or Escape to
 resume without applying changes. **Restore defaults** changes the draft only.
@@ -63,8 +64,11 @@ Each export folder contains `report.html`, `match.jsonl`, `match.json` and
 
 `~/Library/Application Support/Impulse/Physics Playground/Telemetry/Exports/<match-id>/`
 
-Completed matches export automatically. Mid-match exports are snapshots; export
-again to include later decisions. JSONL is the authoritative append-only record;
+Completed matches export automatically in the background. Export status and
+errors appear in the lab; repeated clicks do not start duplicate jobs. Mid-match exports are snapshots; export
+again to include later decisions. Disk writes are ordered on a background thread and flushed in 250 ms batches.
+Exports use a consistent snapshot after flushing queued records. JSONL is the
+authoritative append-only record;
 a response still in flight can arrive after an export or summary was written.
 The report recomputes latency statistics from all decision records it receives.
 Mean/median/p95 in the final JSON summary cover all completed requests (including

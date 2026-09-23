@@ -99,3 +99,22 @@ Final standalone verification: F2 opens and pauses the experiment lab; applying
 the baseline profile saves all ten actions and 22 observation fields and starts
 a fresh countdown. No runtime exceptions were present in Player.log. The final
 panel uses an opaque background for readability over the arena.
+
+
+## 0.8.0 — UI, responsiveness and app identity
+
+Replaced the gameplay HUD, pause menu, results and experiment lab with retained
+UI Toolkit controls and a shared visual style. The lab has four tabs, exact
+numeric frequency input, readable toggle groups, background export feedback
+and stable navigation. Disk logging uses an ordered background writer with
+250 ms flush batches and consistent snapshot barriers; report generation runs
+in a worker task. Menus restore input cleanly and pause on focus loss.
+
+Balanced/High graphics presets are available from the pause screen. On the
+Apple M3 Pro at 3024×1842, the short standalone benchmark improved gameplay from
+33.33 ms (~30 FPS) to 16.77 ms (~60 FPS); pause and lab samples each had zero GC
+collections, compared with 3 and 24 previously. See `validation/PERFORMANCE.md`
+for methodology and limits. Real Laya inference remains asynchronous and visible.
+
+Custom generated robot icon is included in the universal Mac app bundle and
+HUD. Master image and exact generation prompt are preserved in the project.

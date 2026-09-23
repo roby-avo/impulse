@@ -1,6 +1,6 @@
 # Asset provenance
 
-All art is original to this project. M6 replaces prototype visuals with ten
+The 3D models are original procedural assets for this project. M6 replaces prototype visuals with ten
 modular Blender models: armored robot body, glove, boot, crate, barrel, chair,
 cargo box, vent, rooftop and skyline tower. Generated FBX meshes and their
 manifest are in `Assets/Resources/Visuals`. Editable source is in
@@ -19,3 +19,7 @@ in the user's Hugging Face cache and are not committed or bundled in the game.
 The scene contains the Arena bootstrap. It deterministically creates the rooftop
 at runtime, so the same layout is used in editor tests and the standalone game.
 Resources/Surface.mat and Resources/Particles.mat retain the URP shaders in builds.
+
+The app icon is an image generated with the built-in image_gen tool. The master
+PNG is in `Assets/Resources/UI/AppIcon.png`; exact prompt and provenance are in
+`ArtSource/AppIcon.md`. Unity bundles it as the Mac Dock/Finder icon.

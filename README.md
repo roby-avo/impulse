@@ -15,6 +15,19 @@ if it is missing; close the Unity editor before that first build. Python 3.13 an
 Unity **6000.4.0f1** were used for the validated build. The app includes Apple
 Silicon and Intel binaries; inference was tested on Apple Silicon CPU.
 
+## Smooth presentation
+
+The HUD, pause screen, results and experiment lab use retained UI Toolkit
+controls. **Escape → Graphics** switches between Balanced (default, 60 FPS cap,
+85% 3D render scale / 2× MSAA) and High (120 FPS cap, full scale / 4× MSAA).
+The UI stays crisp at native resolution. Losing window focus pauses the match.
+The Mac app includes a custom robot icon for the Dock and Finder.
+
+Telemetry writes and report exports run in the background. The new interface
+uses tabs for Setup, Actions, Observations and Recordings. See
+[performance evidence](validation/PERFORMANCE.md) for measured before/after
+frame times and validation details.
+
 ## Controls
 
 | Input | Action |

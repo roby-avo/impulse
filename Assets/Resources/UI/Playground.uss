@@ -1,0 +1,108 @@
+.screen { flex-grow: 1; color: rgb(229,239,246); font-size: 16px; }
+.hud { position: absolute; left: 0; top: 0; right: 0; bottom: 0; }
+.row { flex-direction: row; align-items: center; }
+.card { background-color: rgba(10,22,32,0.94); border-radius: 14px; border-width: 1px; border-color: rgba(154,195,213,0.18); padding: 16px 20px; }
+.topbar { position: absolute; top: 24px; left: 28px; right: 28px; flex-direction: row; align-items: flex-start; justify-content: space-between; }
+.brand { width: 290px; height: 90px; }
+.brand-icon { width: 56px; height: 56px; margin-right: 12px; }
+.eyebrow { font-size: 12px; letter-spacing: 1.8px; color: rgb(148,173,188); -unity-font-style: bold; margin-bottom: 6px; }
+.cyan { color: rgb(81,219,239); }
+.orange { color: rgb(255,154,112); }
+.brand-title { font-size: 20px; -unity-font-style: bold; letter-spacing: 1px; }
+.score { width: 328px; padding-top: 8px; padding-bottom: 10px; }
+.scoreline { justify-content: center; }
+.score-side { font-size: 13px; width: 54px; -unity-text-align: middle-center; -unity-font-style: bold; }
+.score-number { font-size: 42px; -unity-font-style: bold; margin-left: 12px; margin-right: 12px; }
+.centered { -unity-text-align: middle-center; }
+.ai { width: 306px; }
+.decision { font-size: 17px; margin-bottom: 6px; }
+.muted { font-size: 13px; color: rgb(148,173,188); white-space: normal; }
+.announcement { position: absolute; top: 24%; left: 18%; right: 18%; align-items: center; }
+.countdown { font-size: 84px; -unity-font-style: bold; -unity-text-align: middle-center; }
+.round-message { font-size: 32px; background-color: rgba(10,22,32,0.95); border-radius: 12px; padding: 18px 30px; margin-bottom: 8px; }
+.bottom { position: absolute; bottom: 24px; left: 28px; right: 28px; }
+.lower { justify-content: space-between; align-items: flex-end; margin-bottom: 12px; }
+.player-status { width: 270px; }
+.status-title { font-size: 16px; -unity-font-style: bold; margin-bottom: 7px; }
+.hint { align-items: center; }
+.interaction { background-color: rgba(10,22,32,0.92); border-radius: 24px; padding: 13px 28px; font-size: 14px; -unity-font-style: bold; letter-spacing: 1px; }
+.edge { color: rgb(255,171,104); font-size: 14px; margin-bottom: 10px; }
+.quick { width: 270px; align-items: flex-end; padding-bottom: 9px; }
+.controls { font-size: 12px; color: rgb(160,184,197); -unity-text-align: middle-center; background-color: rgba(10,22,32,0.88); border-radius: 8px; padding: 12px; }
+.impact { position: absolute; left: 0; right: 0; top: 0; height: 5px; background-color: rgb(255,154,112); }
+.crosshair { position: absolute; width: 20px; height: 20px; }
+.reticle { font-size: 24px; -unity-text-align: middle-center; }
+.scrim { position: absolute; left: 0; right: 0; top: 0; bottom: 0; align-items: center; justify-content: center; background-color: rgba(3,9,16,0.82); }
+.pause-card { width: 460px; padding: 34px; background-color: rgb(13,27,39); border-radius: 22px; border-width: 1px; border-color: rgb(42,65,82); }
+.pause-title { font-size: 38px; -unity-font-style: bold; white-space: normal; margin-top: 9px; }
+.pause-subtitle { margin-top: 12px; margin-bottom: 28px; }
+Button { background-color: rgb(29,49,65); color: rgb(225,237,244); border-width: 1px; border-color: rgb(53,78,96); border-radius: 9px; padding: 12px 18px; margin: 4px 0; font-size: 15px; -unity-font-style: bold; min-height: 40px; }
+Button:hover { background-color: rgb(40,69,88); border-color: rgb(105,172,195); }
+Button:active { background-color: rgb(52,86,105); }
+Button:focus { border-color: rgb(81,219,239); }
+Button:disabled { opacity: 0.4; }
+Button.primary { background-color: rgb(76,212,232); color: rgb(7,27,36); border-color: rgb(76,212,232); }
+Button.primary:hover { background-color: rgb(125,234,248); }
+Button.large { min-height: 48px; }
+Button.quiet { background-color: rgba(0,0,0,0); border-color: rgba(0,0,0,0); color: rgb(151,175,191); }
+.performance { margin-top: 14px; margin-bottom: 8px; -unity-text-align: middle-center; }
+.results-card { width: 1120px; padding: 32px; background-color: rgb(13,27,39); border-radius: 20px; border-width: 1px; border-color: rgb(42,65,82); }
+.section-title { font-size: 30px; -unity-font-style: bold; margin-bottom: 22px; }
+.stats-table { width: 670px; }
+.stat-row { flex-direction: row; padding-top: 12px; padding-bottom: 12px; border-bottom-width: 1px; border-bottom-color: rgb(35,55,71); }
+.stat-name { width: 400px; font-size: 15px; }
+.stat-value { width: 124px; font-size: 16px; -unity-font-style: bold; }
+.distribution { margin-left: 32px; flex-grow: 1; align-self: flex-start; }
+.action-row { flex-direction: row; align-items: center; height: 37px; }
+.action-name { width: 112px; font-size: 13px; color: rgb(165,186,199); }
+.bar-track { width: 128px; height: 6px; background-color: rgb(30,49,64); border-radius: 3px; }
+.bar-fill { height: 6px; background-color: rgb(255,154,112); border-radius: 3px; }
+.action-count { width: 34px; -unity-text-align: middle-right; font-size: 13px; }
+.result-info { margin-top: 22px; margin-bottom: 14px; }
+.result-footer > Button { margin-right: 12px; }
+.result-footer > Label { margin-left: 14px; }
+.research-layer { position: absolute; left: 0; right: 0; top: 0; bottom: 0; background-color: rgb(9,19,29); padding: 30px 38px; }
+.lab-header { justify-content: space-between; margin-bottom: 22px; }
+.lab-title { font-size: 32px; -unity-font-style: bold; }
+.lab-header Button { margin-left: 12px; }
+.lab-tabs { flex-direction: row; margin-bottom: 20px; border-bottom-width: 1px; border-bottom-color: rgb(36,58,76); padding-bottom: 12px; }
+.lab-tabs Button { margin-right: 10px; min-width: 160px; }
+Button.selected { background-color: rgb(33,77,92); border-color: rgb(81,219,239); color: rgb(100,231,248); }
+.lab-body { flex-grow: 1; min-height: 0; }
+.lab-page { flex-grow: 1; }
+.lab-columns { flex-direction: row; align-items: stretch; }
+.lab-column { flex-grow: 1; flex-basis: 0; margin-right: 20px; background-color: rgb(15,31,45); border-radius: 14px; padding: 24px; }
+.lab-column:last-child { margin-right: 0; }
+.lab-section { font-size: 21px; -unity-font-style: bold; margin-bottom: 12px; }
+.description { font-size: 14px; white-space: normal; color: rgb(151,176,194); margin-bottom: 20px; }
+.lab-footer { margin-top: 16px; padding-top: 16px; border-top-width: 1px; border-top-color: rgb(36,58,76); }
+.lab-message { white-space: normal; font-size: 13px; color: rgb(167,192,208); margin-bottom: 12px; }
+.footer-buttons { justify-content: space-between; }
+.footer-buttons Button { margin-right: 12px; }
+TextField, FloatField, DropdownField { margin-top: 10px; margin-bottom: 10px; font-size: 15px; }
+.unity-base-field__label { min-width: 110px; color: rgb(173,197,211); padding-top: 9px; }
+.unity-base-field__input { background-color: rgb(8,20,31); color: rgb(225,239,247); border-width: 1px; border-color: rgb(48,75,95); border-radius: 7px; padding: 9px 12px; min-height: 38px; }
+.unity-text-field__input:focus { border-color: rgb(81,219,239); }
+.multiline { min-height: 160px; }
+.multiline .unity-text-field__input { white-space: normal; -unity-text-align: upper-left; }
+Toggle { padding: 9px 6px; margin-bottom: 5px; border-radius: 7px; min-height: 32px; }
+Toggle:hover { background-color: rgb(26,48,65); }
+.unity-toggle__input:checked .unity-toggle__checkmark { background-color: rgb(76,212,232); }
+.unity-toggle__text { margin-left: 12px; font-size: 15px; }
+.schema-grid { flex-direction: row; }
+.schema-group { flex-grow: 1; flex-basis: 0; margin-right: 24px; }
+.small-button { font-size: 13px; min-height: 32px; padding: 8px 14px; }
+.log-list Button { -unity-text-align: middle-left; font-size: 14px; }
+/* Compact retained controls; keep navigation fixed while switching pages. */
+.lab-header, .lab-tabs, .lab-footer { flex-shrink: 0; }
+.lab-body, .lab-page { flex-basis: 0; min-height: 0; }
+.multiline { min-height: 120px; }
+Toggle { padding: 6px 8px; margin-top: 0; margin-bottom: 2px; min-height: 32px; }
+Toggle > .unity-base-field__input { background-color: rgba(0,0,0,0); border-width: 0; padding: 0; min-height: 22px; }
+.unity-toggle__text { white-space: normal; flex-shrink: 1; }
+.unity-toggle__checkmark { width: 18px; height: 18px; border-radius: 4px; border-width: 1px; border-color: rgb(77,119,145); }
+.unity-scroller { background-color: rgba(0,0,0,0); }
+.unity-scroller--vertical { width: 10px; margin-left: 10px; }
+.unity-scroller RepeatButton { display: none; }
+.unity-scroller .unity-base-slider__dragger { background-color: rgb(57,94,117); border-width: 0; border-radius: 5px; }
+.unity-scroller .unity-base-slider__tracker { background-color: rgb(18,35,48); border-width: 0; }
