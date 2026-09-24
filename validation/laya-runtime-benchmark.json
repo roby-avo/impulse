@@ -1,0 +1,75 @@
+{
+  "torch": "2.14.0",
+  "results": [
+    {
+      "device": "cpu",
+      "threads": 1,
+      "median_ms": 618.2253534971096,
+      "latency_ms": [
+        603.8907920010388,
+        610.0871659946279,
+        783.4202500016545,
+        626.3635409995914
+      ],
+      "choice": "GRAB_NEAREST_OBJECT",
+      "max_probability_delta": 0.0,
+      "input_tokens": 346
+    },
+    {
+      "device": "cpu",
+      "threads": 2,
+      "median_ms": 516.4689795055892,
+      "latency_ms": [
+        516.6010840039235,
+        518.855166999856,
+        513.5259160015266,
+        516.336875007255
+      ],
+      "choice": "GRAB_NEAREST_OBJECT",
+      "max_probability_delta": 0.0,
+      "input_tokens": 346
+    },
+    {
+      "device": "cpu",
+      "threads": 4,
+      "median_ms": 466.0666250019858,
+      "latency_ms": [
+        466.339375001553,
+        467.46737499779556,
+        465.79387500241864,
+        460.8094169961987
+      ],
+      "choice": "GRAB_NEAREST_OBJECT",
+      "max_probability_delta": 0.0,
+      "input_tokens": 346
+    },
+    {
+      "device": "cpu",
+      "threads": 6,
+      "median_ms": 457.8187919978518,
+      "latency_ms": [
+        450.798665995535,
+        467.4145419994602,
+        456.86441699945135,
+        458.77316699625226
+      ],
+      "choice": "GRAB_NEAREST_OBJECT",
+      "max_probability_delta": 0.0,
+      "input_tokens": 346
+    },
+    {
+      "device": "mps",
+      "threads": 2,
+      "median_ms": 102.28570850449614,
+      "latency_ms": [
+        116.02208299882477,
+        94.57162499893457,
+        99.76891700353008,
+        104.8025000054622
+      ],
+      "choice": "GRAB_NEAREST_OBJECT",
+      "max_probability_delta": 0.0,
+      "input_tokens": 346
+    }
+  ]
+}

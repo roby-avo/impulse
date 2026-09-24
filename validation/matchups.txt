@@ -16,12 +16,15 @@ PASS Laya vs TypeSafe mapping
 PASS spectator disables player control and unlocks cursor
 PASS independent real-Laya and fixture-TypeSafe loops execute
 PASS per-player telemetry identifies provider and served model
+PASS real Laya records device and server inference timing
 PASS dual controllers have unique decision IDs
 PASS credentials absent from complete match log
 PASS separate per-player distributions and latency
 PASS AI-vs-AI match ends with correct winner
 PASS opposite AI winner and rematch score reset
 PASS request in flight before matchup switch
+PASS HUD reports elapsed in-flight time
+PASS cancelled request does not leave deciding status behind
 PASS switch aborts request without executing stale action
 PASS cancelled response keeps old match and actor provenance
 PASS setup pauses game

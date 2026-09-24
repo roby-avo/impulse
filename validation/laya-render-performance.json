@@ -1,0 +1,43 @@
+{
+    "unity": "6000.4.0f1",
+    "device": "Apple M3 Pro",
+    "resolution": "3024x1898",
+    "stages": [
+        {
+            "name": "gameplay",
+            "allocation_counter_available": false,
+            "frames": 473,
+            "gc_collections": 2,
+            "mean_ms": 16.9395694732666,
+            "p50_ms": 16.667375564575197,
+            "p95_ms": 17.501623153686525,
+            "p99_ms": 20.951997756958009,
+            "max_ms": 73.75563049316406,
+            "allocated_bytes_per_frame": -1.0
+        },
+        {
+            "name": "pause",
+            "allocation_counter_available": false,
+            "frames": 478,
+            "gc_collections": 1,
+            "mean_ms": 16.751821517944337,
+            "p50_ms": 16.66733169555664,
+            "p95_ms": 17.25836753845215,
+            "p99_ms": 17.59978675842285,
+            "max_ms": 20.24449348449707,
+            "allocated_bytes_per_frame": -1.0
+        },
+        {
+            "name": "experiments",
+            "allocation_counter_available": false,
+            "frames": 478,
+            "gc_collections": 1,
+            "mean_ms": 16.76158332824707,
+            "p50_ms": 16.667957305908204,
+            "p95_ms": 17.321372985839845,
+            "p99_ms": 17.591419219970704,
+            "max_ms": 18.859956741333009,
+            "allocated_bytes_per_frame": -1.0
+        }
+    ]
+}

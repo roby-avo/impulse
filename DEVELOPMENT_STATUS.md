@@ -150,3 +150,24 @@ Validation: 31 dedicated matchup checks passed with real local Laya and a
 TypeSafe HTTP contract fixture. The existing M1–M7 and UI stability suite also
 passed. Authenticated live TypeSafe inference remains untested because no account
 key was supplied. See `TYPESAFE.md` and `validation/MATCHUPS.md`.
+
+## 0.9.1 — Laya latency and honest runtime diagnostics
+
+Investigated the reported AI-vs-AI match: Laya's median reply took 3,123 ms and
+10/20 replies were outdated, versus TypeSafe's 265 ms and 1/99 outdated. The
+service was forced to CPU; its synchronous SDK inference also blocked the HTTP
+event loop. Cancellation could leave an old deciding status on screen.
+
+Laya now defaults to Apple GPU/MPS where available, retains the same FP32
+checkpoint and input schemas, warms up on a dedicated worker, and rejects
+overload instead of queuing obsolete states. Health stays responsive and exposes
+the actual device, busy state and inference timing. CPU override remains available.
+
+The HUD shows each model's elapsed request time, last latency, executed/outdated
+counts and backend. Cancelled status is cleared, and recordings include the
+actual inference device/time and specific stale-response reasons.
+
+Twenty requests from the user's recording produced identical choices and
+reported probabilities on CPU and GPU. Real GPU Laya passed the full M1–M7/UI
+suite and 34 matchup checks. See `validation/LAYA_LATENCY.md` for controlled
+benchmarks and rendered-game measurements, including their limits.

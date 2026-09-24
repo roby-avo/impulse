@@ -1,0 +1,83 @@
+{
+  "health": {
+    "status": "ok",
+    "loaded": [
+      "english"
+    ],
+    "device": "mps",
+    "runtime_version": "0.9.1",
+    "threads": 4,
+    "busy": false,
+    "last_inference_ms": 501.6,
+    "completed": 2
+  },
+  "runs": [
+    {
+      "status": 200,
+      "ms": 191.41674999991665,
+      "timing": "inference;dur=189.2",
+      "device": "mps"
+    },
+    {
+      "status": 200,
+      "ms": 101.08670900081052,
+      "timing": "inference;dur=99.3",
+      "device": "mps"
+    },
+    {
+      "status": 200,
+      "ms": 105.91816699889023,
+      "timing": "inference;dur=104.0",
+      "device": "mps"
+    },
+    {
+      "status": 200,
+      "ms": 117.64845799916657,
+      "timing": "inference;dur=115.3",
+      "device": "mps"
+    },
+    {
+      "status": 200,
+      "ms": 138.43016699684085,
+      "timing": "inference;dur=136.0",
+      "device": "mps"
+    },
+    {
+      "status": 200,
+      "ms": 150.2144589976524,
+      "timing": "inference;dur=148.1",
+      "device": "mps"
+    },
+    {
+      "status": 200,
+      "ms": 152.67820799635956,
+      "timing": "inference;dur=150.6",
+      "device": "mps"
+    },
+    {
+      "status": 200,
+      "ms": 154.933958001493,
+      "timing": "inference;dur=153.1",
+      "device": "mps"
+    },
+    {
+      "status": 200,
+      "ms": 147.9455830049119,
+      "timing": "inference;dur=146.0",
+      "device": "mps"
+    },
+    {
+      "status": 200,
+      "ms": 145.42366699606646,
+      "timing": "inference;dur=143.3",
+      "device": "mps"
+    }
+  ],
+  "median_ms": 146.68462500048918,
+  "max_ms": 191.41674999991665,
+  "health_during_inference_ms": 1.2166250016889535,
+  "overlap": {
+    "status": 429,
+    "ms": 1.2392499993438832
+  }
+}

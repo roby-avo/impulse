@@ -8,7 +8,7 @@ namespace Playground {
 [Serializable] public class EventRecord {public string type,match_id,actor,action,timestamp;public int round_id;public float game_time;}
 [Serializable] public class DecisionRecord {
  public string type="decision",match_id,decision_id,request_timestamp,response_timestamp,selected_action,interruption_reason,raw_response;
- public int schema_version=3;public string actor,provider,model,response_model;public string experiment_id,condition_id,profile_hash,request_state_json,questions_json,execution_status;
+ public int schema_version=3;public string actor,provider,model,response_model,inference_device;public float inference_ms;public string experiment_id,condition_id,profile_hash,request_state_json,questions_json,execution_status;
  public int round_id;public float game_time,latency_ms,confidence,action_start,action_end;public bool execution_success;
  public string[] available_actions;public StateSnapshot state_snapshot,resulting_state;
 }

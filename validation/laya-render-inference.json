@@ -1,0 +1,13 @@
+{
+  "recording": "20260924-124603-d77ac9.jsonl",
+  "count": 25,
+  "median_ms": 131.95944213867188,
+  "max_ms": 421.1745300292969,
+  "statuses": {
+    "executed": 24,
+    "stale": 1
+  },
+  "devices": [
+    "mps"
+  ]
+}

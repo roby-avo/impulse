@@ -15,7 +15,7 @@ For local Laya on a fresh checkout, run `./ai/setup.sh` once.
 TypeSafe-only play does not require the local Python environment. The launcher can build the Mac app
 if it is missing; close the Unity editor before that first build. Python 3.13 and
 Unity **6000.4.0f1** were used for the validated build. The app includes Apple
-Silicon and Intel binaries; inference was tested on Apple Silicon CPU.
+Silicon and Intel binaries; Laya inference uses the Apple GPU when available (CPU remains selectable).
 
 ## Choose who plays
 
@@ -87,6 +87,10 @@ model controller and marks practice. Closing it starts a fresh scored match.
 This manual panel is an execution diagnostic, never a fallback policy.
 
 ## Laya and fairness
+
+Laya now uses Apple GPU acceleration on supported Macs, warms up before readiness,
+and reports its backend and request timing in the HUD. See
+[latency investigation](validation/LAYA_LATENCY.md) for measured results.
 
 When Laya is selected, its tactical choices come **only** from locally running
 `convaiinnovations/laya`. The installed `laya==0.3.7` SDK is preloaded once, and its
