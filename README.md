@@ -1,160 +1,195 @@
-# Physics Playground
+<div align="center">
 
-A rooftop ring-out game built with Unity 6.4: **Human vs Laya**,
-**Human vs TypeSafe**, or **Laya vs TypeSafe**.
+# IMPULSE
 
-## Play on this Mac
+### Let your creativity loose. Put AI decisions into play.
 
-Double-click **Play Physics Playground.command**. It starts the local Laya
-service in the background if installed, and opens `Builds/Physics Playground.app`.
-The built game and Python environment are already available on this workstation.
-The launcher leaves Laya resident for quick rematches. Use
-**Stop Local Laya.command** to stop a launcher-managed service when finished.
+**A physics playground where decision-making models meet on the rooftop.**
 
-For local Laya on a fresh checkout, run `./ai/setup.sh` once.
-TypeSafe-only play does not require the local Python environment. The launcher can build the Mac app
-if it is missing; close the Unity editor before that first build. Python 3.13 and
-Unity **6000.4.0f1** were used for the validated build. The app includes Apple
-Silicon and Intel binaries; Laya inference uses the Apple GPU when available (CPU remains selectable).
+Play against AI. Watch models face off. Change the experiment. See what happens next.
 
-## Choose who plays
+[Get started](#get-started) · [Choose your matchup](#choose-your-matchup) · [Experiment with decisions](#experiment-with-decisions) · [Under the hood](#under-the-hood)
 
-The game opens on **Choose your matchup**. Select a mode, then **Enter the arena**.
+![IMPULSE gameplay: a human-controlled cyan robot faces local Laya in a rooftop arena](docs/images/gameplay.jpg)
 
-- **Human vs Laya:** play against the local model; no API key required.
-- **Human vs TypeSafe:** enter your TypeSafe key, select **Check key & load models**,
-  choose an available model, then start.
-- **Laya vs TypeSafe:** watch local Laya (cyan) compete against TypeSafe (orange).
-  Right-drag to orbit the spectator camera; Escape pauses the match.
+*Actual gameplay: human versus local Laya. Built with Unity 6.*
 
-Use **Escape → Change matchup / API key** to change players or credentials.
-Keys are masked and kept in session memory only; they are excluded from settings,
-recordings and exports. `TYPESAFE_API_KEY` is also read from the game's launch
-process environment. TypeSafe sends arena observations and action instructions to
-its cloud API and uses your account's request allowance. See [TYPESAFE.md](TYPESAFE.md).
+</div>
 
-## Smooth presentation
+## One rooftop. Different minds. Real consequences.
 
-The HUD, pause screen, results and experiment lab use retained UI Toolkit
-controls. **Escape → Graphics** switches between Balanced (default, 60 FPS cap,
-85% 3D render scale / 2× MSAA) and High (120 FPS cap, full scale / 4× MSAA).
-The UI stays crisp at native resolution. Losing window focus pauses the match.
-The Mac app includes a custom robot icon for the Dock and Finder.
-Version 0.8.1 also explicitly refreshes the running Dock tile through AppKit.
+What happens when an AI model has to choose its next move with a rival approaching,
+a barrel within reach, and the edge just a few steps away?
 
-Telemetry writes and report exports run in the background. The new interface
-uses tabs for Setup, Actions, Observations and Recordings. See
-[performance evidence](validation/PERFORMANCE.md) for measured before/after
-frame times and validation details.
+**IMPULSE** turns that question into a playful robot showdown. Push, dodge, grab,
+and throw your way through a physics arena—or let two models take the controls
+and watch their decisions unfold. A clever move can win the round. A bad one can
+send a robot off the roof.
 
-## Controls
+It's a fun, hands-on way to explore how different decision-making models behave
+in the same game, with tools to inspect the choices behind the action.
 
-| Input | Action |
-|---|---|
-| WASD / mouse | Move / look |
-| Space | Jump |
-| Left Shift | Dodge in movement direction |
-| E | Grab nearest reachable prop / drop held prop |
-| Left click | Throw held prop; push when empty-handed |
-| F / right click | Push |
-| Mouse wheel | Camera distance |
-| Tab (hold) | Match statistics and Laya action distribution |
-| Escape | Pause / resume and unlock / capture cursor |
-| R | Fresh match |
-| F2 | Experiment settings, schemas and saved-match inspection |
-| F3 | Export current/selected match and open offline inspector |
-| F1 | Developer executor lab; practice, no scoring |
+- **Play or spectate.** Challenge local Laya, face a model through TypeSafe, or watch Laya versus TypeSafe.
+- **Make it your experiment.** Adjust instructions, observations, available actions, and decision frequency in the built-in experiment lab.
+- **See more than the score.** Inspect action distributions, model responses, inference latency, and recorded matches.
+- **Keep the physics shared.** Every fighter uses the same movement, cooldowns, interactions, and combat rules.
+- **Bring some chaos.** Three arena layouts, throwable props, first-to-3/5/7 matches, and optional sudden death.
 
-Knock the opponent off the roof. First to **five** round wins takes the match.
-Simultaneous ring-outs draw. Players and props reset between rounds. Crates,
-chairs, and barrels are throwable. Heavy boxes are pushable cover. Yellow
-stripes mark open edges. The crosshair while holding a prop projects its initial
-ballistic path approximately six metres ahead; it is not target lock-on.
+## Choose your matchup
 
-Edit `Assets/StreamingAssets/game-config.json` and rebuild to change the target
-number of wins (1–20). There is no health bar: impacts create knockback and a
-brief loss of balance.
+| Mode | Who plays | What you need |
+|---|---|---|
+| **Play Laya** | You versus local Laya | Local Python setup and downloaded model weights; no API key |
+| **Play TypeSafe** | You versus a model available through TypeSafe | A TypeSafe API key and internet access |
+| **Watch AI** | Local Laya versus your selected TypeSafe model | Both of the above |
 
-## Open in Unity
+![IMPULSE matchup menu with local, cloud, and AI-versus-AI modes](docs/images/match-setup.jpg)
+
+TypeSafe models are discovered from your account in the setup screen. Cloud
+requests use your account's allowance. Keys stay in session memory and are
+excluded from saved settings and match exports. See [TypeSafe setup](TYPESAFE.md).
+
+## Get started
+
+The current build workflow targets **macOS**. The project was validated with
+**Unity 6000.4.0f1** and **Python 3.13**. The Mac build targets Apple Silicon and
+Intel; local inference uses the Apple GPU when available, with CPU support.
+Other platforms have not been validated.
+
+### 1. Get the project
+
+```sh
+git clone https://github.com/roby-avo/impulse.git
+cd impulse
+```
+
+Install Unity **6000.4.0f1** through Unity Hub with Mac build support, Python 3.13,
+and Xcode Command Line Tools (`xcode-select --install`) for the native Dock plugin.
+The repository contains source and game assets; generated app builds and model
+weights are not included.
+
+### 2. Set up local Laya
+
+```sh
+./ai/setup.sh
+```
+
+This creates a Python environment, installs pinned dependencies, and downloads
+the Laya checkpoint. After the initial download, local inference uses cached
+weights offline. You can skip this step for TypeSafe-only play.
+
+### 3. Launch
+
+Double-click **Play Physics Playground.command**, or run:
+
+```sh
+./Play\ Physics\ Playground.command
+```
+
+The launcher builds the Mac app if needed, starts the local Laya service when
+installed, and opens the game. Close the Unity editor before the first build.
+If Unity lives elsewhere, set `UNITY_EDITOR` to its executable path.
+
+Choose a matchup, select your rooftop, and press **Enter**. Start with
+**Learn the moves** for guided, unscored practice.
+
+> **Laya says “Service unavailable”?** Launch through the `.command` file so the
+> local service starts too, or run `./ai/start.sh` in a separate terminal. Opening
+> the built `.app` directly does not start Laya. The game retries automatically.
+> Use **Stop Local Laya.command** when you want to stop the background service.
+
+### Run in the Unity editor
 
 Open this folder in Unity Hub, open `Assets/Scenes/Rooftop.unity`, start
-`./ai/start.sh` in a terminal, and press Play. The scene's Arena component builds
-the same deterministic rooftop used by the app. URP, Input System, Cinemachine,
-and AI Navigation are configured and pinned in `Packages/manifest.json`.
+`./ai/start.sh` in a terminal, and press Play.
 
-All ten actions can be exercised through F1. Opening the panel suspends the
-model controller and marks practice. Closing it starts a fresh scored match.
-This manual panel is an execution diagnostic, never a fallback policy.
+## Play the game
 
-## Laya and fairness
+Knock your rival off the rooftop. There is no health bar: timing, positioning,
+and physical impacts decide the round. Fighters automatically face their rival,
+and throws aim automatically, so gameplay stays keyboard-only.
 
-Laya now uses Apple GPU acceleration on supported Macs, warms up before readiness,
-and reports its backend and request timing in the HUD. See
-[latency investigation](validation/LAYA_LATENCY.md) for measured results.
+| Key | Action |
+|---|---|
+| **WASD / arrows** | Move |
+| **Space** | Jump |
+| **Shift** | Dodge |
+| **E** | Grab or drop a prop |
+| **F** | Push, or throw a held prop |
+| **Enter** | Start the selected matchup |
+| **Escape** | Pause, change matchup, or adjust graphics |
+| **R** | Start a fresh match |
+| **H** | Show controls |
+| **Tab** (hold) | Match statistics |
+| **F4** | Model diagnostics |
+| **F2** | Experiment lab |
+| **F3** | Export and inspect a match |
 
-When Laya is selected, its tactical choices come **only** from locally running
-`convaiinnovations/laya`. The installed `laya==0.3.7` SDK is preloaded once, and its
-official HTTP interface binds to `127.0.0.1:8000`. Unity explicitly selects the
-English root checkpoint. Runtime defaults to offline cached weights.
+## Experiment with decisions
 
-Mechanical action filtering excludes throwing without an object, grabbing while
-holding one, pushes out of range/on cooldown, and unavailable jump/dodge actions.
-It never ranks tactics. NavMesh pathfinding only executes the target associated
-with Laya's selected action. Responses for old rounds or interrupted states are
-discarded. Service errors/timeouts produce neutral wait and retries; there is
-no random, rule-based, behavior-tree, or other-model replacement.
+The arena is also a small laboratory for curiosity. Try changing what a model
+can observe, rewriting an action's criteria, or changing the request frequency.
+Then inspect whether its choices, timing, and outcomes change.
 
-Human, Laya and TypeSafe use the same Fighter component, movement speed, jump, dodge,
-interaction ranges, push cooldown, mass and impact response. Inference latency
-is measured and shown; it is not concealed. This pretrained model has not been
-fine-tuned for the game, and its tactical choices can be repetitive or weak.
-Its confidence output is not validated game-specific calibration.
+**F2** opens experiment settings, action and observation schemas, and saved-match
+inspection. **F3** exports a match with a sampled spatial replay and per-decision
+details. Recordings include offered actions, model outputs, latency, execution,
+and outcomes. See [the experiment guide](EXPERIMENTS.md) for data definitions.
 
-See [ai/README.md](ai/README.md) for setup, offline inference, API details and
-`ai/.venv/bin/python ai/smoke_test.py`.
+**Keep comparisons in context:** this is an experimental game, not a standardized
+AI benchmark or a claim about general intelligence. Results depend on the
+instructions, observations, arena, model, and inference latency. Laya has not been
+fine-tuned for this game and can make repetitive or weak choices. Its confidence
+scores are not calibrated for gameplay. The TypeSafe integration has been checked
+with a local API contract fixture; live cloud performance is not established by
+those tests.
 
-## Telemetry
+## Under the hood
 
-On macOS, logs are saved under:
+The loop is straightforward: **observe the arena → ask the model → validate its
+chosen action → execute it through the shared fighter controller.**
 
-`~/Library/Application Support/Impulse/Physics Playground/Telemetry`
+Laya runs locally using the pinned `laya==0.3.7` SDK and the English
+`convaiinnovations/laya` checkpoint. A small HTTP service preloads and warms the
+model, runs inference on a dedicated worker, and reports health and timing.
+TypeSafe uses its System One API through the same game transport.
 
-Each match has JSONL records with state, offered actions, raw model probabilities,
-latency, execution times, outcome, interruptions and resulting state. Human
-jump/grab/drop/throw/push/dodge/impact and round events are recorded too.
-Completed matches append to `matches-v3.csv`, with explicit player identities. These event timestamps do **not**
-claim to measure human reaction time. F1 practice is explicitly marked in logs.
+Models select semantic actions. Game code handles movement and physical
+execution, filters mechanically impossible actions, and rejects stale replies.
+Errors produce neutral waiting and retries; another policy never secretly takes
+over a model's decisions.
 
-## Experiment platform and upgraded art
+| Area | Location |
+|---|---|
+| Model transport, perception, and action execution | `Assets/Scripts/AI/` |
+| Shared movement and combat | `Assets/Scripts/Characters/` |
+| Experiment settings and exports | `Assets/Scripts/Experiments/` |
+| Local Laya service and checks | `ai/` |
+| Editable Blender assets and generation script | `ArtSource/` |
+| Unity validation harnesses | `Assets/Tests/` and `Assets/Editor/` |
 
-Press **F2** to configure experiment IDs, request frequency, action/observation
-schemas and question instructions. Press **F3** to export and inspect a match
-with a sampled spatial replay and per-decision details. See
-[EXPERIMENTS.md](EXPERIMENTS.md) for profiles, data definitions and limitations.
+Original procedural meshes, synthesized sounds, and UI assets are documented in
+[asset provenance](ASSETS.md). Model weights and Unity dependencies retain their
+respective licenses and are not bundled in this repository.
 
-The robots, props, rooftop and skyline are original Blender meshes. Editable
-source and regeneration instructions are in [ArtSource/README.md](ArtSource/README.md).
-Physics continues to use the validated simple collision proxies.
+## Development and validation
 
-## Reproduce validation and build
-
-Close the editor first and leave `./ai/start.sh` running:
+With local Laya running and the Unity editor closed:
 
 ```sh
 scripts/unity-check.sh Playground.Editor.Validation.M7
-scripts/unity-check.sh Playground.Editor.LiveMatchLauncher.Run
+scripts/unity-check.sh Playground.Editor.KeyboardGameplayValidationLauncher.Run
 scripts/unity-check.sh Playground.Editor.ProjectSetup.BuildMac -quit
 ```
 
-`UNITY_EDITOR` overrides the Unity executable path. The default matches this Mac.
-Mac builds require Xcode Command Line Tools (`xcode-select --install`) to compile
-the small universal AppKit plugin from `Native/DockIcon.m`. The build invokes
-`scripts/build-dock-plugin.sh` automatically.
-M7 runs M1–M6 acceptance checks plus real-model experiment/schema/rate/export checks in actual Play Mode.
-The live match test supplies scripted **human** inputs and keeps the Laya side
-model-controlled. Test drivers are compiled only in the editor and are excluded
-from the player. Latest logs are in `validation/unity.log`.
+The repository includes validation reports for [keyboard gameplay](validation/KEYBOARD_GAMEPLAY.md),
+[combat](validation/GAMEPLAY_UPGRADE.md), [model decisions](validation/LAYA_DECISION_UPGRADE.md),
+[provider matchups](validation/MATCHUPS.md), and [local inference latency](validation/LAYA_LATENCY.md).
+These describe the tested configurations and their limitations.
 
-See [validation/ACCEPTANCE.md](validation/ACCEPTANCE.md) for evidence and
-[DEVELOPMENT_STATUS.md](DEVELOPMENT_STATUS.md) for the milestone status.
-Asset provenance is documented in [ASSETS.md](ASSETS.md).
+More detail: [local service](ai/README.md) · [experiments](EXPERIMENTS.md) ·
+[asset pipeline](ArtSource/README.md) · [development history](DEVELOPMENT_STATUS.md).
+
+---
+
+**Bring your curiosity. Change the decisions. See who stays on the roof.**

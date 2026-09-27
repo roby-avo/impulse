@@ -1,0 +1,2107 @@
+[
+  {
+    "variant": "conditions",
+    "scenario": "edge",
+    "expected_examples": [
+      "MOVE_TOWARD_SAFETY"
+    ],
+    "choice": "PUSH_OPPONENT",
+    "matches": false,
+    "request": {
+      "model": "english",
+      "state": {
+        "self": {
+          "distance_to_edge_m": 0.7,
+          "speed": 0,
+          "balance": 1,
+          "near_edge": true,
+          "holding_object": false,
+          "grounded": true,
+          "held_object_type": "none",
+          "push_ready_in": 0,
+          "dodge_ready_in": 0
+        },
+        "opponent": {
+          "distance_m": 2,
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "near_edge": false,
+          "holding_object": false,
+          "facing_self": true,
+          "held_object_type": "none",
+          "winding_up": false,
+          "recovering": false
+        },
+        "nearest_object": {
+          "type": "barrel",
+          "id": "barrel-3",
+          "mass_class": "heavy",
+          "distance_m": 2.3
+        },
+        "incoming_projectile": false,
+        "cover_available": true,
+        "previous_action": "none",
+        "previous_outcome": "idle",
+        "sudden_death": false
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Which action best fits the current situation?",
+          "criteria": {
+            "APPROACH_OPPONENT": "Enemy out of reach; no incoming attack; no nearby weapon.",
+            "RETREAT_FROM_OPPONENT": "Enemy close; my push cooling down; room to retreat.",
+            "PUSH_OPPONENT": "Enemy within reach; my push ready; enemy not attacking.",
+            "GRAB_NEAREST_OBJECT": "Empty hands; weapon nearby; enemy far away.",
+            "DODGE_LEFT": "Incoming attack; left side safe.",
+            "DODGE_RIGHT": "Incoming attack; right side safe.",
+            "MOVE_TOWARD_SAFETY": "Near an open edge or outside the safe boundary.",
+            "TAKE_COVER": "Enemy far away and holding a weapon; cover nearby.",
+            "JUMP": "Low obstacle blocking movement."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "PUSH_OPPONENT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.1532,
+            "RETREAT_FROM_OPPONENT": 0.1017,
+            "PUSH_OPPONENT": 0.1653,
+            "GRAB_NEAREST_OBJECT": 0.1214,
+            "DODGE_LEFT": 0.1358,
+            "DODGE_RIGHT": 0.0672,
+            "MOVE_TOWARD_SAFETY": 0.0777,
+            "TAKE_COVER": 0.1291,
+            "JUMP": 0.0485
+          },
+          "confidence": 0.028,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 416,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "conditions",
+    "scenario": "projectile",
+    "expected_examples": [
+      "DODGE_LEFT",
+      "DODGE_RIGHT",
+      "TAKE_COVER"
+    ],
+    "choice": "APPROACH_OPPONENT",
+    "matches": false,
+    "request": {
+      "model": "english",
+      "state": {
+        "self": {
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "balance": 1,
+          "near_edge": false,
+          "holding_object": false,
+          "grounded": true,
+          "held_object_type": "none",
+          "push_ready_in": 0,
+          "dodge_ready_in": 0
+        },
+        "opponent": {
+          "distance_m": 5,
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "near_edge": false,
+          "holding_object": false,
+          "facing_self": true,
+          "held_object_type": "none",
+          "winding_up": false,
+          "recovering": false
+        },
+        "nearest_object": {
+          "type": "barrel",
+          "id": "barrel-3",
+          "mass_class": "heavy",
+          "distance_m": 2.3
+        },
+        "incoming_projectile": true,
+        "cover_available": true,
+        "previous_action": "none",
+        "previous_outcome": "idle",
+        "sudden_death": false
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Which action best fits the current situation?",
+          "criteria": {
+            "APPROACH_OPPONENT": "Enemy out of reach; no incoming attack; no nearby weapon.",
+            "RETREAT_FROM_OPPONENT": "Enemy close; my push cooling down; room to retreat.",
+            "GRAB_NEAREST_OBJECT": "Empty hands; weapon nearby; enemy far away.",
+            "DODGE_LEFT": "Incoming attack; left side safe.",
+            "DODGE_RIGHT": "Incoming attack; right side safe.",
+            "MOVE_TOWARD_SAFETY": "Near an open edge or outside the safe boundary.",
+            "TAKE_COVER": "Enemy far away and holding a weapon; cover nearby.",
+            "JUMP": "Low obstacle blocking movement."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "APPROACH_OPPONENT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.1789,
+            "RETREAT_FROM_OPPONENT": 0.1575,
+            "GRAB_NEAREST_OBJECT": 0.156,
+            "DODGE_LEFT": 0.1661,
+            "DODGE_RIGHT": 0.0835,
+            "MOVE_TOWARD_SAFETY": 0.0787,
+            "TAKE_COVER": 0.128,
+            "JUMP": 0.0513
+          },
+          "confidence": 0.0334,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 392,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "conditions",
+    "scenario": "windup",
+    "expected_examples": [
+      "DODGE_LEFT",
+      "DODGE_RIGHT",
+      "RETREAT_FROM_OPPONENT"
+    ],
+    "choice": "PUSH_OPPONENT",
+    "matches": false,
+    "request": {
+      "model": "english",
+      "state": {
+        "self": {
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "balance": 1,
+          "near_edge": false,
+          "holding_object": false,
+          "grounded": true,
+          "held_object_type": "none",
+          "push_ready_in": 0,
+          "dodge_ready_in": 0
+        },
+        "opponent": {
+          "distance_m": 1.7,
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "near_edge": false,
+          "holding_object": false,
+          "facing_self": true,
+          "held_object_type": "none",
+          "winding_up": true,
+          "recovering": false
+        },
+        "nearest_object": {
+          "type": "barrel",
+          "id": "barrel-3",
+          "mass_class": "heavy",
+          "distance_m": 2.3
+        },
+        "incoming_projectile": false,
+        "cover_available": true,
+        "previous_action": "none",
+        "previous_outcome": "idle",
+        "sudden_death": false
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Which action best fits the current situation?",
+          "criteria": {
+            "APPROACH_OPPONENT": "Enemy out of reach; no incoming attack; no nearby weapon.",
+            "RETREAT_FROM_OPPONENT": "Enemy close; my push cooling down; room to retreat.",
+            "PUSH_OPPONENT": "Enemy within reach; my push ready; enemy not attacking.",
+            "GRAB_NEAREST_OBJECT": "Empty hands; weapon nearby; enemy far away.",
+            "DODGE_LEFT": "Incoming attack; left side safe.",
+            "DODGE_RIGHT": "Incoming attack; right side safe.",
+            "MOVE_TOWARD_SAFETY": "Near an open edge or outside the safe boundary.",
+            "TAKE_COVER": "Enemy far away and holding a weapon; cover nearby.",
+            "JUMP": "Low obstacle blocking movement."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "PUSH_OPPONENT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.1327,
+            "RETREAT_FROM_OPPONENT": 0.0996,
+            "PUSH_OPPONENT": 0.1593,
+            "GRAB_NEAREST_OBJECT": 0.1164,
+            "DODGE_LEFT": 0.1402,
+            "DODGE_RIGHT": 0.0772,
+            "MOVE_TOWARD_SAFETY": 0.0766,
+            "TAKE_COVER": 0.1502,
+            "JUMP": 0.0479
+          },
+          "confidence": 0.0257,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 416,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "conditions",
+    "scenario": "punish",
+    "expected_examples": [
+      "PUSH_OPPONENT"
+    ],
+    "choice": "PUSH_OPPONENT",
+    "matches": true,
+    "request": {
+      "model": "english",
+      "state": {
+        "self": {
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "balance": 1,
+          "near_edge": false,
+          "holding_object": false,
+          "grounded": true,
+          "held_object_type": "none",
+          "push_ready_in": 0,
+          "dodge_ready_in": 0
+        },
+        "opponent": {
+          "distance_m": 1.7,
+          "distance_to_edge_m": 1,
+          "speed": 0,
+          "near_edge": true,
+          "holding_object": false,
+          "facing_self": true,
+          "held_object_type": "none",
+          "winding_up": false,
+          "recovering": true
+        },
+        "nearest_object": {
+          "type": "barrel",
+          "id": "barrel-3",
+          "mass_class": "heavy",
+          "distance_m": 2.3
+        },
+        "incoming_projectile": false,
+        "cover_available": true,
+        "previous_action": "none",
+        "previous_outcome": "idle",
+        "sudden_death": false
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Which action best fits the current situation?",
+          "criteria": {
+            "APPROACH_OPPONENT": "Enemy out of reach; no incoming attack; no nearby weapon.",
+            "RETREAT_FROM_OPPONENT": "Enemy close; my push cooling down; room to retreat.",
+            "PUSH_OPPONENT": "Enemy within reach; my push ready; enemy not attacking.",
+            "GRAB_NEAREST_OBJECT": "Empty hands; weapon nearby; enemy far away.",
+            "DODGE_LEFT": "Incoming attack; left side safe.",
+            "DODGE_RIGHT": "Incoming attack; right side safe.",
+            "MOVE_TOWARD_SAFETY": "Near an open edge or outside the safe boundary.",
+            "TAKE_COVER": "Enemy far away and holding a weapon; cover nearby.",
+            "JUMP": "Low obstacle blocking movement."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "PUSH_OPPONENT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.1307,
+            "RETREAT_FROM_OPPONENT": 0.0992,
+            "PUSH_OPPONENT": 0.1597,
+            "GRAB_NEAREST_OBJECT": 0.1183,
+            "DODGE_LEFT": 0.1385,
+            "DODGE_RIGHT": 0.0724,
+            "MOVE_TOWARD_SAFETY": 0.0781,
+            "TAKE_COVER": 0.1523,
+            "JUMP": 0.0508
+          },
+          "confidence": 0.0253,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 416,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "conditions",
+    "scenario": "throw",
+    "expected_examples": [
+      "THROW_HELD_OBJECT_AT_OPPONENT"
+    ],
+    "choice": "TAKE_COVER",
+    "matches": false,
+    "request": {
+      "model": "english",
+      "state": {
+        "self": {
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "balance": 1,
+          "near_edge": false,
+          "holding_object": true,
+          "grounded": true,
+          "held_object_type": "barrel",
+          "push_ready_in": 0,
+          "dodge_ready_in": 0
+        },
+        "opponent": {
+          "distance_m": 5,
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "near_edge": false,
+          "holding_object": false,
+          "facing_self": true,
+          "held_object_type": "none",
+          "winding_up": false,
+          "recovering": false
+        },
+        "nearest_object": {
+          "type": "barrel",
+          "id": "barrel-3",
+          "mass_class": "heavy",
+          "distance_m": 2.3
+        },
+        "incoming_projectile": false,
+        "cover_available": true,
+        "previous_action": "none",
+        "previous_outcome": "idle",
+        "sudden_death": false
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Which action best fits the current situation?",
+          "criteria": {
+            "APPROACH_OPPONENT": "Enemy out of reach; no incoming attack; no nearby weapon.",
+            "RETREAT_FROM_OPPONENT": "Enemy close; my push cooling down; room to retreat.",
+            "THROW_HELD_OBJECT_AT_OPPONENT": "Holding a weapon; clear line to enemy.",
+            "DODGE_LEFT": "Incoming attack; left side safe.",
+            "DODGE_RIGHT": "Incoming attack; right side safe.",
+            "MOVE_TOWARD_SAFETY": "Near an open edge or outside the safe boundary.",
+            "TAKE_COVER": "Enemy far away and holding a weapon; cover nearby.",
+            "JUMP": "Low obstacle blocking movement."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "TAKE_COVER",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.1149,
+            "RETREAT_FROM_OPPONENT": 0.0979,
+            "THROW_HELD_OBJECT_AT_OPPONENT": 0.2081,
+            "DODGE_LEFT": 0.1084,
+            "DODGE_RIGHT": 0.0653,
+            "MOVE_TOWARD_SAFETY": 0.062,
+            "TAKE_COVER": 0.3046,
+            "JUMP": 0.0389
+          },
+          "confidence": 0.0947,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 398,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "conditions",
+    "scenario": "boundary",
+    "expected_examples": [
+      "MOVE_TOWARD_SAFETY"
+    ],
+    "choice": "DODGE_LEFT",
+    "matches": false,
+    "request": {
+      "model": "english",
+      "state": {
+        "self": {
+          "distance_to_edge_m": -0.2,
+          "speed": 0,
+          "balance": 1,
+          "near_edge": true,
+          "holding_object": false,
+          "grounded": true,
+          "held_object_type": "none",
+          "push_ready_in": 0,
+          "dodge_ready_in": 0
+        },
+        "opponent": {
+          "distance_m": 10,
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "near_edge": false,
+          "holding_object": false,
+          "facing_self": true,
+          "held_object_type": "none",
+          "winding_up": false,
+          "recovering": false
+        },
+        "nearest_object": {
+          "type": "barrel",
+          "id": "barrel-3",
+          "mass_class": "heavy",
+          "distance_m": 2.3
+        },
+        "incoming_projectile": false,
+        "cover_available": true,
+        "previous_action": "none",
+        "previous_outcome": "idle",
+        "sudden_death": true
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Which action best fits the current situation?",
+          "criteria": {
+            "APPROACH_OPPONENT": "Enemy out of reach; no incoming attack; no nearby weapon.",
+            "RETREAT_FROM_OPPONENT": "Enemy close; my push cooling down; room to retreat.",
+            "GRAB_NEAREST_OBJECT": "Empty hands; weapon nearby; enemy far away.",
+            "DODGE_LEFT": "Incoming attack; left side safe.",
+            "DODGE_RIGHT": "Incoming attack; right side safe.",
+            "MOVE_TOWARD_SAFETY": "Near an open edge or outside the safe boundary.",
+            "TAKE_COVER": "Enemy far away and holding a weapon; cover nearby.",
+            "JUMP": "Low obstacle blocking movement."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "DODGE_LEFT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.185,
+            "RETREAT_FROM_OPPONENT": 0.1179,
+            "GRAB_NEAREST_OBJECT": 0.1519,
+            "DODGE_LEFT": 0.1888,
+            "DODGE_RIGHT": 0.0915,
+            "MOVE_TOWARD_SAFETY": 0.0773,
+            "TAKE_COVER": 0.1288,
+            "JUMP": 0.0589
+          },
+          "confidence": 0.0321,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 395,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "conditions",
+    "scenario": "pickup",
+    "expected_examples": [
+      "GRAB_NEAREST_OBJECT",
+      "APPROACH_OPPONENT"
+    ],
+    "choice": "APPROACH_OPPONENT",
+    "matches": true,
+    "request": {
+      "model": "english",
+      "state": {
+        "self": {
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "balance": 1,
+          "near_edge": false,
+          "holding_object": false,
+          "grounded": true,
+          "held_object_type": "none",
+          "push_ready_in": 0,
+          "dodge_ready_in": 0
+        },
+        "opponent": {
+          "distance_m": 10,
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "near_edge": false,
+          "holding_object": false,
+          "facing_self": true,
+          "held_object_type": "none",
+          "winding_up": false,
+          "recovering": false
+        },
+        "nearest_object": {
+          "type": "barrel",
+          "id": "barrel-3",
+          "mass_class": "heavy",
+          "distance_m": 1.5
+        },
+        "incoming_projectile": false,
+        "cover_available": true,
+        "previous_action": "none",
+        "previous_outcome": "idle",
+        "sudden_death": false
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Which action best fits the current situation?",
+          "criteria": {
+            "APPROACH_OPPONENT": "Enemy out of reach; no incoming attack; no nearby weapon.",
+            "RETREAT_FROM_OPPONENT": "Enemy close; my push cooling down; room to retreat.",
+            "GRAB_NEAREST_OBJECT": "Empty hands; weapon nearby; enemy far away.",
+            "DODGE_LEFT": "Incoming attack; left side safe.",
+            "DODGE_RIGHT": "Incoming attack; right side safe.",
+            "MOVE_TOWARD_SAFETY": "Near an open edge or outside the safe boundary.",
+            "TAKE_COVER": "Enemy far away and holding a weapon; cover nearby.",
+            "JUMP": "Low obstacle blocking movement."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "APPROACH_OPPONENT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.1746,
+            "RETREAT_FROM_OPPONENT": 0.1546,
+            "GRAB_NEAREST_OBJECT": 0.1654,
+            "DODGE_LEFT": 0.1549,
+            "DODGE_RIGHT": 0.0845,
+            "MOVE_TOWARD_SAFETY": 0.0789,
+            "TAKE_COVER": 0.1367,
+            "JUMP": 0.0504
+          },
+          "confidence": 0.0326,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 392,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "conditions",
+    "scenario": "chase",
+    "expected_examples": [
+      "APPROACH_OPPONENT"
+    ],
+    "choice": "APPROACH_OPPONENT",
+    "matches": true,
+    "request": {
+      "model": "english",
+      "state": {
+        "self": {
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "balance": 1,
+          "near_edge": false,
+          "holding_object": false,
+          "grounded": true,
+          "held_object_type": "none",
+          "push_ready_in": 0,
+          "dodge_ready_in": 0
+        },
+        "opponent": {
+          "distance_m": 5,
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "near_edge": false,
+          "holding_object": false,
+          "facing_self": true,
+          "held_object_type": "none",
+          "winding_up": false,
+          "recovering": false
+        },
+        "nearest_object": {
+          "type": "barrel",
+          "id": "barrel-3",
+          "mass_class": "heavy",
+          "distance_m": 8
+        },
+        "incoming_projectile": false,
+        "cover_available": true,
+        "previous_action": "none",
+        "previous_outcome": "idle",
+        "sudden_death": false
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Which action best fits the current situation?",
+          "criteria": {
+            "APPROACH_OPPONENT": "Enemy out of reach; no incoming attack; no nearby weapon.",
+            "RETREAT_FROM_OPPONENT": "Enemy close; my push cooling down; room to retreat.",
+            "GRAB_NEAREST_OBJECT": "Empty hands; weapon nearby; enemy far away.",
+            "DODGE_LEFT": "Incoming attack; left side safe.",
+            "DODGE_RIGHT": "Incoming attack; right side safe.",
+            "MOVE_TOWARD_SAFETY": "Near an open edge or outside the safe boundary.",
+            "TAKE_COVER": "Enemy far away and holding a weapon; cover nearby.",
+            "JUMP": "Low obstacle blocking movement."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "APPROACH_OPPONENT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.1876,
+            "RETREAT_FROM_OPPONENT": 0.1326,
+            "GRAB_NEAREST_OBJECT": 0.1554,
+            "DODGE_LEFT": 0.1537,
+            "DODGE_RIGHT": 0.0829,
+            "MOVE_TOWARD_SAFETY": 0.0821,
+            "TAKE_COVER": 0.1511,
+            "JUMP": 0.0547
+          },
+          "confidence": 0.031,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 390,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "conditions_facts",
+    "scenario": "edge",
+    "expected_examples": [
+      "MOVE_TOWARD_SAFETY"
+    ],
+    "choice": "PUSH_OPPONENT",
+    "matches": false,
+    "request": {
+      "model": "english",
+      "state": {
+        "situation": "I am dangerously close to falling off the roof. The enemy is within pushing range."
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Which action best fits the current situation?",
+          "criteria": {
+            "APPROACH_OPPONENT": "Enemy out of reach; no incoming attack; no nearby weapon.",
+            "RETREAT_FROM_OPPONENT": "Enemy close; my push cooling down; room to retreat.",
+            "PUSH_OPPONENT": "Enemy within reach; my push ready; enemy not attacking.",
+            "GRAB_NEAREST_OBJECT": "Empty hands; weapon nearby; enemy far away.",
+            "DODGE_LEFT": "Incoming attack; left side safe.",
+            "DODGE_RIGHT": "Incoming attack; right side safe.",
+            "MOVE_TOWARD_SAFETY": "Near an open edge or outside the safe boundary.",
+            "TAKE_COVER": "Enemy far away and holding a weapon; cover nearby.",
+            "JUMP": "Low obstacle blocking movement."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "PUSH_OPPONENT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.0623,
+            "RETREAT_FROM_OPPONENT": 0.0647,
+            "PUSH_OPPONENT": 0.5127,
+            "GRAB_NEAREST_OBJECT": 0.0273,
+            "DODGE_LEFT": 0.0618,
+            "DODGE_RIGHT": 0.0424,
+            "MOVE_TOWARD_SAFETY": 0.1231,
+            "TAKE_COVER": 0.038,
+            "JUMP": 0.0675
+          },
+          "confidence": 0.2439,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 210,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "conditions_facts",
+    "scenario": "projectile",
+    "expected_examples": [
+      "DODGE_LEFT",
+      "DODGE_RIGHT",
+      "TAKE_COVER"
+    ],
+    "choice": "JUMP",
+    "matches": false,
+    "request": {
+      "model": "english",
+      "state": {
+        "situation": "A fast thrown object is flying toward me and will hit me soon. The enemy is five meters away."
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Which action best fits the current situation?",
+          "criteria": {
+            "APPROACH_OPPONENT": "Enemy out of reach; no incoming attack; no nearby weapon.",
+            "RETREAT_FROM_OPPONENT": "Enemy close; my push cooling down; room to retreat.",
+            "GRAB_NEAREST_OBJECT": "Empty hands; weapon nearby; enemy far away.",
+            "DODGE_LEFT": "Incoming attack; left side safe.",
+            "DODGE_RIGHT": "Incoming attack; right side safe.",
+            "MOVE_TOWARD_SAFETY": "Near an open edge or outside the safe boundary.",
+            "TAKE_COVER": "Enemy far away and holding a weapon; cover nearby.",
+            "JUMP": "Low obstacle blocking movement."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "JUMP",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.0382,
+            "RETREAT_FROM_OPPONENT": 0.0724,
+            "GRAB_NEAREST_OBJECT": 0.0239,
+            "DODGE_LEFT": 0.0335,
+            "DODGE_RIGHT": 0.0367,
+            "MOVE_TOWARD_SAFETY": 0.0245,
+            "TAKE_COVER": 0.0381,
+            "JUMP": 0.7328
+          },
+          "confidence": 0.4796,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 191,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "conditions_facts",
+    "scenario": "windup",
+    "expected_examples": [
+      "DODGE_LEFT",
+      "DODGE_RIGHT",
+      "RETREAT_FROM_OPPONENT"
+    ],
+    "choice": "JUMP",
+    "matches": false,
+    "request": {
+      "model": "english",
+      "state": {
+        "situation": "The enemy is right in front of me, winding up a shove that will hit me in 0.2 seconds."
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Which action best fits the current situation?",
+          "criteria": {
+            "APPROACH_OPPONENT": "Enemy out of reach; no incoming attack; no nearby weapon.",
+            "RETREAT_FROM_OPPONENT": "Enemy close; my push cooling down; room to retreat.",
+            "PUSH_OPPONENT": "Enemy within reach; my push ready; enemy not attacking.",
+            "GRAB_NEAREST_OBJECT": "Empty hands; weapon nearby; enemy far away.",
+            "DODGE_LEFT": "Incoming attack; left side safe.",
+            "DODGE_RIGHT": "Incoming attack; right side safe.",
+            "MOVE_TOWARD_SAFETY": "Near an open edge or outside the safe boundary.",
+            "TAKE_COVER": "Enemy far away and holding a weapon; cover nearby.",
+            "JUMP": "Low obstacle blocking movement."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "JUMP",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.0419,
+            "RETREAT_FROM_OPPONENT": 0.1845,
+            "PUSH_OPPONENT": 0.171,
+            "GRAB_NEAREST_OBJECT": 0.0092,
+            "DODGE_LEFT": 0.1058,
+            "DODGE_RIGHT": 0.1428,
+            "MOVE_TOWARD_SAFETY": 0.0549,
+            "TAKE_COVER": 0.0284,
+            "JUMP": 0.2616
+          },
+          "confidence": 0.1277,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 216,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "conditions_facts",
+    "scenario": "punish",
+    "expected_examples": [
+      "PUSH_OPPONENT"
+    ],
+    "choice": "PUSH_OPPONENT",
+    "matches": true,
+    "request": {
+      "model": "english",
+      "state": {
+        "situation": "The enemy is within pushing range, recovering after an attack, with an open edge behind them. My shove is ready."
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Which action best fits the current situation?",
+          "criteria": {
+            "APPROACH_OPPONENT": "Enemy out of reach; no incoming attack; no nearby weapon.",
+            "RETREAT_FROM_OPPONENT": "Enemy close; my push cooling down; room to retreat.",
+            "PUSH_OPPONENT": "Enemy within reach; my push ready; enemy not attacking.",
+            "GRAB_NEAREST_OBJECT": "Empty hands; weapon nearby; enemy far away.",
+            "DODGE_LEFT": "Incoming attack; left side safe.",
+            "DODGE_RIGHT": "Incoming attack; right side safe.",
+            "MOVE_TOWARD_SAFETY": "Near an open edge or outside the safe boundary.",
+            "TAKE_COVER": "Enemy far away and holding a weapon; cover nearby.",
+            "JUMP": "Low obstacle blocking movement."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "PUSH_OPPONENT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.005,
+            "RETREAT_FROM_OPPONENT": 0.0028,
+            "PUSH_OPPONENT": 0.963,
+            "GRAB_NEAREST_OBJECT": 0.0007,
+            "DODGE_LEFT": 0.0015,
+            "DODGE_RIGHT": 0.0045,
+            "MOVE_TOWARD_SAFETY": 0.021,
+            "TAKE_COVER": 0.0007,
+            "JUMP": 0.0008
+          },
+          "confidence": 0.9044,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 217,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "conditions_facts",
+    "scenario": "throw",
+    "expected_examples": [
+      "THROW_HELD_OBJECT_AT_OPPONENT"
+    ],
+    "choice": "TAKE_COVER",
+    "matches": false,
+    "request": {
+      "model": "english",
+      "state": {
+        "situation": "I am holding a barrel. The enemy is five meters away with a clear throwing lane."
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Which action best fits the current situation?",
+          "criteria": {
+            "APPROACH_OPPONENT": "Enemy out of reach; no incoming attack; no nearby weapon.",
+            "RETREAT_FROM_OPPONENT": "Enemy close; my push cooling down; room to retreat.",
+            "THROW_HELD_OBJECT_AT_OPPONENT": "Holding a weapon; clear line to enemy.",
+            "DODGE_LEFT": "Incoming attack; left side safe.",
+            "DODGE_RIGHT": "Incoming attack; right side safe.",
+            "MOVE_TOWARD_SAFETY": "Near an open edge or outside the safe boundary.",
+            "TAKE_COVER": "Enemy far away and holding a weapon; cover nearby.",
+            "JUMP": "Low obstacle blocking movement."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "TAKE_COVER",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.0391,
+            "RETREAT_FROM_OPPONENT": 0.036,
+            "THROW_HELD_OBJECT_AT_OPPONENT": 0.3159,
+            "DODGE_LEFT": 0.0284,
+            "DODGE_RIGHT": 0.0242,
+            "MOVE_TOWARD_SAFETY": 0.0286,
+            "TAKE_COVER": 0.5182,
+            "JUMP": 0.0097
+          },
+          "confidence": 0.3803,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 193,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "conditions_facts",
+    "scenario": "boundary",
+    "expected_examples": [
+      "MOVE_TOWARD_SAFETY"
+    ],
+    "choice": "MOVE_TOWARD_SAFETY",
+    "matches": true,
+    "request": {
+      "model": "english",
+      "state": {
+        "situation": "I am outside the shrinking safe boundary and about to lose the round."
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Which action best fits the current situation?",
+          "criteria": {
+            "APPROACH_OPPONENT": "Enemy out of reach; no incoming attack; no nearby weapon.",
+            "RETREAT_FROM_OPPONENT": "Enemy close; my push cooling down; room to retreat.",
+            "GRAB_NEAREST_OBJECT": "Empty hands; weapon nearby; enemy far away.",
+            "DODGE_LEFT": "Incoming attack; left side safe.",
+            "DODGE_RIGHT": "Incoming attack; right side safe.",
+            "MOVE_TOWARD_SAFETY": "Near an open edge or outside the safe boundary.",
+            "TAKE_COVER": "Enemy far away and holding a weapon; cover nearby.",
+            "JUMP": "Low obstacle blocking movement."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "MOVE_TOWARD_SAFETY",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.1563,
+            "RETREAT_FROM_OPPONENT": 0.1865,
+            "GRAB_NEAREST_OBJECT": 0.0388,
+            "DODGE_LEFT": 0.1658,
+            "DODGE_RIGHT": 0.0781,
+            "MOVE_TOWARD_SAFETY": 0.2902,
+            "TAKE_COVER": 0.0503,
+            "JUMP": 0.0339
+          },
+          "confidence": 0.11,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 184,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "conditions_facts",
+    "scenario": "pickup",
+    "expected_examples": [
+      "GRAB_NEAREST_OBJECT",
+      "APPROACH_OPPONENT"
+    ],
+    "choice": "APPROACH_OPPONENT",
+    "matches": true,
+    "request": {
+      "model": "english",
+      "state": {
+        "situation": "The enemy is ten meters away. A throwable barrel is within my reach. I am empty handed and away from edges."
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Which action best fits the current situation?",
+          "criteria": {
+            "APPROACH_OPPONENT": "Enemy out of reach; no incoming attack; no nearby weapon.",
+            "RETREAT_FROM_OPPONENT": "Enemy close; my push cooling down; room to retreat.",
+            "GRAB_NEAREST_OBJECT": "Empty hands; weapon nearby; enemy far away.",
+            "DODGE_LEFT": "Incoming attack; left side safe.",
+            "DODGE_RIGHT": "Incoming attack; right side safe.",
+            "MOVE_TOWARD_SAFETY": "Near an open edge or outside the safe boundary.",
+            "TAKE_COVER": "Enemy far away and holding a weapon; cover nearby.",
+            "JUMP": "Low obstacle blocking movement."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "APPROACH_OPPONENT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.216,
+            "RETREAT_FROM_OPPONENT": 0.1558,
+            "GRAB_NEAREST_OBJECT": 0.1801,
+            "DODGE_LEFT": 0.0885,
+            "DODGE_RIGHT": 0.0456,
+            "MOVE_TOWARD_SAFETY": 0.0916,
+            "TAKE_COVER": 0.1574,
+            "JUMP": 0.065
+          },
+          "confidence": 0.0515,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 195,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "conditions_facts",
+    "scenario": "chase",
+    "expected_examples": [
+      "APPROACH_OPPONENT"
+    ],
+    "choice": "MOVE_TOWARD_SAFETY",
+    "matches": false,
+    "request": {
+      "model": "english",
+      "state": {
+        "situation": "The enemy is five meters away. I am empty handed and away from edges. The nearest throwable object is eight meters away."
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Which action best fits the current situation?",
+          "criteria": {
+            "APPROACH_OPPONENT": "Enemy out of reach; no incoming attack; no nearby weapon.",
+            "RETREAT_FROM_OPPONENT": "Enemy close; my push cooling down; room to retreat.",
+            "GRAB_NEAREST_OBJECT": "Empty hands; weapon nearby; enemy far away.",
+            "DODGE_LEFT": "Incoming attack; left side safe.",
+            "DODGE_RIGHT": "Incoming attack; right side safe.",
+            "MOVE_TOWARD_SAFETY": "Near an open edge or outside the safe boundary.",
+            "TAKE_COVER": "Enemy far away and holding a weapon; cover nearby.",
+            "JUMP": "Low obstacle blocking movement."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "MOVE_TOWARD_SAFETY",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.1282,
+            "RETREAT_FROM_OPPONENT": 0.0811,
+            "GRAB_NEAREST_OBJECT": 0.2219,
+            "DODGE_LEFT": 0.0554,
+            "DODGE_RIGHT": 0.0302,
+            "MOVE_TOWARD_SAFETY": 0.2527,
+            "TAKE_COVER": 0.1257,
+            "JUMP": 0.1048
+          },
+          "confidence": 0.0806,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 196,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "priority",
+    "scenario": "edge",
+    "expected_examples": [
+      "MOVE_TOWARD_SAFETY"
+    ],
+    "choice": "PUSH_OPPONENT",
+    "matches": false,
+    "request": {
+      "model": "english",
+      "state": {
+        "self": {
+          "distance_to_edge_m": 0.7,
+          "speed": 0,
+          "balance": 1,
+          "near_edge": true,
+          "holding_object": false,
+          "grounded": true,
+          "held_object_type": "none",
+          "push_ready_in": 0,
+          "dodge_ready_in": 0
+        },
+        "opponent": {
+          "distance_m": 2,
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "near_edge": false,
+          "holding_object": false,
+          "facing_self": true,
+          "held_object_type": "none",
+          "winding_up": false,
+          "recovering": false
+        },
+        "nearest_object": {
+          "type": "barrel",
+          "id": "barrel-3",
+          "mass_class": "heavy",
+          "distance_m": 2.3
+        },
+        "incoming_projectile": false,
+        "cover_available": true,
+        "previous_action": "none",
+        "previous_outcome": "idle",
+        "sudden_death": false
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Survive the edge first. Dodge imminent attacks. Otherwise attack: push a close enemy, throw a held weapon, collect a nearby weapon, or approach.",
+          "criteria": {
+            "APPROACH_OPPONENT": "Enemy out of reach; no incoming attack; no nearby weapon.",
+            "RETREAT_FROM_OPPONENT": "Enemy close; my push cooling down; room to retreat.",
+            "PUSH_OPPONENT": "Enemy within reach; my push ready; enemy not attacking.",
+            "GRAB_NEAREST_OBJECT": "Empty hands; weapon nearby; enemy far away.",
+            "DODGE_LEFT": "Incoming attack; left side safe.",
+            "DODGE_RIGHT": "Incoming attack; right side safe.",
+            "MOVE_TOWARD_SAFETY": "Near an open edge or outside the safe boundary.",
+            "TAKE_COVER": "Enemy far away and holding a weapon; cover nearby.",
+            "JUMP": "Low obstacle blocking movement."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "PUSH_OPPONENT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.1068,
+            "RETREAT_FROM_OPPONENT": 0.1052,
+            "PUSH_OPPONENT": 0.1613,
+            "GRAB_NEAREST_OBJECT": 0.1068,
+            "DODGE_LEFT": 0.1543,
+            "DODGE_RIGHT": 0.0801,
+            "MOVE_TOWARD_SAFETY": 0.0998,
+            "TAKE_COVER": 0.1201,
+            "JUMP": 0.0657
+          },
+          "confidence": 0.0157,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 439,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "priority",
+    "scenario": "projectile",
+    "expected_examples": [
+      "DODGE_LEFT",
+      "DODGE_RIGHT",
+      "TAKE_COVER"
+    ],
+    "choice": "DODGE_LEFT",
+    "matches": true,
+    "request": {
+      "model": "english",
+      "state": {
+        "self": {
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "balance": 1,
+          "near_edge": false,
+          "holding_object": false,
+          "grounded": true,
+          "held_object_type": "none",
+          "push_ready_in": 0,
+          "dodge_ready_in": 0
+        },
+        "opponent": {
+          "distance_m": 5,
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "near_edge": false,
+          "holding_object": false,
+          "facing_self": true,
+          "held_object_type": "none",
+          "winding_up": false,
+          "recovering": false
+        },
+        "nearest_object": {
+          "type": "barrel",
+          "id": "barrel-3",
+          "mass_class": "heavy",
+          "distance_m": 2.3
+        },
+        "incoming_projectile": true,
+        "cover_available": true,
+        "previous_action": "none",
+        "previous_outcome": "idle",
+        "sudden_death": false
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Survive the edge first. Dodge imminent attacks. Otherwise attack: push a close enemy, throw a held weapon, collect a nearby weapon, or approach.",
+          "criteria": {
+            "APPROACH_OPPONENT": "Enemy out of reach; no incoming attack; no nearby weapon.",
+            "RETREAT_FROM_OPPONENT": "Enemy close; my push cooling down; room to retreat.",
+            "GRAB_NEAREST_OBJECT": "Empty hands; weapon nearby; enemy far away.",
+            "DODGE_LEFT": "Incoming attack; left side safe.",
+            "DODGE_RIGHT": "Incoming attack; right side safe.",
+            "MOVE_TOWARD_SAFETY": "Near an open edge or outside the safe boundary.",
+            "TAKE_COVER": "Enemy far away and holding a weapon; cover nearby.",
+            "JUMP": "Low obstacle blocking movement."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "DODGE_LEFT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.1085,
+            "RETREAT_FROM_OPPONENT": 0.1591,
+            "GRAB_NEAREST_OBJECT": 0.1346,
+            "DODGE_LEFT": 0.2056,
+            "DODGE_RIGHT": 0.0909,
+            "MOVE_TOWARD_SAFETY": 0.105,
+            "TAKE_COVER": 0.1329,
+            "JUMP": 0.0633
+          },
+          "confidence": 0.0256,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 415,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "priority",
+    "scenario": "windup",
+    "expected_examples": [
+      "DODGE_LEFT",
+      "DODGE_RIGHT",
+      "RETREAT_FROM_OPPONENT"
+    ],
+    "choice": "PUSH_OPPONENT",
+    "matches": false,
+    "request": {
+      "model": "english",
+      "state": {
+        "self": {
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "balance": 1,
+          "near_edge": false,
+          "holding_object": false,
+          "grounded": true,
+          "held_object_type": "none",
+          "push_ready_in": 0,
+          "dodge_ready_in": 0
+        },
+        "opponent": {
+          "distance_m": 1.7,
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "near_edge": false,
+          "holding_object": false,
+          "facing_self": true,
+          "held_object_type": "none",
+          "winding_up": true,
+          "recovering": false
+        },
+        "nearest_object": {
+          "type": "barrel",
+          "id": "barrel-3",
+          "mass_class": "heavy",
+          "distance_m": 2.3
+        },
+        "incoming_projectile": false,
+        "cover_available": true,
+        "previous_action": "none",
+        "previous_outcome": "idle",
+        "sudden_death": false
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Survive the edge first. Dodge imminent attacks. Otherwise attack: push a close enemy, throw a held weapon, collect a nearby weapon, or approach.",
+          "criteria": {
+            "APPROACH_OPPONENT": "Enemy out of reach; no incoming attack; no nearby weapon.",
+            "RETREAT_FROM_OPPONENT": "Enemy close; my push cooling down; room to retreat.",
+            "PUSH_OPPONENT": "Enemy within reach; my push ready; enemy not attacking.",
+            "GRAB_NEAREST_OBJECT": "Empty hands; weapon nearby; enemy far away.",
+            "DODGE_LEFT": "Incoming attack; left side safe.",
+            "DODGE_RIGHT": "Incoming attack; right side safe.",
+            "MOVE_TOWARD_SAFETY": "Near an open edge or outside the safe boundary.",
+            "TAKE_COVER": "Enemy far away and holding a weapon; cover nearby.",
+            "JUMP": "Low obstacle blocking movement."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "PUSH_OPPONENT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.0991,
+            "RETREAT_FROM_OPPONENT": 0.1022,
+            "PUSH_OPPONENT": 0.1661,
+            "GRAB_NEAREST_OBJECT": 0.1013,
+            "DODGE_LEFT": 0.1617,
+            "DODGE_RIGHT": 0.0848,
+            "MOVE_TOWARD_SAFETY": 0.0952,
+            "TAKE_COVER": 0.127,
+            "JUMP": 0.0625
+          },
+          "confidence": 0.019,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 439,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "priority",
+    "scenario": "punish",
+    "expected_examples": [
+      "PUSH_OPPONENT"
+    ],
+    "choice": "PUSH_OPPONENT",
+    "matches": true,
+    "request": {
+      "model": "english",
+      "state": {
+        "self": {
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "balance": 1,
+          "near_edge": false,
+          "holding_object": false,
+          "grounded": true,
+          "held_object_type": "none",
+          "push_ready_in": 0,
+          "dodge_ready_in": 0
+        },
+        "opponent": {
+          "distance_m": 1.7,
+          "distance_to_edge_m": 1,
+          "speed": 0,
+          "near_edge": true,
+          "holding_object": false,
+          "facing_self": true,
+          "held_object_type": "none",
+          "winding_up": false,
+          "recovering": true
+        },
+        "nearest_object": {
+          "type": "barrel",
+          "id": "barrel-3",
+          "mass_class": "heavy",
+          "distance_m": 2.3
+        },
+        "incoming_projectile": false,
+        "cover_available": true,
+        "previous_action": "none",
+        "previous_outcome": "idle",
+        "sudden_death": false
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Survive the edge first. Dodge imminent attacks. Otherwise attack: push a close enemy, throw a held weapon, collect a nearby weapon, or approach.",
+          "criteria": {
+            "APPROACH_OPPONENT": "Enemy out of reach; no incoming attack; no nearby weapon.",
+            "RETREAT_FROM_OPPONENT": "Enemy close; my push cooling down; room to retreat.",
+            "PUSH_OPPONENT": "Enemy within reach; my push ready; enemy not attacking.",
+            "GRAB_NEAREST_OBJECT": "Empty hands; weapon nearby; enemy far away.",
+            "DODGE_LEFT": "Incoming attack; left side safe.",
+            "DODGE_RIGHT": "Incoming attack; right side safe.",
+            "MOVE_TOWARD_SAFETY": "Near an open edge or outside the safe boundary.",
+            "TAKE_COVER": "Enemy far away and holding a weapon; cover nearby.",
+            "JUMP": "Low obstacle blocking movement."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "PUSH_OPPONENT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.1003,
+            "RETREAT_FROM_OPPONENT": 0.1011,
+            "PUSH_OPPONENT": 0.1667,
+            "GRAB_NEAREST_OBJECT": 0.1001,
+            "DODGE_LEFT": 0.163,
+            "DODGE_RIGHT": 0.0815,
+            "MOVE_TOWARD_SAFETY": 0.0956,
+            "TAKE_COVER": 0.1278,
+            "JUMP": 0.0639
+          },
+          "confidence": 0.0194,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 439,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "priority",
+    "scenario": "throw",
+    "expected_examples": [
+      "THROW_HELD_OBJECT_AT_OPPONENT"
+    ],
+    "choice": "TAKE_COVER",
+    "matches": false,
+    "request": {
+      "model": "english",
+      "state": {
+        "self": {
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "balance": 1,
+          "near_edge": false,
+          "holding_object": true,
+          "grounded": true,
+          "held_object_type": "barrel",
+          "push_ready_in": 0,
+          "dodge_ready_in": 0
+        },
+        "opponent": {
+          "distance_m": 5,
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "near_edge": false,
+          "holding_object": false,
+          "facing_self": true,
+          "held_object_type": "none",
+          "winding_up": false,
+          "recovering": false
+        },
+        "nearest_object": {
+          "type": "barrel",
+          "id": "barrel-3",
+          "mass_class": "heavy",
+          "distance_m": 2.3
+        },
+        "incoming_projectile": false,
+        "cover_available": true,
+        "previous_action": "none",
+        "previous_outcome": "idle",
+        "sudden_death": false
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Survive the edge first. Dodge imminent attacks. Otherwise attack: push a close enemy, throw a held weapon, collect a nearby weapon, or approach.",
+          "criteria": {
+            "APPROACH_OPPONENT": "Enemy out of reach; no incoming attack; no nearby weapon.",
+            "RETREAT_FROM_OPPONENT": "Enemy close; my push cooling down; room to retreat.",
+            "THROW_HELD_OBJECT_AT_OPPONENT": "Holding a weapon; clear line to enemy.",
+            "DODGE_LEFT": "Incoming attack; left side safe.",
+            "DODGE_RIGHT": "Incoming attack; right side safe.",
+            "MOVE_TOWARD_SAFETY": "Near an open edge or outside the safe boundary.",
+            "TAKE_COVER": "Enemy far away and holding a weapon; cover nearby.",
+            "JUMP": "Low obstacle blocking movement."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "TAKE_COVER",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.1063,
+            "RETREAT_FROM_OPPONENT": 0.1203,
+            "THROW_HELD_OBJECT_AT_OPPONENT": 0.1278,
+            "DODGE_LEFT": 0.1802,
+            "DODGE_RIGHT": 0.0959,
+            "MOVE_TOWARD_SAFETY": 0.1097,
+            "TAKE_COVER": 0.2036,
+            "JUMP": 0.0564
+          },
+          "confidence": 0.0295,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 421,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "priority",
+    "scenario": "boundary",
+    "expected_examples": [
+      "MOVE_TOWARD_SAFETY"
+    ],
+    "choice": "DODGE_LEFT",
+    "matches": false,
+    "request": {
+      "model": "english",
+      "state": {
+        "self": {
+          "distance_to_edge_m": -0.2,
+          "speed": 0,
+          "balance": 1,
+          "near_edge": true,
+          "holding_object": false,
+          "grounded": true,
+          "held_object_type": "none",
+          "push_ready_in": 0,
+          "dodge_ready_in": 0
+        },
+        "opponent": {
+          "distance_m": 10,
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "near_edge": false,
+          "holding_object": false,
+          "facing_self": true,
+          "held_object_type": "none",
+          "winding_up": false,
+          "recovering": false
+        },
+        "nearest_object": {
+          "type": "barrel",
+          "id": "barrel-3",
+          "mass_class": "heavy",
+          "distance_m": 2.3
+        },
+        "incoming_projectile": false,
+        "cover_available": true,
+        "previous_action": "none",
+        "previous_outcome": "idle",
+        "sudden_death": true
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Survive the edge first. Dodge imminent attacks. Otherwise attack: push a close enemy, throw a held weapon, collect a nearby weapon, or approach.",
+          "criteria": {
+            "APPROACH_OPPONENT": "Enemy out of reach; no incoming attack; no nearby weapon.",
+            "RETREAT_FROM_OPPONENT": "Enemy close; my push cooling down; room to retreat.",
+            "GRAB_NEAREST_OBJECT": "Empty hands; weapon nearby; enemy far away.",
+            "DODGE_LEFT": "Incoming attack; left side safe.",
+            "DODGE_RIGHT": "Incoming attack; right side safe.",
+            "MOVE_TOWARD_SAFETY": "Near an open edge or outside the safe boundary.",
+            "TAKE_COVER": "Enemy far away and holding a weapon; cover nearby.",
+            "JUMP": "Low obstacle blocking movement."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "DODGE_LEFT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.1086,
+            "RETREAT_FROM_OPPONENT": 0.1396,
+            "GRAB_NEAREST_OBJECT": 0.1399,
+            "DODGE_LEFT": 0.2145,
+            "DODGE_RIGHT": 0.0961,
+            "MOVE_TOWARD_SAFETY": 0.1042,
+            "TAKE_COVER": 0.1316,
+            "JUMP": 0.0656
+          },
+          "confidence": 0.0249,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 418,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "priority",
+    "scenario": "pickup",
+    "expected_examples": [
+      "GRAB_NEAREST_OBJECT",
+      "APPROACH_OPPONENT"
+    ],
+    "choice": "DODGE_LEFT",
+    "matches": false,
+    "request": {
+      "model": "english",
+      "state": {
+        "self": {
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "balance": 1,
+          "near_edge": false,
+          "holding_object": false,
+          "grounded": true,
+          "held_object_type": "none",
+          "push_ready_in": 0,
+          "dodge_ready_in": 0
+        },
+        "opponent": {
+          "distance_m": 10,
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "near_edge": false,
+          "holding_object": false,
+          "facing_self": true,
+          "held_object_type": "none",
+          "winding_up": false,
+          "recovering": false
+        },
+        "nearest_object": {
+          "type": "barrel",
+          "id": "barrel-3",
+          "mass_class": "heavy",
+          "distance_m": 1.5
+        },
+        "incoming_projectile": false,
+        "cover_available": true,
+        "previous_action": "none",
+        "previous_outcome": "idle",
+        "sudden_death": false
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Survive the edge first. Dodge imminent attacks. Otherwise attack: push a close enemy, throw a held weapon, collect a nearby weapon, or approach.",
+          "criteria": {
+            "APPROACH_OPPONENT": "Enemy out of reach; no incoming attack; no nearby weapon.",
+            "RETREAT_FROM_OPPONENT": "Enemy close; my push cooling down; room to retreat.",
+            "GRAB_NEAREST_OBJECT": "Empty hands; weapon nearby; enemy far away.",
+            "DODGE_LEFT": "Incoming attack; left side safe.",
+            "DODGE_RIGHT": "Incoming attack; right side safe.",
+            "MOVE_TOWARD_SAFETY": "Near an open edge or outside the safe boundary.",
+            "TAKE_COVER": "Enemy far away and holding a weapon; cover nearby.",
+            "JUMP": "Low obstacle blocking movement."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "DODGE_LEFT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.1083,
+            "RETREAT_FROM_OPPONENT": 0.1541,
+            "GRAB_NEAREST_OBJECT": 0.1448,
+            "DODGE_LEFT": 0.193,
+            "DODGE_RIGHT": 0.0927,
+            "MOVE_TOWARD_SAFETY": 0.1025,
+            "TAKE_COVER": 0.1405,
+            "JUMP": 0.0641
+          },
+          "confidence": 0.0228,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 415,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "priority",
+    "scenario": "chase",
+    "expected_examples": [
+      "APPROACH_OPPONENT"
+    ],
+    "choice": "DODGE_LEFT",
+    "matches": false,
+    "request": {
+      "model": "english",
+      "state": {
+        "self": {
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "balance": 1,
+          "near_edge": false,
+          "holding_object": false,
+          "grounded": true,
+          "held_object_type": "none",
+          "push_ready_in": 0,
+          "dodge_ready_in": 0
+        },
+        "opponent": {
+          "distance_m": 5,
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "near_edge": false,
+          "holding_object": false,
+          "facing_self": true,
+          "held_object_type": "none",
+          "winding_up": false,
+          "recovering": false
+        },
+        "nearest_object": {
+          "type": "barrel",
+          "id": "barrel-3",
+          "mass_class": "heavy",
+          "distance_m": 8
+        },
+        "incoming_projectile": false,
+        "cover_available": true,
+        "previous_action": "none",
+        "previous_outcome": "idle",
+        "sudden_death": false
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Survive the edge first. Dodge imminent attacks. Otherwise attack: push a close enemy, throw a held weapon, collect a nearby weapon, or approach.",
+          "criteria": {
+            "APPROACH_OPPONENT": "Enemy out of reach; no incoming attack; no nearby weapon.",
+            "RETREAT_FROM_OPPONENT": "Enemy close; my push cooling down; room to retreat.",
+            "GRAB_NEAREST_OBJECT": "Empty hands; weapon nearby; enemy far away.",
+            "DODGE_LEFT": "Incoming attack; left side safe.",
+            "DODGE_RIGHT": "Incoming attack; right side safe.",
+            "MOVE_TOWARD_SAFETY": "Near an open edge or outside the safe boundary.",
+            "TAKE_COVER": "Enemy far away and holding a weapon; cover nearby.",
+            "JUMP": "Low obstacle blocking movement."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "DODGE_LEFT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.1147,
+            "RETREAT_FROM_OPPONENT": 0.137,
+            "GRAB_NEAREST_OBJECT": 0.1259,
+            "DODGE_LEFT": 0.1961,
+            "DODGE_RIGHT": 0.0877,
+            "MOVE_TOWARD_SAFETY": 0.1166,
+            "TAKE_COVER": 0.1523,
+            "JUMP": 0.0697
+          },
+          "confidence": 0.0203,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 413,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  }
+]

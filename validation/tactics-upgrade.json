@@ -1,0 +1,276 @@
+{
+  "note": "Six hand-authored states, one request each. Example actions are judgment calls; this is not a calibrated benchmark.",
+  "results": [
+    {
+      "scenario": "edge pressure",
+      "action": "GRAB_NEAREST_OBJECT",
+      "reasonable_examples": [
+        "MOVE_TOWARD_SAFETY",
+        "DODGE_LEFT",
+        "DODGE_RIGHT"
+      ],
+      "matches_examples": false,
+      "latency_ms": 211,
+      "state": {
+        "self": {
+          "distance_to_edge_m": 0.7,
+          "speed": 0,
+          "balance": 1,
+          "near_edge": true,
+          "holding_object": false,
+          "grounded": true,
+          "held_object_type": "none",
+          "push_ready_in": 0,
+          "dodge_ready_in": 0
+        },
+        "opponent": {
+          "distance_m": 2,
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "near_edge": false,
+          "holding_object": false,
+          "facing_self": true,
+          "held_object_type": "none",
+          "winding_up": false,
+          "recovering": false
+        },
+        "nearest_object": {
+          "type": "barrel",
+          "id": "barrel-3",
+          "mass_class": "heavy",
+          "distance_m": 2.3
+        },
+        "incoming_projectile": false,
+        "cover_available": true,
+        "previous_action": "none",
+        "previous_outcome": "idle",
+        "sudden_death": false
+      }
+    },
+    {
+      "scenario": "incoming throw",
+      "action": "TAKE_COVER",
+      "reasonable_examples": [
+        "DODGE_LEFT",
+        "DODGE_RIGHT",
+        "TAKE_COVER",
+        "JUMP"
+      ],
+      "matches_examples": true,
+      "latency_ms": 96,
+      "state": {
+        "self": {
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "balance": 1,
+          "near_edge": false,
+          "holding_object": false,
+          "grounded": true,
+          "held_object_type": "none",
+          "push_ready_in": 0,
+          "dodge_ready_in": 0
+        },
+        "opponent": {
+          "distance_m": 5,
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "near_edge": false,
+          "holding_object": false,
+          "facing_self": true,
+          "held_object_type": "none",
+          "winding_up": false,
+          "recovering": false
+        },
+        "nearest_object": {
+          "type": "barrel",
+          "id": "barrel-3",
+          "mass_class": "heavy",
+          "distance_m": 2.3
+        },
+        "incoming_projectile": true,
+        "cover_available": true,
+        "previous_action": "none",
+        "previous_outcome": "idle",
+        "sudden_death": false
+      }
+    },
+    {
+      "scenario": "close push windup",
+      "action": "PUSH_OPPONENT",
+      "reasonable_examples": [
+        "DODGE_LEFT",
+        "DODGE_RIGHT",
+        "RETREAT_FROM_OPPONENT"
+      ],
+      "matches_examples": false,
+      "latency_ms": 99,
+      "state": {
+        "self": {
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "balance": 1,
+          "near_edge": false,
+          "holding_object": false,
+          "grounded": true,
+          "held_object_type": "none",
+          "push_ready_in": 0,
+          "dodge_ready_in": 0
+        },
+        "opponent": {
+          "distance_m": 1.7,
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "near_edge": false,
+          "holding_object": false,
+          "facing_self": true,
+          "held_object_type": "none",
+          "winding_up": true,
+          "recovering": false
+        },
+        "nearest_object": {
+          "type": "barrel",
+          "id": "barrel-3",
+          "mass_class": "heavy",
+          "distance_m": 2.3
+        },
+        "incoming_projectile": false,
+        "cover_available": true,
+        "previous_action": "none",
+        "previous_outcome": "idle",
+        "sudden_death": false
+      }
+    },
+    {
+      "scenario": "punish recovery",
+      "action": "PUSH_OPPONENT",
+      "reasonable_examples": [
+        "PUSH_OPPONENT"
+      ],
+      "matches_examples": true,
+      "latency_ms": 103,
+      "state": {
+        "self": {
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "balance": 1,
+          "near_edge": false,
+          "holding_object": false,
+          "grounded": true,
+          "held_object_type": "none",
+          "push_ready_in": 0,
+          "dodge_ready_in": 0
+        },
+        "opponent": {
+          "distance_m": 1.7,
+          "distance_to_edge_m": 1,
+          "speed": 0,
+          "near_edge": true,
+          "holding_object": false,
+          "facing_self": true,
+          "held_object_type": "none",
+          "winding_up": false,
+          "recovering": true
+        },
+        "nearest_object": {
+          "type": "barrel",
+          "id": "barrel-3",
+          "mass_class": "heavy",
+          "distance_m": 2.3
+        },
+        "incoming_projectile": false,
+        "cover_available": true,
+        "previous_action": "none",
+        "previous_outcome": "idle",
+        "sudden_death": false
+      }
+    },
+    {
+      "scenario": "held barrel at range",
+      "action": "THROW_HELD_OBJECT_AT_OPPONENT",
+      "reasonable_examples": [
+        "THROW_HELD_OBJECT_AT_OPPONENT"
+      ],
+      "matches_examples": true,
+      "latency_ms": 103,
+      "state": {
+        "self": {
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "balance": 1,
+          "near_edge": false,
+          "holding_object": true,
+          "grounded": true,
+          "held_object_type": "barrel",
+          "push_ready_in": 0,
+          "dodge_ready_in": 0
+        },
+        "opponent": {
+          "distance_m": 5,
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "near_edge": false,
+          "holding_object": false,
+          "facing_self": true,
+          "held_object_type": "none",
+          "winding_up": false,
+          "recovering": false
+        },
+        "nearest_object": {
+          "type": "barrel",
+          "id": "barrel-3",
+          "mass_class": "heavy",
+          "distance_m": 2.3
+        },
+        "incoming_projectile": false,
+        "cover_available": true,
+        "previous_action": "none",
+        "previous_outcome": "idle",
+        "sudden_death": false
+      }
+    },
+    {
+      "scenario": "sudden death outside boundary",
+      "action": "GRAB_NEAREST_OBJECT",
+      "reasonable_examples": [
+        "MOVE_TOWARD_SAFETY"
+      ],
+      "matches_examples": false,
+      "latency_ms": 104,
+      "state": {
+        "self": {
+          "distance_to_edge_m": -0.2,
+          "speed": 0,
+          "balance": 1,
+          "near_edge": true,
+          "holding_object": false,
+          "grounded": true,
+          "held_object_type": "none",
+          "push_ready_in": 0,
+          "dodge_ready_in": 0
+        },
+        "opponent": {
+          "distance_m": 10,
+          "distance_to_edge_m": 5,
+          "speed": 0,
+          "near_edge": false,
+          "holding_object": false,
+          "facing_self": true,
+          "held_object_type": "none",
+          "winding_up": false,
+          "recovering": false
+        },
+        "nearest_object": {
+          "type": "barrel",
+          "id": "barrel-3",
+          "mass_class": "heavy",
+          "distance_m": 2.3
+        },
+        "incoming_projectile": false,
+        "cover_available": true,
+        "previous_action": "none",
+        "previous_outcome": "idle",
+        "sudden_death": true
+      }
+    }
+  ]
+}

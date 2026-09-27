@@ -22,7 +22,7 @@ without installing Laya. In AI-vs-AI mode both models need to be available.
 - The providers use the same projected state, legal actions, instructions and
   executor rules. Each controls only its own avatar and sees its own perspective.
 - The existing experiment request cap applies separately to each AI player.
-  Default: at most two request starts per game second per AI; action duration,
+  Default: at most four request starts per game second per AI; action duration,
   model latency and error backoff can reduce this rate.
 - TypeSafe requests use your account's allowance. The setup screen checks access
   using model discovery; it does not issue paid gameplay decisions until play starts.
@@ -31,7 +31,7 @@ without installing Laya. In AI-vs-AI mode both models need to be available.
 - Failures leave the player waiting. There is no substitute decision policy.
 - Pausing prevents new decisions. Matchup changes abort pending requests and
   invalidate previous-round decisions; no old response can control the new match.
-- AI-vs-AI has a wide spectator camera. Right-drag orbits; Escape, F2, F3 and Tab
+- AI-vs-AI shares the fixed arena camera. Escape, F2, F3 and Tab
   retain pause, experiment, export and statistics controls. Stats offer both AI
   players' action distributions and execution latency.
 

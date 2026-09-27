@@ -14,3 +14,11 @@ __pycache__/
 *.slnx
 ai/.runtime/
 validation/*.log
+
+# Local credentials and generated diagnostics
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+validation/**/*.log

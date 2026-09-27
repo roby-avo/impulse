@@ -17,13 +17,13 @@ public class LayaClient:MonoBehaviour {
  public const string TypeSafeEndpoint="https://api.typesafe.ai";
  public string Endpoint="http://127.0.0.1:8000",Model="english";public AIProvider Provider;public int TimeoutSeconds=8;
  public float RequestAge=>Busy?Time.realtimeSinceStartup-requestStarted:0;public string WaitStatus=>Busy?$"Deciding · {RequestAge:0.0}s / {TimeoutSeconds}s":Status;
- public bool Busy{get;private set;}public bool Blocked{get;private set;}public string Status="Waiting for local Laya";public float LastLatency;public int ValidResponses,Failures;public string LastDevice{get;private set;}
+ public bool LastRequestFailed{get;private set;}public bool Busy{get;private set;}public bool Blocked{get;private set;}public string Status="Waiting for local Laya";public float LastLatency;public int ValidResponses,Failures;public string LastDevice{get;private set;}
  public string Backend=>Provider==AIProvider.Laya?(LastDevice=="mps"?"Apple GPU":LastDevice=="cpu"?"CPU":"local"):"cloud";
  public bool ReadyToRequest=>!Busy&&!Blocked&&Time.realtimeSinceStartup>=retryAt;
  public string DisplayName=>Provider==AIProvider.Laya?"Laya":"TypeSafe";
  string apiKey;QuestionFile questionFile;UnityWebRequest pending;int revision,consecutiveFailures;float retryAt,requestStarted;
  void Awake(){questionFile=JsonUtility.FromJson<QuestionFile>(File.ReadAllText(Path.Combine(Application.streamingAssetsPath,"laya-question.json")));}
- public void Configure(AIProvider provider,string model=null,string key=null){CancelPending();Provider=provider;Endpoint=provider==AIProvider.Laya?"http://127.0.0.1:8000":TypeSafeEndpoint;Model=provider==AIProvider.Laya?"english":model;apiKey=key;Blocked=false;retryAt=0;consecutiveFailures=0;LastDevice=null;Status="Ready · "+DisplayName;}
+ public void Configure(AIProvider provider,string model=null,string key=null){CancelPending();Provider=provider;Endpoint=provider==AIProvider.Laya?"http://127.0.0.1:8000":TypeSafeEndpoint;Model=provider==AIProvider.Laya?"english":model;apiKey=key;Blocked=false;LastRequestFailed=false;retryAt=0;consecutiveFailures=0;LastDevice=null;Status="Ready · "+DisplayName;}
  public void CancelPending(){revision++;if(pending!=null){Status="Request cancelled · waiting";pending.Abort();}}
  public static string SafeError(long code)=>code==401||code==403?"API key rejected · open Match setup":code==429?"Rate limited · waiting before retry":code==402?"Account quota exhausted · open Match setup":code>=400&&code<500?"Request rejected (HTTP "+code+") · check model in Match setup":"Service unavailable · neutral wait · retrying";
  public static DecisionResult Parse(string raw,string[] allowed,bool typed=false){var result=new DecisionResult();try{var response=JsonUtility.FromJson<LayaResponse>(raw);var c=response?.answers?.action;if(c!=null&&(!typed||c.type=="choice")&&Enum.TryParse(c.choice,out SemanticAction action)&&Enum.IsDefined(typeof(SemanticAction),action)&&c.choice==action.ToString()&&Array.IndexOf(allowed,c.choice)>=0&&!float.IsNaN(c.confidence)&&!float.IsInfinity(c.confidence)&&c.confidence>=0&&c.confidence<=1){result.Valid=true;result.Action=action;result.Confidence=c.confidence;result.ResponseModel=response.model;}else result.Error="invalid_model_choice";}catch{result.Error="invalid_response";}return result;}
@@ -44,7 +44,7 @@ public class LayaClient:MonoBehaviour {
    }
    pending=null;
   }
-  Busy=false;if(version==revision){LastLatency=result.LatencyMs;if(result.Device!=null)LastDevice=result.Device;if(result.Valid){consecutiveFailures=0;ValidResponses++;Status=result.Action+" · "+result.LatencyMs.ToString("0")+" ms";}else{Failures++;Status=result.Error=="invalid_model_choice"||result.Error=="invalid_response"?"Invalid model answer · neutral wait":result.Error;}}
+  Busy=false;if(version==revision){LastRequestFailed=!result.Valid;LastLatency=result.LatencyMs;if(result.Device!=null)LastDevice=result.Device;if(result.Valid){consecutiveFailures=0;ValidResponses++;Status=result.Action+" · "+result.LatencyMs.ToString("0")+" ms";}else{Failures++;Status=result.Error=="invalid_model_choice"||result.Error=="invalid_response"?"Invalid model answer · neutral wait":result.Error;}}
   complete(result);
  }
  public static IEnumerator DiscoverModels(string key,Action<string[],string> complete,string endpoint=TypeSafeEndpoint){

@@ -4,12 +4,12 @@ using System.Linq;
 using UnityEngine;
 namespace Playground {
 public class LayaDecisionController:MonoBehaviour {
- public bool Enabled=true;public int ExecutedDecisions,StaleResponses;public float RetryDelay=.7f,DecisionGap=.12f;
+ public bool Enabled=true;public int ExecutedDecisions,StaleResponses;public float RetryDelay=.7f,DecisionGap=.04f;
  public AIActionExecutor Executor;public LayaClient Client;
  Arena a;DecisionRecord active;int sequence;float nextRequest;bool nearEdge,danger,pushable;
  void Start(){a=Arena.Instance;if(!Executor)Executor=a.Executor;if(!Client)Client=a.Client;Executor.Completed+=OnCompleted;StartCoroutine(Loop());}
  bool CanDecide=>Enabled&&Client.ReadyToRequest&&!a.HUD.Paused&&a.Match.Phase==RoundPhase.Fight&&!a.Match.Practice&&!a.GetComponent<ExecutorDebugPanel>().Open;
- IEnumerator Loop(){while(true){if(!CanDecide||Executor.Running||Time.time<nextRequest||!a.Experiments.Ready){yield return null;continue;}
+ IEnumerator Loop(){while(true){if(!CanDecide||(Executor.Running&&!Executor.CanPlanAhead)||!Executor.Self.CanAct||Time.time<nextRequest||!a.Experiments.Ready){yield return null;continue;}
    var profile=a.Experiments.Current;nextRequest=Time.time+1/profile.max_decisions_per_second;
    int generation=a.Match.Generation;float requestedGameTime=Time.time;var context=Executor.ObserveContext();var snapshot=AIPerception.Capture(Executor,context);var allowed=ActionSchema.Available(Executor,context).Where(x=>profile.actions.Contains(x)).ToArray();int round=a.Match.Round;string match=a.Telemetry.MatchId,actor=Executor.Self.Actor,provider=Client.Provider.ToString(),model=Client.Model;DecisionResult result=null;
    if(allowed.Length==0){Client.Status="No legal actions in this profile · neutral wait";a.Telemetry.LogEvent("no_legal_actions",Executor.Self.Actor,"neutral_wait");yield return new WaitForSeconds(RetryDelay);continue;}
@@ -19,12 +19,22 @@ public class LayaDecisionController:MonoBehaviour {
    string staleReason=!Enabled||a.HUD.Paused||a.Match.Phase!=RoundPhase.Fight||a.Match.Practice||generation!=a.Match.Generation?"match_or_control_changed":Time.time<Executor.Self.StunnedUntil?"knockback_during_inference":!snapshot.self.near_edge&&Executor.Self.Edge<1.4f?"near_edge_during_inference":!snapshot.incoming_projectile&&AIPerception.Danger(Executor.Self)?"projectile_during_inference":null;
    if(staleReason!=null){record.execution_status="stale";record.interruption_reason=staleReason;StaleResponses++;if(generation==a.Match.Generation)Client.Status="Reply outdated · waiting for fresh state";a.Telemetry.Write(record);yield return new WaitForSeconds(DecisionGap);continue;}
    if(!result.Valid){record.execution_status="request_error";record.interruption_reason=result.Error;record.resulting_state=AIPerception.Capture(Executor,Executor.ObserveContext());a.Telemetry.Write(record);yield return new WaitForSeconds(RetryDelay);continue;}
+   // Revalidate mechanical eligibility against the current world before committing.
+   var freshContext=Executor.ObserveContext();
+   bool objectChanged=result.Action==SemanticAction.GRAB_NEAREST_OBJECT&&context.Object!=freshContext.Object;
+   if(objectChanged||!ActionSchema.Available(Executor,freshContext).Contains(result.Action.ToString())){
+    record.execution_status="stale";record.interruption_reason="action_no_longer_legal";StaleResponses++;a.Telemetry.Write(record);continue;
+   }
+   bool continuing=Executor.CanContinue(result.Action,freshContext);
+   if(continuing){if(active!=null){active.action_end=Time.time;active.execution_success=true;active.interruption_reason="continued_by_model";active.resulting_state=AIPerception.Capture(Executor,freshContext);a.Telemetry.Write(active);active=null;}}
+   else if(Executor.Running)Executor.Finish(false,"superseded_by_model");
+   context=freshContext;
    // The only production Begin() call uses the validated provider answer unchanged.
-   record.execution_status="executed";a.Telemetry.Count(result,actor);active=record;active.action_start=Time.time;ExecutedDecisions++;Executor.Begin(result.Action,context);
+   record.execution_status="executed";a.Telemetry.Count(result,actor);active=record;active.action_start=Time.time;ExecutedDecisions++;if(!continuing)Executor.Begin(result.Action,context);
    yield return new WaitForSeconds(DecisionGap);
   }}
- void Update(){if(!a||!Enabled||a.HUD.Paused||a.Match.Phase!=RoundPhase.Fight)return;bool nowEdge=Executor.Self.Edge<1.4f;bool nowDanger=AIPerception.Danger(Executor.Self);bool nowPush=Vector3.Distance(Executor.Self.transform.position,Executor.Opponent.transform.position)<1.8f;
-  if(Executor.Running){if(nowEdge&&!nearEdge)Executor.Finish(false,"sudden_near_edge");else if(nowDanger&&!danger)Executor.Finish(false,"incoming_projectile");else if(nowPush&&!pushable)Executor.Finish(false,"opponent_in_push_range");}
+ void Update(){if(!a||!Enabled||a.HUD.Paused||a.Match.Phase!=RoundPhase.Fight)return;bool nowEdge=Executor.Self.Edge<1.4f;bool nowDanger=AIPerception.Danger(Executor.Self);bool nowPush=Vector3.Distance(Executor.Self.transform.position,Executor.Opponent.transform.position)<2.15f;
+  if(Executor.Navigating){if(nowEdge&&!nearEdge)Executor.Finish(false,"sudden_near_edge");else if(nowDanger&&!danger&&Executor.Selected!=SemanticAction.TAKE_COVER&&Executor.Selected!=SemanticAction.MOVE_TOWARD_SAFETY)Executor.Finish(false,"incoming_projectile");else if(nowPush&&!pushable&&(Executor.Selected==SemanticAction.APPROACH_OPPONENT||Executor.Selected==SemanticAction.GRAB_NEAREST_OBJECT))Executor.Finish(false,"opponent_in_push_range");}
   nearEdge=nowEdge;danger=nowDanger;pushable=nowPush;
  }
  void OnCompleted(AIActionExecutor executor){if(active==null)return;active.action_end=Time.time;active.execution_success=executor.Success;active.interruption_reason=executor.Outcome;active.resulting_state=AIPerception.Capture(executor,executor.ObserveContext());a.Telemetry.Write(active);active=null;}

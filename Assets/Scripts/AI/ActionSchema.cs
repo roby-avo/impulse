@@ -6,15 +6,18 @@ namespace Playground {
 [Serializable] public class ChoiceQuestion {public string type,instructions;public ChoiceCriteria criteria;}
 [Serializable] public class QuestionFile {public ChoiceQuestion action;}
 public static class ActionSchema {
- public static string[] Available(AIActionExecutor e,ActionContext ctx){var list=new List<string>();var s=e.Self;
+ public static string[] Available(AIActionExecutor e,ActionContext ctx){var list=new List<string>();var s=e.Self;if(!s.CanAct)return list.ToArray();
   foreach(SemanticAction action in Enum.GetValues(typeof(SemanticAction))){bool executable=true;
    switch(action){
-    case SemanticAction.PUSH_OPPONENT:executable=Time.time>=s.NextPush&&Vector3.Distance(s.transform.position,e.Opponent.transform.position)<=Fighter.PushRange;break;
+    case SemanticAction.APPROACH_OPPONENT:executable=Vector3.ProjectOnPlane(s.transform.position-e.Opponent.transform.position,Vector3.up).magnitude>2.05f;break;
+    case SemanticAction.RETREAT_FROM_OPPONENT:executable=Vector3.ProjectOnPlane(s.transform.position-e.RetreatTarget(),Vector3.up).magnitude>.6f;break;
+    case SemanticAction.MOVE_TOWARD_SAFETY:executable=Vector3.ProjectOnPlane(s.transform.position,Vector3.up).magnitude>.6f;break;
+    case SemanticAction.PUSH_OPPONENT:executable=Time.time>=s.NextPush&&Vector3.Distance(s.transform.position,e.Opponent.transform.position)<=Fighter.PushRange&&!Physics.Linecast(s.transform.position+Vector3.up,e.Opponent.transform.position+Vector3.up,1<<8);break;
     case SemanticAction.GRAB_NEAREST_OBJECT:executable=!s.Held&&ctx.Object;break;
     case SemanticAction.THROW_HELD_OBJECT_AT_OPPONENT:executable=s.Held;break;
     case SemanticAction.DODGE_LEFT:case SemanticAction.DODGE_RIGHT:executable=s.Grounded&&Time.time>=s.NextDodge;break;
     case SemanticAction.JUMP:executable=s.Grounded;break;
-    case SemanticAction.TAKE_COVER:executable=ctx.HasCover;break;
+    case SemanticAction.TAKE_COVER:executable=ctx.HasCover&&Vector3.ProjectOnPlane(s.transform.position-ctx.Cover,Vector3.up).magnitude>.6f;break;
    } if(executable)list.Add(action.ToString());
   }return list.ToArray();
  }

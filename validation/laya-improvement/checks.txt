@@ -1,0 +1,21 @@
+PASS cover observation has a reachable hiding position
+PASS observed cover actually blocks enemy sight
+PASS readable context describes observed combat facts
+PASS ablations can omit the derived situation entirely
+PASS retreat destination stays inside navigable roof margin
+PASS edge danger is described explicitly
+PASS shrinking boundary appears in model context
+PASS collision-course projectile is detected
+PASS projectile passing to the side is not an imminent threat
+PASS own outgoing projectile does not trigger defensive decisions
+PASS aim test can acquire weapon
+PASS throw leads visible lateral movement through windup and flight
+PASS throw compensates gravity
+PASS selected throw physically hits a moving opponent
+PASS same model movement can continue without resetting its execution window
+PASS a different model action cannot continue the old movement
+PASS enemy entering melee range does not cancel an escape movement
+PASS fresh default has four decisions per second
+PASS untouched factory profile upgrades
+PASS custom criteria survive factory migration
+PASS named experiments are never upgraded implicitly

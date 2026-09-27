@@ -18,8 +18,8 @@ public static class VisualAssets {
      "Team"=>team,"Shell"=>new Color(.72f,.79f,.79f),"Metal"=>new Color(.16f,.23f,.28f),
      "Dark"=>new Color(.025f,.055f,.075f),"Glow"=>Color.Lerp(team,Color.white,.7f),
      "Amber"=>new Color(1,.56f,.12f),"Wood"=>new Color(.42f,.22f,.09f),"Rubber"=>new Color(.035f,.04f,.05f),
-     "Deck"=>new Color(.12f,.19f,.23f),"Paint"=>new Color(.32f,.42f,.46f),"Window"=>new Color(.35f,.61f,.70f),_=>new Color(.35f,.43f,.48f)};
-     material=Arena.Material(color,key=="Glow"||key=="Window");material.name="Authored / "+key;material.SetFloat("_Smoothness",key=="Metal"?.55f:.3f);palette[cacheKey]=material;
+     "Deck"=>new Color(.12f,.19f,.23f),"DeckAlt"=>new Color(.15f,.22f,.26f),"Paint"=>new Color(.32f,.42f,.46f),"Window"=>new Color(.35f,.61f,.70f),_=>new Color(.35f,.43f,.48f)};
+     material=Arena.Material(color,key=="Glow"||key=="Window");material.SetFloat("_Metallic",key=="Metal"?.72f:key=="Shell"?.18f:0);material.name="Authored / "+key;material.SetFloat("_Smoothness",key=="Metal"?.65f:key=="Rubber"?.08f:key=="Wood"?.12f:key=="Deck"||key=="DeckAlt"?.12f:.32f);palette[cacheKey]=material;
     }assigned[i]=material;
    }renderer.sharedMaterials=assigned;
   }

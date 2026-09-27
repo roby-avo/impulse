@@ -1,0 +1,278 @@
+Label IMPULSE class=unity-text-element,unity-label,brand-title size=0,0 padding=0,0 margins=0,0 font=24 flex=0,0
+Label ROOFTOP DUELS class=unity-text-element,unity-label,brand-subtitle size=0,0 padding=0,0 margins=0,0 font=8 flex=0,0
+Label YOU class=unity-text-element,unity-label,cyan,score-side size=0,0 padding=0,0 margins=0,0 font=11 flex=0,0
+Label 0  :  0 class=unity-text-element,unity-label,score-number size=0,0 padding=0,0 margins=0,0 font=30 flex=0,0
+Label LAYA class=unity-text-element,unity-label,orange,score-side size=0,0 padding=0,0 margins=0,0 font=11 flex=0,0
+Label ROUND 01   /   FOUNDRY   /   FIRST TO 5 class=unity-text-element,unity-label,eyebrow,centered size=0,0 padding=0,0 margins=0,0 font=8 flex=0,0
+Label NO TIME LIMIT class=unity-text-element,unity-label,round-clock size=0,0 padding=0,0 margins=0,0 font=10 flex=0,0
+Label H class=unity-text-element,unity-label,keycap size=0,0 padding=0,0 margins=0,0 font=9 flex=0,0
+Label Controls class=unity-text-element,unity-label,muted size=0,0 padding=0,0 margins=0,0 font=11 flex=0,0
+Label ESC class=unity-text-element,unity-label,keycap size=0,0 padding=0,0 margins=0,0 font=9 flex=0,0
+Label Pause class=unity-text-element,unity-label,muted size=0,0 padding=0,0 margins=0,0 font=11 flex=0,0
+Label ●  LAYA / local class=unity-text-element,unity-label,eyebrow,cyan size=0,0 padding=0,0 margins=0,0 font=10 flex=0,0
+Label Waiting for local Laya class=unity-text-element,unity-label,decision size=0,0 padding=0,0 margins=0,0 font=16 flex=0,0
+Label Last 0 ms · 0 played · 0 outdated class=unity-text-element,unity-label,muted size=0,0 padding=0,0 margins=0,0 font=12 flex=0,0
+Label  class=unity-text-element,unity-label,muted size=0,0 padding=0,0 margins=0,0 font=12 flex=0,0
+Label 3 class=unity-text-element,unity-label,countdown size=0,0 padding=0,0 margins=0,0 font=100 flex=0,0
+Label SEND LAYA OFF. STAY ON THE ROOF. class=unity-text-element,unity-label,eyebrow,centered size=0,0 padding=0,0 margins=0,0 font=10 flex=0,0
+Label ROOFTOP TRAINING / UNSCORED class=unity-text-element,unity-label,eyebrow,cyan size=0,0 padding=0,0 margins=0,0 font=9 flex=0,0
+Label  class=unity-text-element,unity-label,tutorial-text size=0,0 padding=0,0 margins=0,0 font=14 flex=0,0
+Label PUSH INCOMING class=unity-text-element,unity-label,threat-text size=0,0 padding=0,0 margins=0,0 font=10 flex=0,0
+Label YOUR LOADOUT class=unity-text-element,unity-label,eyebrow,loadout-kicker size=0,0 padding=0,0 margins=0,0 font=8 flex=0,0
+Label HANDS FREE class=unity-text-element,unity-label,status-title size=0,0 padding=0,0 margins=0,0 font=15 flex=0,0
+Label SHIFT / DODGE class=unity-text-element,unity-label,muted size=0,0 padding=0,0 margins=0,0 font=9 flex=0,0
+Label F / PUSH class=unity-text-element,unity-label,muted size=0,0 padding=0,0 margins=0,0 font=9 flex=0,0
+Label  class=unity-text-element,unity-label,edge size=0,0 padding=0,0 margins=0,0 font=11 flex=0,0
+Label E   GRAB BARREL class=unity-text-element,unity-label,interaction size=0,0 padding=0,0 margins=0,0 font=11 flex=0,0
+Label TAB  Statistics   ·   F4  AI details class=unity-text-element,unity-label,muted size=0,0 padding=0,0 margins=0,0 font=10 flex=0,0
+Label F2  Experiment lab class=unity-text-element,unity-label,muted size=0,0 padding=0,0 margins=0,0 font=10 flex=0,0
+Label WASD  Move     MOUSE  Look     SPACE  Jump     SHIFT  Dodge     E  Grab / drop     CLICK  Throw     F  Push class=unity-text-element,unity-label,controls size=0,0 padding=0,0 margins=0,0 font=11 flex=0,0
+Label + class=unity-text-element,unity-label,reticle size=0,0 padding=0,0 margins=0,0 font=24 flex=0,0
+Label IMPULSE    /    TIME OUT class=unity-text-element,unity-label,eyebrow,cyan size=0,0 padding=0,0 margins=0,0 font=10 flex=0,0
+Label Take a breather. class=unity-text-element,unity-label,pause-title size=0,0 padding=0,0 margins=0,0 font=46 flex=0,0
+Label The rooftop can wait. class=unity-text-element,unity-label,muted,pause-subtitle size=0,0 padding=0,0 margins=0,0 font=14 flex=0,0
+Button BACK TO THE ROOF    → class=unity-text-element,unity-button,primary,large size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Button Start a rematch class=unity-text-element,unity-button,large size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Button Choose matchup class=unity-text-element,unity-button,large size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Button Learn to play class=unity-text-element,unity-button,large size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Button Experiment lab   ↗ class=unity-text-element,unity-button,quiet size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Label MAKE YOUR NEXT MOVE COUNT class=unity-text-element,unity-label,eyebrow size=0,0 padding=0,0 margins=0,0 font=9 flex=0,0
+Label WASD class=unity-text-element,unity-label,keycap size=0,0 padding=0,0 margins=0,0 font=9 flex=0,0
+Label Move class=unity-text-element,unity-label,muted size=0,0 padding=0,0 margins=0,0 font=12 flex=0,0
+Label SHIFT class=unity-text-element,unity-label,keycap size=0,0 padding=0,0 margins=0,0 font=9 flex=0,0
+Label Dodge sideways class=unity-text-element,unity-label,muted size=0,0 padding=0,0 margins=0,0 font=12 flex=0,0
+Label E class=unity-text-element,unity-label,keycap size=0,0 padding=0,0 margins=0,0 font=9 flex=0,0
+Label Grab / drop class=unity-text-element,unity-label,muted size=0,0 padding=0,0 margins=0,0 font=12 flex=0,0
+Label CLICK class=unity-text-element,unity-label,keycap size=0,0 padding=0,0 margins=0,0 font=9 flex=0,0
+Label Throw class=unity-text-element,unity-label,muted size=0,0 padding=0,0 margins=0,0 font=12 flex=0,0
+Label F class=unity-text-element,unity-label,keycap size=0,0 padding=0,0 margins=0,0 font=9 flex=0,0
+Label Push class=unity-text-element,unity-label,muted size=0,0 padding=0,0 margins=0,0 font=12 flex=0,0
+Label SPACE class=unity-text-element,unity-label,keycap size=0,0 padding=0,0 margins=0,0 font=9 flex=0,0
+Label Jump class=unity-text-element,unity-label,muted size=0,0 padding=0,0 margins=0,0 font=12 flex=0,0
+Label Read the wind-up. Punish the miss. class=unity-text-element,unity-label,muted,pause-tip size=0,0 padding=0,0 margins=0,0 font=11 flex=0,0
+Label Graphics class=unity-text-element,unity-label,unity-base-field__label,unity-base-popup-field__label,unity-popup-field__label size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Label 1000 FPS   ·   0.1 ms / frame class=unity-text-element,unity-label,muted,performance size=0,0 padding=0,0 margins=0,0 font=10 flex=0,0
+Label ESC / RESUME class=unity-text-element,unity-label,eyebrow size=0,0 padding=0,0 margins=0,0 font=10 flex=0,0
+Button Quit to desktop class=unity-text-element,unity-button,quiet size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Label THE MATCH, IN NUMBERS class=unity-text-element,unity-label,eyebrow,cyan size=0,0 padding=0,0 margins=0,0 font=10 flex=0,0
+Label Match snapshot class=unity-text-element,unity-label,section-title size=0,0 padding=0,0 margins=0,0 font=32 flex=0,0
+Label 0 — 0 class=unity-text-element,unity-label,results-score size=0,0 padding=0,0 margins=0,0 font=46 flex=0,0
+Label PERFORMANCE class=unity-text-element,unity-label,stat-name,eyebrow size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Label YOU class=unity-text-element,unity-label,stat-value,cyan size=0,0 padding=0,0 margins=0,0 font=15 flex=0,0
+Label LAYA class=unity-text-element,unity-label,stat-value,orange size=0,0 padding=0,0 margins=0,0 font=15 flex=0,0
+Label Round wins class=unity-text-element,unity-label,stat-name size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Label 0 class=unity-text-element,unity-label,stat-value,cyan size=0,0 padding=0,0 margins=0,0 font=15 flex=0,0
+Label 0 class=unity-text-element,unity-label,stat-value,orange size=0,0 padding=0,0 margins=0,0 font=15 flex=0,0
+Label Self ring-outs class=unity-text-element,unity-label,stat-name size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Label 0 class=unity-text-element,unity-label,stat-value,cyan size=0,0 padding=0,0 margins=0,0 font=15 flex=0,0
+Label 0 class=unity-text-element,unity-label,stat-value,orange size=0,0 padding=0,0 margins=0,0 font=15 flex=0,0
+Label Grabs / throws class=unity-text-element,unity-label,stat-name size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Label 0 class=unity-text-element,unity-label,stat-value,cyan size=0,0 padding=0,0 margins=0,0 font=15 flex=0,0
+Label 0 class=unity-text-element,unity-label,stat-value,orange size=0,0 padding=0,0 margins=0,0 font=15 flex=0,0
+Label Throw hit rate class=unity-text-element,unity-label,stat-name size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Label 0 class=unity-text-element,unity-label,stat-value,cyan size=0,0 padding=0,0 margins=0,0 font=15 flex=0,0
+Label 0 class=unity-text-element,unity-label,stat-value,orange size=0,0 padding=0,0 margins=0,0 font=15 flex=0,0
+Label Successful pushes class=unity-text-element,unity-label,stat-name size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Label 0 class=unity-text-element,unity-label,stat-value,cyan size=0,0 padding=0,0 margins=0,0 font=15 flex=0,0
+Label 0 class=unity-text-element,unity-label,stat-value,orange size=0,0 padding=0,0 margins=0,0 font=15 flex=0,0
+Label Dodges class=unity-text-element,unity-label,stat-name size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Label 0 class=unity-text-element,unity-label,stat-value,cyan size=0,0 padding=0,0 margins=0,0 font=15 flex=0,0
+Label 0 class=unity-text-element,unity-label,stat-value,orange size=0,0 padding=0,0 margins=0,0 font=15 flex=0,0
+Label Time near edge class=unity-text-element,unity-label,stat-name size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Label 0 class=unity-text-element,unity-label,stat-value,cyan size=0,0 padding=0,0 margins=0,0 font=15 flex=0,0
+Label 0 class=unity-text-element,unity-label,stat-value,orange size=0,0 padding=0,0 margins=0,0 font=15 flex=0,0
+Label Average edge distance class=unity-text-element,unity-label,stat-name size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Label 0 class=unity-text-element,unity-label,stat-value,cyan size=0,0 padding=0,0 margins=0,0 font=15 flex=0,0
+Label 0 class=unity-text-element,unity-label,stat-value,orange size=0,0 padding=0,0 margins=0,0 font=15 flex=0,0
+Label Opponent-caused ring-outs class=unity-text-element,unity-label,stat-name size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Label 0 class=unity-text-element,unity-label,stat-value,cyan size=0,0 padding=0,0 margins=0,0 font=15 flex=0,0
+Label 0 class=unity-text-element,unity-label,stat-value,orange size=0,0 padding=0,0 margins=0,0 font=15 flex=0,0
+Label AI CHOICES class=unity-text-element,unity-label,eyebrow size=0,0 padding=0,0 margins=0,0 font=10 flex=0,0
+Label Approach class=unity-text-element,unity-label,action-name size=0,0 padding=0,0 margins=0,0 font=11 flex=0,0
+Label 0 class=unity-text-element,unity-label,action-count size=0,0 padding=0,0 margins=0,0 font=11 flex=0,0
+Label Retreat class=unity-text-element,unity-label,action-name size=0,0 padding=0,0 margins=0,0 font=11 flex=0,0
+Label 0 class=unity-text-element,unity-label,action-count size=0,0 padding=0,0 margins=0,0 font=11 flex=0,0
+Label Push class=unity-text-element,unity-label,action-name size=0,0 padding=0,0 margins=0,0 font=11 flex=0,0
+Label 0 class=unity-text-element,unity-label,action-count size=0,0 padding=0,0 margins=0,0 font=11 flex=0,0
+Label Grab class=unity-text-element,unity-label,action-name size=0,0 padding=0,0 margins=0,0 font=11 flex=0,0
+Label 0 class=unity-text-element,unity-label,action-count size=0,0 padding=0,0 margins=0,0 font=11 flex=0,0
+Label Throw class=unity-text-element,unity-label,action-name size=0,0 padding=0,0 margins=0,0 font=11 flex=0,0
+Label 0 class=unity-text-element,unity-label,action-count size=0,0 padding=0,0 margins=0,0 font=11 flex=0,0
+Label Dodge left class=unity-text-element,unity-label,action-name size=0,0 padding=0,0 margins=0,0 font=11 flex=0,0
+Label 0 class=unity-text-element,unity-label,action-count size=0,0 padding=0,0 margins=0,0 font=11 flex=0,0
+Label Dodge right class=unity-text-element,unity-label,action-name size=0,0 padding=0,0 margins=0,0 font=11 flex=0,0
+Label 0 class=unity-text-element,unity-label,action-count size=0,0 padding=0,0 margins=0,0 font=11 flex=0,0
+Label Move to safety class=unity-text-element,unity-label,action-name size=0,0 padding=0,0 margins=0,0 font=11 flex=0,0
+Label 0 class=unity-text-element,unity-label,action-count size=0,0 padding=0,0 margins=0,0 font=11 flex=0,0
+Label Take cover class=unity-text-element,unity-label,action-name size=0,0 padding=0,0 margins=0,0 font=11 flex=0,0
+Label 0 class=unity-text-element,unity-label,action-count size=0,0 padding=0,0 margins=0,0 font=11 flex=0,0
+Label Jump class=unity-text-element,unity-label,action-name size=0,0 padding=0,0 margins=0,0 font=11 flex=0,0
+Label 0 class=unity-text-element,unity-label,action-count size=0,0 padding=0,0 margins=0,0 font=11 flex=0,0
+Label  class=unity-text-element,unity-label,muted,result-info size=0,0 padding=0,0 margins=0,0 font=12 flex=0,0
+Button Play again   → class=unity-text-element,unity-button,primary size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Button Change matchup class=unity-text-element,unity-button size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Button Experiment lab / exports class=unity-text-element,unity-button size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Label Hold TAB during play to inspect class=unity-text-element,unity-label,muted size=0,0 padding=0,0 margins=0,0 font=10 flex=0,0
+Label IMPULSE    /    RESEARCH class=unity-text-element,unity-label,eyebrow,cyan size=0,0 padding=0,0 margins=0,0 font=10 flex=0,0
+Label The experiment lab. class=unity-text-element,unity-label,lab-title size=0,0 padding=0,0 margins=0,0 font=36 flex=0,0
+Label SIMULATION PAUSED class=unity-text-element,unity-label,eyebrow size=0,0 padding=0,0 margins=0,0 font=10 flex=0,0
+Button Back to game   Esc class=unity-text-element,unity-button,quiet size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Button 01  Setup class=unity-text-element,unity-button,selected size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Button 02  Actions class=unity-text-element,unity-button size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Button 03  Observations class=unity-text-element,unity-button size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Button 04  Recordings class=unity-text-element,unity-button size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Label Name this experiment class=unity-text-element,unity-label,lab-section size=0,0 padding=0,0 margins=0,0 font=21 flex=0,0
+Label Group runs under an experiment ID. Use a condition ID for each variation you want to compare. class=unity-text-element,unity-label,description size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Label Experiment class=unity-text-element,unity-label,unity-base-field__label,unity-base-text-field__label,unity-text-field__label size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Label Condition class=unity-text-element,unity-label,unity-base-field__label,unity-base-text-field__label,unity-text-field__label size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Label Notes class=unity-text-element,unity-label,unity-base-field__label,unity-base-text-field__label,unity-text-field__label size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Label IDs: letters, numbers, dots, underscores and hyphens. class=unity-text-element,unity-label,muted size=0,0 padding=0,0 margins=0,0 font=12 flex=0,0
+Label Decision timing class=unity-text-element,unity-label,lab-section size=0,0 padding=0,0 margins=0,0 font=21 flex=0,0
+Label Set the maximum number of request starts per game second. Model latency and committed actions may make actual decisions slower. class=unity-text-element,unity-label,description size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Label Requests / sec class=unity-text-element,unity-label,unity-base-field__label,unity-base-text-field__label,unity-float-field__label,unity-base-field__label--with-dragger size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Label Allowed range: 0.25–10. Pausing stops game time. class=unity-text-element,unity-label,muted size=0,0 padding=0,0 margins=0,0 font=12 flex=0,0
+Label Model instructions class=unity-text-element,unity-label,lab-section size=0,0 padding=0,0 margins=0,0 font=21 flex=0,0
+Label Each selected model chooses its own tactical actions. Service failures cause a neutral wait and retry. class=unity-text-element,unity-label,description size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Button Open profile JSON class=unity-text-element,unity-button,quiet size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Label What can the AI players choose? class=unity-text-element,unity-label,lab-section size=0,0 padding=0,0 margins=0,0 font=21 flex=0,0
+Label Choose a subset of the ten supported actions. Range, cooldown and held-object rules still apply. class=unity-text-element,unity-label,description size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Label APPROACH OPPONENT class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label RETREAT FROM OPPONENT class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label PUSH OPPONENT class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label GRAB NEAREST OBJECT class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label THROW HELD OBJECT AT OPPONENT class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label DODGE LEFT class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label DODGE RIGHT class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label MOVE TOWARD SAFETY class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label TAKE COVER class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label JUMP class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label Execution stays fair class=unity-text-element,unity-label,lab-section size=0,0 padding=0,0 margins=0,0 font=21 flex=0,0
+Label All players share the same movement, mass, jump, grab range and impact response.
+
+If none of the selected actions are physically possible, The model waits. No substitute policy chooses for it.
+
+Edit the per-action descriptions in the profile JSON, then reload your draft here. class=unity-text-element,unity-label,description size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Button Open profile JSON class=unity-text-element,unity-button size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Label What can the AI players observe? class=unity-text-element,unity-label,lab-section size=0,0 padding=0,0 margins=0,0 font=21 flex=0,0
+Label Only checked fields are sent to the model. Full diagnostic state is still retained in the recording for analysis. class=unity-text-element,unity-label,description size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Label self class=unity-text-element,unity-label,lab-section size=0,0 padding=0,0 margins=0,0 font=21 flex=0,0
+Label distance to edge m class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label speed class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label balance class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label push ready in class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label dodge ready in class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label near edge class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label holding object class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label grounded class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label held object type class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label opponent class=unity-text-element,unity-label,lab-section size=0,0 padding=0,0 margins=0,0 font=21 flex=0,0
+Label distance m class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label distance to edge m class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label speed class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label near edge class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label holding object class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label facing self class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label held object type class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label winding up class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label recovering class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label nearest object class=unity-text-element,unity-label,lab-section size=0,0 padding=0,0 margins=0,0 font=21 flex=0,0
+Label type class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label id class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label mass class class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label distance m class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label Context class=unity-text-element,unity-label,lab-section size=0,0 padding=0,0 margins=0,0 font=21 flex=0,0
+Label incoming projectile class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label cover available class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label sudden death class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label previous action class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label previous outcome class=unity-text-element,unity-label,unity-toggle__text size=0,0 padding=0,0 margins=0,0 font=13 flex=0,1
+Label Mechanical eligibility can disclose constraints even when related observations are omitted. Account for this in ablation experiments. class=unity-text-element,unity-label,description size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Label Recent matches class=unity-text-element,unity-label,lab-section size=0,0 padding=0,0 margins=0,0 font=21 flex=0,0
+Button 20260927-153037-d35bf9  · current class=unity-text-element,unity-button size=0,0 padding=0,0 margins=0,0 font=12 flex=0,0
+Button 20260927-153034-be12c2 class=unity-text-element,unity-button size=0,0 padding=0,0 margins=0,0 font=12 flex=0,0
+Button 20260927-152958-ec3432 class=unity-text-element,unity-button size=0,0 padding=0,0 margins=0,0 font=12 flex=0,0
+Button 20260927-152900-c94b59 class=unity-text-element,unity-button size=0,0 padding=0,0 margins=0,0 font=12 flex=0,0
+Button 20260927-152816-54f510 class=unity-text-element,unity-button size=0,0 padding=0,0 margins=0,0 font=12 flex=0,0
+Button 20260927-152816-4f5c6d class=unity-text-element,unity-button size=0,0 padding=0,0 margins=0,0 font=12 flex=0,0
+Button 20260927-152814-14a6b2 class=unity-text-element,unity-button size=0,0 padding=0,0 margins=0,0 font=12 flex=0,0
+Button 20260927-152809-26d504 class=unity-text-element,unity-button size=0,0 padding=0,0 margins=0,0 font=12 flex=0,0
+Button 20260927-152801-a7429f class=unity-text-element,unity-button size=0,0 padding=0,0 margins=0,0 font=12 flex=0,0
+Button 20260927-152756-75e748 class=unity-text-element,unity-button size=0,0 padding=0,0 margins=0,0 font=12 flex=0,0
+Button 20260927-152728-df44bd class=unity-text-element,unity-button size=0,0 padding=0,0 margins=0,0 font=12 flex=0,0
+Button 20260927-152726-5774a3 class=unity-text-element,unity-button size=0,0 padding=0,0 margins=0,0 font=12 flex=0,0
+Label Replay. Inspect. Compare. class=unity-text-element,unity-label,lab-section size=0,0 padding=0,0 margins=0,0 font=21 flex=0,0
+Label Export an offline report with a spatial timeline, exact model inputs, decisions and outcomes. JSON and CSV data are included.
+
+The replay samples positions at up to 10 Hz. It is a visual record, not a deterministic physics resimulation. class=unity-text-element,unity-label,description size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Button Export & open inspector   → class=unity-text-element,unity-button,primary size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Button Open recordings folder class=unity-text-element,unity-button size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Label Exports run in the background. You can continue using the menus while a report is prepared. class=unity-text-element,unity-label,muted size=0,0 padding=0,0 margins=0,0 font=12 flex=0,0
+Label Changes apply to a new match. Recordings keep their original settings. class=unity-text-element,unity-label,lab-message size=0,0 padding=0,0 margins=0,0 font=12 flex=0,0
+Button Apply & start new match   → class=unity-text-element,unity-button,primary size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Button Restore defaults class=unity-text-element,unity-button size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Button Reload saved profile class=unity-text-element,unity-button,quiet size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Label PHYSICS PLAYGROUND     /     ROOFTOP DUELS class=unity-text-element,unity-label,eyebrow,hero-kicker size=435.6818,18.40909 padding=4.090909,4.090909 margins=4.090909,26.59091 font=9 flex=0,0
+Label IMPULSE class=unity-text-element,unity-label,hero-wordmark size=441.8182,94.09093 padding=4.090909,4.090909 margins=4.090909,2.045455 font=70 flex=0,0
+Label OWN THE EDGE. class=unity-text-element,unity-label,hero-tagline size=435.6818,34.77271 padding=4.090909,4.090909 margins=-6.136364,20.45455 font=20 flex=0,0
+Label One rooftop. Two rivals.
+Everything is a weapon. class=unity-text-element,unity-label,hero-description size=435.6818,49.09091 padding=4.090909,4.090909 margins=4.090909,2.045455 font=17 flex=0,0
+Label THE ROOFTOP / ROTATION class=unity-text-element,unity-label,eyebrow size=120.6818,18.40912 padding=4.090909,4.090909 margins=4.090909,6.136364 font=8 flex=0,0
+Label ● YOU   class=unity-text-element,unity-label,eyebrow,cyan size=32.72726,18.40912 padding=4.090909,4.090909 margins=4.090909,6.136364 font=8 flex=0,0
+Label ● RIVAL class=unity-text-element,unity-label,eyebrow,orange size=38.86362,18.40912 padding=4.090909,4.090909 margins=4.090909,6.136364 font=8 flex=0,0
+Button  class=unity-text-element,unity-button,training-card size=441.8182,110.4545 padding=18.40909,18.40909 margins=4.090909,4.090909 font=13 flex=0,0
+Label FIRST TIME ON THE ROOF? class=unity-text-element,unity-label,eyebrow,cyan size=394.7727,22.5 padding=4.090909,4.090909 margins=4.090909,6.136364 font=10 flex=0,0
+Label Learn the moves    ↗ class=unity-text-element,unity-label,training-title size=394.7727,34.77271 padding=4.090909,4.090909 margins=4.090909,6.136364 font=20 flex=0,0
+Label Grab. Throw. Dodge. Send them flying. class=unity-text-element,unity-label,muted size=394.7727,22.5 padding=4.090909,4.090909 margins=4.090909,2.045455 font=11 flex=0,0
+Label 01 / STAY UP. SEND THEM DOWN. class=unity-text-element,unity-label,eyebrow size=153.4091,18.40906 padding=4.090909,4.090909 margins=0,0 font=8 flex=0,0
+Button Quit class=unity-text-element,unity-button,quiet size=63.40912,40.90912 padding=10.22727,10.22727 margins=4.090909,4.090909 font=13 flex=0,0
+Label MAKE IT YOUR MATCH class=unity-text-element,unity-label,eyebrow,cyan size=564.5454,22.5 padding=4.090909,4.090909 margins=4.090909,6.136364 font=10 flex=0,0
+Label Enter the arena class=unity-text-element,unity-label,setup-title size=564.5454,49.09091 padding=4.090909,4.090909 margins=4.090909,12.27273 font=32 flex=0,0
+Label 01  /  CHOOSE YOUR OPPONENT class=unity-text-element,unity-label,setup-section size=564.5454,22.5 padding=4.090909,4.090909 margins=14.31818,10.22727 font=10 flex=0,0
+Label Matchup class=unity-text-element,unity-label,unity-base-field__label,unity-base-popup-field__label,unity-popup-field__label size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Button  class=unity-text-element,unity-button,mode-choice,selected size=184.0909,67.5 padding=10.22727,10.22727 margins=0,0 font=13 flex=1,0
+Label Play Laya class=unity-text-element,unity-label,choice-title size=157.5,24.54547 padding=4.090909,4.090909 margins=4.090909,6.136364 font=13 flex=0,0
+Label ON THIS MAC class=unity-text-element,unity-label,choice-note size=157.5,18.40909 padding=4.090909,4.090909 margins=4.090909,2.045455 font=8 flex=0,0
+Button  class=unity-text-element,unity-button,mode-choice size=184.0909,67.5 padding=10.22727,10.22727 margins=0,0 font=13 flex=1,0
+Label Play TypeSafe class=unity-text-element,unity-label,choice-title size=157.5,24.54547 padding=4.090909,4.090909 margins=4.090909,6.136364 font=13 flex=0,0
+Label CLOUD OPPONENT class=unity-text-element,unity-label,choice-note size=157.5,18.40909 padding=4.090909,4.090909 margins=4.090909,2.045455 font=8 flex=0,0
+Button  class=unity-text-element,unity-button,mode-choice size=184.0909,67.5 padding=10.22727,10.22727 margins=0,0 font=13 flex=1,0
+Label Watch AI class=unity-text-element,unity-label,choice-title size=157.4999,24.54547 padding=4.090909,4.090909 margins=4.090909,6.136364 font=13 flex=0,0
+Label LAYA × TYPESAFE class=unity-text-element,unity-label,choice-note size=157.4999,18.40909 padding=4.090909,4.090909 margins=4.090909,2.045455 font=8 flex=0,0
+Label YOU    ×    LAYA class=unity-text-element,unity-label,setup-versus size=564.5454,24.54547 padding=4.090909,4.090909 margins=4.090909,6.136364 font=12 flex=0,0
+Label Take the cyan corner against Laya, running locally on this Mac. class=unity-text-element,unity-label,description size=564.5454,24.54547 padding=4.090909,4.090909 margins=4.090909,2.045455 font=12 flex=0,0
+Label CONNECT TYPESAFE class=unity-text-element,unity-label,eyebrow,orange size=0,0 padding=0,0 margins=0,0 font=10 flex=0,0
+Label API key class=unity-text-element,unity-label,unity-base-field__label,unity-base-text-field__label,unity-text-field__label size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Label Your key stays in this session. class=unity-text-element,unity-label,muted size=0,0 padding=0,0 margins=0,0 font=11 flex=0,0
+Label Model class=unity-text-element,unity-label,unity-base-field__label,unity-base-popup-field__label,unity-popup-field__label size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Button Connect & load models class=unity-text-element,unity-button,large,unity-disabled size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Button Get an API key ↗ class=unity-text-element,unity-button,quiet size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Label TypeSafe receives arena observations and action instructions over HTTPS. Requests use your API account and begin when you enter the arena. class=unity-text-element,unity-label,muted size=0,0 padding=0,0 margins=0,0 font=11 flex=0,0
+Label 02  /  PICK YOUR ROOFTOP class=unity-text-element,unity-label,setup-section size=564.5454,22.5 padding=4.090909,4.090909 margins=14.31818,10.22727 font=10 flex=0,0
+Label Arena class=unity-text-element,unity-label,unity-base-field__label,unity-base-popup-field__label,unity-popup-field__label size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Button  class=unity-text-element,unity-button,arena-choice size=137.0455,104.3182 padding=12.27273,12.27273 margins=0,0 font=13 flex=1,0
+Label 01 class=unity-text-element,unity-label,choice-index size=110.4546,38.86365 padding=4.090909,4.090909 margins=4.090909,12.27273 font=24 flex=0,0
+Label Foundry class=unity-text-element,unity-label,choice-title size=110.4546,24.54547 padding=4.090909,4.090909 margins=4.090909,6.136364 font=12 flex=0,0
+Label CLASSIC class=unity-text-element,unity-label,choice-note size=110.4546,18.40912 padding=4.090909,4.090909 margins=4.090909,2.045455 font=8 flex=0,0
+Button  class=unity-text-element,unity-button,arena-choice size=135,104.3182 padding=12.27273,12.27273 margins=0,0 font=13 flex=1,0
+Label 02 class=unity-text-element,unity-label,choice-index size=108.4091,38.86365 padding=4.090909,4.090909 margins=4.090909,12.27273 font=24 flex=0,0
+Label Crossfire class=unity-text-element,unity-label,choice-title size=108.4091,24.54547 padding=4.090909,4.090909 margins=4.090909,6.136364 font=12 flex=0,0
+Label CENTRAL PROPS class=unity-text-element,unity-label,choice-note size=108.4091,18.40912 padding=4.090909,4.090909 margins=4.090909,2.045455 font=8 flex=0,0
+Button  class=unity-text-element,unity-button,arena-choice size=137.0454,104.3182 padding=12.27273,12.27273 margins=0,0 font=13 flex=1,0
+Label 03 class=unity-text-element,unity-label,choice-index size=110.4546,38.86365 padding=4.090909,4.090909 margins=4.090909,12.27273 font=24 flex=0,0
+Label Flank class=unity-text-element,unity-label,choice-title size=110.4546,24.54547 padding=4.090909,4.090909 margins=4.090909,6.136364 font=12 flex=0,0
+Label SIDE ROUTES class=unity-text-element,unity-label,choice-note size=110.4546,18.40912 padding=4.090909,4.090909 margins=4.090909,2.045455 font=8 flex=0,0
+Button  class=unity-text-element,unity-button,arena-choice,selected size=137.0455,104.3182 padding=12.27273,12.27273 margins=0,0 font=13 flex=1,0
+Label 04 class=unity-text-element,unity-label,choice-index size=110.4545,38.86365 padding=4.090909,4.090909 margins=4.090909,12.27273 font=24 flex=0,0
+Label Rotation class=unity-text-element,unity-label,choice-title size=110.4545,24.54547 padding=4.090909,4.090909 margins=4.090909,6.136364 font=12 flex=0,0
+Label ALL THREE class=unity-text-element,unity-label,choice-note size=110.4545,18.40912 padding=4.090909,4.090909 margins=4.090909,2.045455 font=8 flex=0,0
+Label 03  /  SET THE STAKES class=unity-text-element,unity-label,setup-section size=564.5454,22.5 padding=4.090909,4.090909 margins=14.31818,10.22727 font=10 flex=0,0
+Label Match length class=unity-text-element,unity-label,unity-base-field__label,unity-base-popup-field__label,unity-popup-field__label size=0,0 padding=0,0 margins=0,0 font=13 flex=0,0
+Label ROUND WINS class=unity-text-element,unity-label,eyebrow size=360,22.5 padding=4.090909,4.090909 margins=0,0 font=10 flex=1,0
+Button 3 class=unity-text-element,unity-button,length-choice size=63.40912,34.77271 padding=4.090909,4.090909 margins=4.090909,4.090909 font=17 flex=0,0
+Button 5 class=unity-text-element,unity-button,length-choice,selected size=63.40906,34.77271 padding=4.090909,4.090909 margins=4.090909,4.090909 font=17 flex=0,0
+Button 7 class=unity-text-element,unity-button,length-choice size=65.45459,34.77271 padding=4.090909,4.090909 margins=4.090909,4.090909 font=17 flex=0,0
+VisualElement  class=row,rule-row size=570.6818,38.86365 padding=0,0 margins=0,0 font=15 flex=0,0
+Label Sudden death after 60 seconds class=unity-text-element,unity-label,muted size=186.1364,24.54547 padding=4.090909,4.090909 margins=4.090909,2.045455 font=12 flex=0,1
+Label Win by sending your opponent off the roof. class=unity-text-element,unity-label,setup-message size=580.9091,22.5 padding=4.090909,4.090909 margins=4.090909,8.181818 font=11 flex=0,0
+Button LET’S PLAY    → class=unity-text-element,unity-button,primary,launch-button size=587.0455,53.18182 padding=10.22727,10.22727 margins=4.090909,4.090909 font=15 flex=0,0
+Button Back to current match class=unity-text-element,unity-button,quiet size=0,0 padding=0,0 margins=0,0 font=11 flex=0,0

@@ -10,7 +10,7 @@ namespace Playground {
 [Serializable] public class ExperimentProfile {
  public int schema_version=1;
  public string experiment_id="rooftop",condition_id="baseline",notes="";
- public float max_decisions_per_second=2;
+ public float max_decisions_per_second=4;
  public string[] actions=Enum.GetNames(typeof(SemanticAction));
  public string[] state_fields=StateSchema.Paths;
  public QuestionFile questions;
@@ -33,7 +33,16 @@ public class ExperimentSettings:MonoBehaviour {
  public string ProfilePath,Error;
  public bool Ready=>current!=null&&Error==null;
  public ExperimentProfile Defaults()=>new ExperimentProfile{questions=JsonUtility.FromJson<QuestionFile>(File.ReadAllText(Path.Combine(Application.streamingAssetsPath,"laya-question.json")))};
- void Awake(){ProfilePath=Path.Combine(Application.persistentDataPath,"Experiments","profile.json");Directory.CreateDirectory(Path.GetDirectoryName(ProfilePath));try{current=File.Exists(ProfilePath)?JsonUtility.FromJson<ExperimentProfile>(File.ReadAllText(ProfilePath)):Defaults();Error=current?.Validate()??(current==null?"Empty profile":null);}catch(Exception e){Error=e.Message;}if(current==null)current=Defaults();}
+ void Awake(){ProfilePath=Path.Combine(Application.persistentDataPath,"Experiments","profile.json");Directory.CreateDirectory(Path.GetDirectoryName(ProfilePath));try{current=File.Exists(ProfilePath)?JsonUtility.FromJson<ExperimentProfile>(File.ReadAllText(ProfilePath)):Defaults();if(IsLegacyDefault(current))current=Defaults();Error=current?.Validate()??(current==null?"Empty profile":null);}catch(Exception e){Error=e.Message;}if(current==null)current=Defaults();}
+ public static bool IsLegacyDefault(ExperimentProfile p){
+  if(p==null||p.schema_version!=1||p.experiment_id!="rooftop"||p.condition_id!="baseline"||!string.IsNullOrEmpty(p.notes)||p.max_decisions_per_second!=2||p.actions==null||!p.actions.SequenceEqual(Enum.GetNames(typeof(SemanticAction)))||p.state_fields==null||p.questions?.action?.criteria==null||p.questions.action.type!="choice"||p.state_fields.Distinct().Count()!=p.state_fields.Length)return false;
+  string[] oldFields={"self.distance_to_edge_m","self.speed","self.balance","self.near_edge","self.holding_object","self.grounded","self.held_object_type","opponent.distance_m","opponent.distance_to_edge_m","opponent.speed","opponent.near_edge","opponent.holding_object","opponent.facing_self","opponent.held_object_type","nearest_object.type","nearest_object.id","nearest_object.mass_class","nearest_object.distance_m","incoming_projectile","cover_available","previous_action","previous_outcome"};
+  var expanded=oldFields.Concat(new[]{"self.push_ready_in","self.dodge_ready_in","opponent.winding_up","opponent.recovering","sudden_death"});
+  if(!(new HashSet<string>(p.state_fields).SetEquals(oldFields)||new HashSet<string>(p.state_fields).SetEquals(expanded)))return false;
+  if(p.questions.action.instructions!="Choose the best next action to win this physics rooftop duel by knocking the opponent off. Stay on the roof. Use the visible state and previous result.")return false;
+  string[] criteria={"Close distance to engage opponent.","Create distance from opponent.","Shove opponent in close range.","Go to and pick up the observed nearest object.","Throw the object currently held at opponent.","Quick dodge left.","Quick dodge right.","Move to roof center away from open edges.","Move behind the observed ventilation unit.","Jump over a low threat."};
+  return p.actions.Select((key,i)=>(string)typeof(ChoiceCriteria).GetField(key).GetValue(p.questions.action.criteria)==criteria[i]).All(x=>x);
+ }
  public bool Apply(ExperimentProfile profile,bool save=true){var error=profile?.Validate()??(profile==null?"Empty profile":null);if(error!=null){Error=error;return false;}try{if(save)File.WriteAllText(ProfilePath,JsonUtility.ToJson(profile,true));current=profile.Copy();Error=null;return true;}catch(Exception e){Error=e.Message;return false;}}
 }
 public static class StateSchema {

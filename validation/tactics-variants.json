@@ -1,0 +1,101 @@
+{
+  "original": {
+    "score": 3,
+    "choices": [
+      [
+        "edge pressure",
+        "GRAB_NEAREST_OBJECT"
+      ],
+      [
+        "incoming throw",
+        "TAKE_COVER"
+      ],
+      [
+        "close push windup",
+        "PUSH_OPPONENT"
+      ],
+      [
+        "punish recovery",
+        "PUSH_OPPONENT"
+      ],
+      [
+        "held barrel at range",
+        "THROW_HELD_OBJECT_AT_OPPONENT"
+      ],
+      [
+        "sudden death outside boundary",
+        "GRAB_NEAREST_OBJECT"
+      ],
+      [
+        "opening",
+        "TAKE_COVER"
+      ]
+    ]
+  },
+  "explicit": {
+    "score": 1,
+    "choices": [
+      [
+        "edge pressure",
+        "APPROACH_OPPONENT"
+      ],
+      [
+        "incoming throw",
+        "TAKE_COVER"
+      ],
+      [
+        "close push windup",
+        "APPROACH_OPPONENT"
+      ],
+      [
+        "punish recovery",
+        "APPROACH_OPPONENT"
+      ],
+      [
+        "held barrel at range",
+        "APPROACH_OPPONENT"
+      ],
+      [
+        "sudden death outside boundary",
+        "DODGE_LEFT"
+      ],
+      [
+        "opening",
+        "DODGE_LEFT"
+      ]
+    ]
+  },
+  "short": {
+    "score": 1,
+    "choices": [
+      [
+        "edge pressure",
+        "GRAB_NEAREST_OBJECT"
+      ],
+      [
+        "incoming throw",
+        "APPROACH_OPPONENT"
+      ],
+      [
+        "close push windup",
+        "GRAB_NEAREST_OBJECT"
+      ],
+      [
+        "punish recovery",
+        "GRAB_NEAREST_OBJECT"
+      ],
+      [
+        "held barrel at range",
+        "APPROACH_OPPONENT"
+      ],
+      [
+        "sudden death outside boundary",
+        "GRAB_NEAREST_OBJECT"
+      ],
+      [
+        "opening",
+        "GRAB_NEAREST_OBJECT"
+      ]
+    ]
+  }
+}

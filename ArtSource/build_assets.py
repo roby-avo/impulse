@@ -4,7 +4,7 @@ from mathutils import Vector
 ROOT=pathlib.Path(__file__).resolve().parent.parent
 OUT=ROOT/'Assets/Resources/Visuals'
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
-COLORS={'Team':(.10,.70,.87,1),'Shell':(.72,.79,.79,1),'Metal':(.16,.23,.28,1),'Dark':(.025,.055,.075,1),'Glow':(.3,.95,1,1),'Amber':(1,.56,.12,1),'Wood':(.42,.22,.09,1),'Rubber':(.035,.04,.05,1),'Deck':(.12,.19,.23,1),'Paint':(.32,.42,.46,1),'Window':(.35,.61,.70,1)}
+COLORS={'Team':(.10,.70,.87,1),'Shell':(.72,.79,.79,1),'Metal':(.16,.23,.28,1),'Dark':(.025,.055,.075,1),'Glow':(.3,.95,1,1),'Amber':(1,.56,.12,1),'Wood':(.42,.22,.09,1),'Rubber':(.035,.04,.05,1),'Deck':(.12,.19,.23,1),'DeckAlt':(.15,.22,.26,1),'Paint':(.32,.42,.46,1),'Window':(.35,.61,.70,1)}
 MATS={}
 for k,c in COLORS.items():
  m=bpy.data.materials.new(k);m.diffuse_color=c;MATS[k]=m
@@ -44,11 +44,15 @@ box('Chassis',(0,.99,0),(.71,.75,.53),'Team',.13)
 box('Chest armor',(0,1.10,.25),(.62,.44,.13),'Shell',.06)
 box('Waist',(0,.60,0),(.51,.16,.42),'Dark',.04)
 cyl('Neck',(0,1.44,0),.15,.15,'Dark')
+head_start=len(parts)
 box('Helmet',(0,1.63,0),(.73,.48,.61),'Shell',.13)
 box('Visor',(0,1.66,.30),(.59,.21,.045),'Dark',.045)
 for x in [-.17,.17]:box('Eye LED',(x,1.67,.332),(.13,.055,.025),'Glow',.01)
 for x in [-.38,.38]:box('Helmet ear',(x,1.63,0),(.07,.23,.27),'Team',.025)
 box('Brow',(0,1.84,.15),(.43,.065,.24),'Team',.025)
+for x in [-.27,.27]:box('Helmet cheek',(x,1.52,.285),(.10,.065,.09),'Metal',.018)
+for x in [-.13,0,.13]:box('Helmet rear vent',(x,1.62,-.31),(.055,.12,.024),'Dark',.009)
+head_parts=parts[head_start:];del parts[head_start:]
 torus('Chest reactor',(0,1.1,.337),.105,.025,'Dark',True)
 box('Reactor glow',(0,1.1,.345),(.13,.13,.02),'Glow',.04)
 box('Back pack',(0,1.04,-.29),(.43,.46,.17),'Metal',.05)
@@ -56,6 +60,10 @@ for y in [.92,1.02,1.12]:box('Cooling slot',(0,y,-.381),(.3,.035,.018),'Dark',.0
 box('Back status',(0,1.24,-.385),(.28,.035,.02),'Glow',.005)
 for x in [-.42,.42]:box('Shoulder',(x,1.20,0),(.16,.20,.29),'Team',.045)
 label('PX',(0,.80,.283),.115,'Dark');export('robot_body')
+parts.extend(head_parts)
+# Move the helmet origin to its neck pivot for independent look animation.
+for o in parts:o.location.z-=1.44
+export('robot_head')
 box('Gauntlet',(0,0,0),(.28,.29,.32),'Team',.07);box('Knuckle',(0,.03,.14),(.26,.15,.10),'Shell',.04);box('Wrist',(0,.13,-.02),(.16,.13,.2),'Dark',.025);export('robot_glove')
 box('Sole',(0,-.10,.05),(.30,.12,.48),'Rubber',.03);box('Boot',(0,.025,0),(.29,.24,.42),'Shell',.06);box('Toe stripe',(0,.04,.213),(.22,.07,.02),'Team',.01);export('robot_boot')
 # Props match the existing invisible physical proxies exactly.
@@ -98,7 +106,7 @@ label('AIR / 01',(0,.56,.916),.16,'Dark');export('vent')
 # Roof: surface stays at y=0, all safety markers lie within the existing 20 m square.
 box('Roof structure',(0,-.59,0),(20,1.10,20),'Dark',.08)
 for x in range(8):
- for z in range(8):box('Deck plate',(-8.75+x*2.5,-.045,-8.75+z*2.5),(2.475,.09,2.475),'Deck' if (x+z)%2 else 'Metal',.018)
+ for z in range(8):box('Deck plate',(-8.75+x*2.5,-.045,-8.75+z*2.5),(2.475,.09,2.475),'Deck' if (x+z)%2 else 'DeckAlt',.018)
 for side in range(4):
  a=side*math.pi/2
  for i in range(-9,10):
@@ -108,8 +116,14 @@ for side in range(4):
   x,z=i,10.01;rx=x*math.cos(a)+z*math.sin(a);rz=-x*math.sin(a)+z*math.cos(a)
   o=box('Edge lamp',(rx,-.25,rz),(2,.07,.05),'Glow',.01);o.rotation_euler.z=a
   o=box('Structural beam',(rx,-1.30,rz),(.24,1.35,.24),'Paint',.02)
-for z,mat in [(-5,'Team'),(5,'Amber')]:
- torus('Spawn ring',(0,.012,z),1.18,.022,mat)
+for x in [-8.5,8.5]:
+ for z in [-8.5,8.5]:
+  cyl('Deck fastener',(x,.015,z),.06,.025,'Metal',12)
+# Restrained court inlays add scale without obscuring interactable props.
+for x in [-7.2,7.2]:box('Court sideline',(x,.012,0),(.045,.012,13.5),'Paint',0)
+for z in [-6.8,6.8]:
+ for x in [-5.5,-2.75,0,2.75,5.5]:box('Court dash',(x,.012,z),(1.3,.012,.045),'Paint',0)
+for z in [-8.5,8.5]:label('01' if z<0 else '02',(0,.014,z),.46,'Paint',True)
 label('IMPULSE',(0,.017,0),.72,'Paint',True)
 label('ROOFTOP   01',(0,.018,1.0),.25,'Paint',True);export('rooftop')
 # A modular city building with stepped roof and lit windows.

@@ -171,3 +171,39 @@ Twenty requests from the user's recording produced identical choices and
 reported probabilities on CPU and GPU. Real GPU Laya passed the full M1–M7/UI
 suite and 34 matchup checks. See `validation/LAYA_LATENCY.md` for controlled
 benchmarks and rendered-game measurements, including their limits.
+
+## 0.10.0 — Combat, onboarding and arena presentation
+
+Implemented telegraphed, interruptible attacks, consistent action gates, shared
+turn rates, distinct prop handling, pitch-controlled trajectory preview, grab
+highlighting, compact HUD and optional diagnostics. Added a physical tutorial,
+three symmetric layouts, round rotation and optional shrinking-boundary sudden
+death. AI requests can overlap movement and are revalidated before execution;
+new observations expose combat timing. Presentation adds expressive procedural
+poses, spatial audio, contact effects, sky/skyline depth and authored roof updates.
+See `validation/GAMEPLAY_UPGRADE.md` for scope, evidence and playtest limits.
+
+## Interface and presentation pass — 0.11.0
+
+Redesigned match setup, HUD, pause, results and lab; added a vector rooftop
+preview and selectable mode/layout cards. Blender now exports an articulated
+helmet; robot strides and camera following are smoothed. The roof has matte
+panels, court markings and facade detail, with restrained post-processing.
+Both fighters share the revised acceleration/braking. Focused combat checks and
+M1–M7 regressions pass. See `validation/UI_PRESENTATION_UPGRADE.md`.
+
+## Laya decision pass — 0.12
+
+Implemented clearer observations/criteria, 4 Hz factory default with strict legacy
+profile migration, continuous model-authorized movement, reachable cover/objects,
+trajectory-based threat detection and leading throws. No replacement tactical
+policy; both AI providers share execution rules. Details and limitations are in
+`validation/LAYA_DECISION_UPGRADE.md`.
+
+## Keyboard gameplay — 0.13
+
+Fixed arena camera and keyboard-only player input. WASD/arrows move in screen
+directions, F attacks (push/throw), E grabs/drops, Shift dodges and Space jumps.
+Opponent facing and throw aiming are automatic using the existing physical aim
+solution. HUD, setup, pause controls and training instructions reflect the new
+controls. Camera rotation/zoom/follow/shake and mouse attacks have been removed.

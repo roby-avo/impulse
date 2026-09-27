@@ -1,0 +1,14 @@
+{
+  "build": "0.12.0 (14)",
+  "log": "20260927-155653-798eb0.jsonl",
+  "requests": 39,
+  "executed": 35,
+  "request_errors": 0,
+  "choices": {
+    "TAKE_COVER": 19,
+    "APPROACH_OPPONENT": 10,
+    "GRAB_NEAREST_OBJECT": 6
+  },
+  "situation_present": true,
+  "native_ui": "Match started, paused, and returned to matchup screen; no runtime exception lines in Player.log."
+}

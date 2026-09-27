@@ -105,3 +105,28 @@ Neither credentials nor authentication headers are recorded. HTTP error bodies
 are discarded; raw successful model responses are retained with key redaction.
 TypeSafe model latency includes the network round trip. No delay is added to
 artificially equalize the local and cloud models.
+
+## Laya decision update (0.12)
+
+Fresh factory profiles now cap requests at 4 Hz. Only exact untouched 2 Hz factory
+profiles from the 22- or 27-field versions migrate in memory; edited criteria,
+custom IDs, notes, rates, action sets and observation sets are preserved.
+
+The new `situation` observation describes visible geometry, weapons, attack
+windups, recovery, cover and boundary danger in plain language. It contains no
+chosen action. **Deselect `situation` as well as the corresponding numeric fields
+when ablating that information**, because the description otherwise conveys it.
+The complete numeric snapshot remains available for telemetry.
+
+Repeated model selections can continue an existing movement without resetting
+its deadline or destination. Such recorded movement segments end with
+`continued_by_model`; `execution_success: true` means the segment was continued,
+not that the overall destination was reached. A changed cover position starts a
+new execution. Every continuation and every new action still requires a valid
+provider response, and the configured request cap remains enforced.
+
+The executor now leads observed opponent velocity for throws, advances within a
+committed push's existing movement limits, clamps retreat destinations inside the
+roof, and checks cover/object reachability. These execution semantics apply to
+both AI providers. They do not grant different speed, damage, cooldowns, or
+invulnerability, and no policy runs when the provider is unavailable.

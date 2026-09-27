@@ -1,0 +1,1595 @@
+[
+  {
+    "variant": "plain",
+    "scenario": "edge",
+    "expected_examples": [
+      "MOVE_TOWARD_SAFETY"
+    ],
+    "choice": "PUSH_OPPONENT",
+    "matches": false,
+    "request": {
+      "model": "english",
+      "state": {
+        "situation": "I am dangerously close to falling off the roof. The enemy is within pushing range."
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Choose the best next action to win this physics rooftop duel by knocking the opponent off. Stay on the roof. Use the visible state and previous result.",
+          "criteria": {
+            "APPROACH_OPPONENT": "Close distance to engage opponent.",
+            "RETREAT_FROM_OPPONENT": "Create distance from opponent.",
+            "PUSH_OPPONENT": "Shove opponent in close range.",
+            "GRAB_NEAREST_OBJECT": "Go to and pick up the observed nearest object.",
+            "DODGE_LEFT": "Quick dodge left.",
+            "DODGE_RIGHT": "Quick dodge right.",
+            "MOVE_TOWARD_SAFETY": "Move to roof center away from open edges.",
+            "TAKE_COVER": "Move behind the observed ventilation unit.",
+            "JUMP": "Jump over a low threat."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "PUSH_OPPONENT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.0093,
+            "RETREAT_FROM_OPPONENT": 0.0157,
+            "PUSH_OPPONENT": 0.9019,
+            "GRAB_NEAREST_OBJECT": 0.0101,
+            "DODGE_LEFT": 0.008,
+            "DODGE_RIGHT": 0.0059,
+            "MOVE_TOWARD_SAFETY": 0.0124,
+            "TAKE_COVER": 0.0064,
+            "JUMP": 0.0304
+          },
+          "confidence": 0.768,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 201,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "plain",
+    "scenario": "projectile",
+    "expected_examples": [
+      "DODGE_LEFT",
+      "DODGE_RIGHT",
+      "TAKE_COVER"
+    ],
+    "choice": "JUMP",
+    "matches": false,
+    "request": {
+      "model": "english",
+      "state": {
+        "situation": "A fast thrown object is flying toward me and will hit me soon. The enemy is five meters away."
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Choose the best next action to win this physics rooftop duel by knocking the opponent off. Stay on the roof. Use the visible state and previous result.",
+          "criteria": {
+            "APPROACH_OPPONENT": "Close distance to engage opponent.",
+            "RETREAT_FROM_OPPONENT": "Create distance from opponent.",
+            "GRAB_NEAREST_OBJECT": "Go to and pick up the observed nearest object.",
+            "DODGE_LEFT": "Quick dodge left.",
+            "DODGE_RIGHT": "Quick dodge right.",
+            "MOVE_TOWARD_SAFETY": "Move to roof center away from open edges.",
+            "TAKE_COVER": "Move behind the observed ventilation unit.",
+            "JUMP": "Jump over a low threat."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "JUMP",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.0932,
+            "RETREAT_FROM_OPPONENT": 0.1631,
+            "GRAB_NEAREST_OBJECT": 0.182,
+            "DODGE_LEFT": 0.0715,
+            "DODGE_RIGHT": 0.0354,
+            "MOVE_TOWARD_SAFETY": 0.1366,
+            "TAKE_COVER": 0.0542,
+            "JUMP": 0.264
+          },
+          "confidence": 0.0789,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 188,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "plain",
+    "scenario": "windup",
+    "expected_examples": [
+      "DODGE_LEFT",
+      "DODGE_RIGHT",
+      "RETREAT_FROM_OPPONENT"
+    ],
+    "choice": "PUSH_OPPONENT",
+    "matches": false,
+    "request": {
+      "model": "english",
+      "state": {
+        "situation": "The enemy is right in front of me, winding up a shove that will hit me in 0.2 seconds."
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Choose the best next action to win this physics rooftop duel by knocking the opponent off. Stay on the roof. Use the visible state and previous result.",
+          "criteria": {
+            "APPROACH_OPPONENT": "Close distance to engage opponent.",
+            "RETREAT_FROM_OPPONENT": "Create distance from opponent.",
+            "PUSH_OPPONENT": "Shove opponent in close range.",
+            "GRAB_NEAREST_OBJECT": "Go to and pick up the observed nearest object.",
+            "DODGE_LEFT": "Quick dodge left.",
+            "DODGE_RIGHT": "Quick dodge right.",
+            "MOVE_TOWARD_SAFETY": "Move to roof center away from open edges.",
+            "TAKE_COVER": "Move behind the observed ventilation unit.",
+            "JUMP": "Jump over a low threat."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "PUSH_OPPONENT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.0049,
+            "RETREAT_FROM_OPPONENT": 0.0048,
+            "PUSH_OPPONENT": 0.9724,
+            "GRAB_NEAREST_OBJECT": 0.0011,
+            "DODGE_LEFT": 0.0024,
+            "DODGE_RIGHT": 0.0023,
+            "MOVE_TOWARD_SAFETY": 0.0015,
+            "TAKE_COVER": 0.0015,
+            "JUMP": 0.009
+          },
+          "confidence": 0.9194,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 207,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "plain",
+    "scenario": "punish",
+    "expected_examples": [
+      "PUSH_OPPONENT"
+    ],
+    "choice": "PUSH_OPPONENT",
+    "matches": true,
+    "request": {
+      "model": "english",
+      "state": {
+        "situation": "The enemy is within pushing range, recovering after an attack, with an open edge behind them. My shove is ready."
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Choose the best next action to win this physics rooftop duel by knocking the opponent off. Stay on the roof. Use the visible state and previous result.",
+          "criteria": {
+            "APPROACH_OPPONENT": "Close distance to engage opponent.",
+            "RETREAT_FROM_OPPONENT": "Create distance from opponent.",
+            "PUSH_OPPONENT": "Shove opponent in close range.",
+            "GRAB_NEAREST_OBJECT": "Go to and pick up the observed nearest object.",
+            "DODGE_LEFT": "Quick dodge left.",
+            "DODGE_RIGHT": "Quick dodge right.",
+            "MOVE_TOWARD_SAFETY": "Move to roof center away from open edges.",
+            "TAKE_COVER": "Move behind the observed ventilation unit.",
+            "JUMP": "Jump over a low threat."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "PUSH_OPPONENT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.0001,
+            "RETREAT_FROM_OPPONENT": 0.0,
+            "PUSH_OPPONENT": 0.9999,
+            "GRAB_NEAREST_OBJECT": 0.0,
+            "DODGE_LEFT": 0.0,
+            "DODGE_RIGHT": 0.0,
+            "MOVE_TOWARD_SAFETY": 0.0,
+            "TAKE_COVER": 0.0,
+            "JUMP": 0.0
+          },
+          "confidence": 0.9993,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 208,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "plain",
+    "scenario": "throw",
+    "expected_examples": [
+      "THROW_HELD_OBJECT_AT_OPPONENT"
+    ],
+    "choice": "THROW_HELD_OBJECT_AT_OPPONENT",
+    "matches": true,
+    "request": {
+      "model": "english",
+      "state": {
+        "situation": "I am holding a barrel. The enemy is five meters away with a clear throwing lane."
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Choose the best next action to win this physics rooftop duel by knocking the opponent off. Stay on the roof. Use the visible state and previous result.",
+          "criteria": {
+            "APPROACH_OPPONENT": "Close distance to engage opponent.",
+            "RETREAT_FROM_OPPONENT": "Create distance from opponent.",
+            "THROW_HELD_OBJECT_AT_OPPONENT": "Throw the object currently held at opponent.",
+            "DODGE_LEFT": "Quick dodge left.",
+            "DODGE_RIGHT": "Quick dodge right.",
+            "MOVE_TOWARD_SAFETY": "Move to roof center away from open edges.",
+            "TAKE_COVER": "Move behind the observed ventilation unit.",
+            "JUMP": "Jump over a low threat."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "THROW_HELD_OBJECT_AT_OPPONENT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.051,
+            "RETREAT_FROM_OPPONENT": 0.0641,
+            "THROW_HELD_OBJECT_AT_OPPONENT": 0.7243,
+            "DODGE_LEFT": 0.0123,
+            "DODGE_RIGHT": 0.0134,
+            "MOVE_TOWARD_SAFETY": 0.0413,
+            "TAKE_COVER": 0.0389,
+            "JUMP": 0.0547
+          },
+          "confidence": 0.4756,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 189,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "plain",
+    "scenario": "boundary",
+    "expected_examples": [
+      "MOVE_TOWARD_SAFETY"
+    ],
+    "choice": "GRAB_NEAREST_OBJECT",
+    "matches": false,
+    "request": {
+      "model": "english",
+      "state": {
+        "situation": "I am outside the shrinking safe boundary and about to lose the round."
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Choose the best next action to win this physics rooftop duel by knocking the opponent off. Stay on the roof. Use the visible state and previous result.",
+          "criteria": {
+            "APPROACH_OPPONENT": "Close distance to engage opponent.",
+            "RETREAT_FROM_OPPONENT": "Create distance from opponent.",
+            "GRAB_NEAREST_OBJECT": "Go to and pick up the observed nearest object.",
+            "DODGE_LEFT": "Quick dodge left.",
+            "DODGE_RIGHT": "Quick dodge right.",
+            "MOVE_TOWARD_SAFETY": "Move to roof center away from open edges.",
+            "TAKE_COVER": "Move behind the observed ventilation unit.",
+            "JUMP": "Jump over a low threat."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "GRAB_NEAREST_OBJECT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.1046,
+            "RETREAT_FROM_OPPONENT": 0.0865,
+            "GRAB_NEAREST_OBJECT": 0.2163,
+            "DODGE_LEFT": 0.131,
+            "DODGE_RIGHT": 0.0519,
+            "MOVE_TOWARD_SAFETY": 0.1664,
+            "TAKE_COVER": 0.0737,
+            "JUMP": 0.1697
+          },
+          "confidence": 0.0429,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 181,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "plain",
+    "scenario": "pickup",
+    "expected_examples": [
+      "GRAB_NEAREST_OBJECT",
+      "APPROACH_OPPONENT"
+    ],
+    "choice": "RETREAT_FROM_OPPONENT",
+    "matches": false,
+    "request": {
+      "model": "english",
+      "state": {
+        "situation": "The enemy is ten meters away. A throwable barrel is within my reach. I am empty handed and away from edges."
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Choose the best next action to win this physics rooftop duel by knocking the opponent off. Stay on the roof. Use the visible state and previous result.",
+          "criteria": {
+            "APPROACH_OPPONENT": "Close distance to engage opponent.",
+            "RETREAT_FROM_OPPONENT": "Create distance from opponent.",
+            "GRAB_NEAREST_OBJECT": "Go to and pick up the observed nearest object.",
+            "DODGE_LEFT": "Quick dodge left.",
+            "DODGE_RIGHT": "Quick dodge right.",
+            "MOVE_TOWARD_SAFETY": "Move to roof center away from open edges.",
+            "TAKE_COVER": "Move behind the observed ventilation unit.",
+            "JUMP": "Jump over a low threat."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "RETREAT_FROM_OPPONENT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.0955,
+            "RETREAT_FROM_OPPONENT": 0.3255,
+            "GRAB_NEAREST_OBJECT": 0.1179,
+            "DODGE_LEFT": 0.0756,
+            "DODGE_RIGHT": 0.0349,
+            "MOVE_TOWARD_SAFETY": 0.1857,
+            "TAKE_COVER": 0.0411,
+            "JUMP": 0.1239
+          },
+          "confidence": 0.1072,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 192,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "plain",
+    "scenario": "chase",
+    "expected_examples": [
+      "APPROACH_OPPONENT"
+    ],
+    "choice": "GRAB_NEAREST_OBJECT",
+    "matches": false,
+    "request": {
+      "model": "english",
+      "state": {
+        "situation": "The enemy is five meters away. I am empty handed and away from edges. The nearest throwable object is eight meters away."
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Choose the best next action to win this physics rooftop duel by knocking the opponent off. Stay on the roof. Use the visible state and previous result.",
+          "criteria": {
+            "APPROACH_OPPONENT": "Close distance to engage opponent.",
+            "RETREAT_FROM_OPPONENT": "Create distance from opponent.",
+            "GRAB_NEAREST_OBJECT": "Go to and pick up the observed nearest object.",
+            "DODGE_LEFT": "Quick dodge left.",
+            "DODGE_RIGHT": "Quick dodge right.",
+            "MOVE_TOWARD_SAFETY": "Move to roof center away from open edges.",
+            "TAKE_COVER": "Move behind the observed ventilation unit.",
+            "JUMP": "Jump over a low threat."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "GRAB_NEAREST_OBJECT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.097,
+            "RETREAT_FROM_OPPONENT": 0.1959,
+            "GRAB_NEAREST_OBJECT": 0.2301,
+            "DODGE_LEFT": 0.068,
+            "DODGE_RIGHT": 0.033,
+            "MOVE_TOWARD_SAFETY": 0.1814,
+            "TAKE_COVER": 0.0721,
+            "JUMP": 0.1225
+          },
+          "confidence": 0.0692,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 193,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "plain_short",
+    "scenario": "edge",
+    "expected_examples": [
+      "MOVE_TOWARD_SAFETY"
+    ],
+    "choice": "PUSH_OPPONENT",
+    "matches": false,
+    "request": {
+      "model": "english",
+      "state": {
+        "situation": "I am dangerously close to falling off the roof. The enemy is within pushing range."
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "What should I do next in this fight to knock my enemy off the roof and stay alive?",
+          "criteria": {
+            "APPROACH_OPPONENT": "Move closer to attack the enemy.",
+            "RETREAT_FROM_OPPONENT": "Back away from the enemy.",
+            "PUSH_OPPONENT": "Shove the nearby enemy.",
+            "GRAB_NEAREST_OBJECT": "Pick up a throwable weapon.",
+            "DODGE_LEFT": "Dodge the incoming attack to the left.",
+            "DODGE_RIGHT": "Dodge the incoming attack to the right.",
+            "MOVE_TOWARD_SAFETY": "Move away from the edge toward the center.",
+            "TAKE_COVER": "Hide behind cover.",
+            "JUMP": "Jump."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "PUSH_OPPONENT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.0527,
+            "RETREAT_FROM_OPPONENT": 0.065,
+            "PUSH_OPPONENT": 0.6349,
+            "GRAB_NEAREST_OBJECT": 0.0074,
+            "DODGE_LEFT": 0.0659,
+            "DODGE_RIGHT": 0.024,
+            "MOVE_TOWARD_SAFETY": 0.1341,
+            "TAKE_COVER": 0.0068,
+            "JUMP": 0.0094
+          },
+          "confidence": 0.4206,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 185,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "plain_short",
+    "scenario": "projectile",
+    "expected_examples": [
+      "DODGE_LEFT",
+      "DODGE_RIGHT",
+      "TAKE_COVER"
+    ],
+    "choice": "GRAB_NEAREST_OBJECT",
+    "matches": false,
+    "request": {
+      "model": "english",
+      "state": {
+        "situation": "A fast thrown object is flying toward me and will hit me soon. The enemy is five meters away."
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "What should I do next in this fight to knock my enemy off the roof and stay alive?",
+          "criteria": {
+            "APPROACH_OPPONENT": "Move closer to attack the enemy.",
+            "RETREAT_FROM_OPPONENT": "Back away from the enemy.",
+            "GRAB_NEAREST_OBJECT": "Pick up a throwable weapon.",
+            "DODGE_LEFT": "Dodge the incoming attack to the left.",
+            "DODGE_RIGHT": "Dodge the incoming attack to the right.",
+            "MOVE_TOWARD_SAFETY": "Move away from the edge toward the center.",
+            "TAKE_COVER": "Hide behind cover.",
+            "JUMP": "Jump."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "GRAB_NEAREST_OBJECT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.207,
+            "RETREAT_FROM_OPPONENT": 0.198,
+            "GRAB_NEAREST_OBJECT": 0.2426,
+            "DODGE_LEFT": 0.095,
+            "DODGE_RIGHT": 0.0441,
+            "MOVE_TOWARD_SAFETY": 0.1532,
+            "TAKE_COVER": 0.0133,
+            "JUMP": 0.0467
+          },
+          "confidence": 0.1153,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 173,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "plain_short",
+    "scenario": "windup",
+    "expected_examples": [
+      "DODGE_LEFT",
+      "DODGE_RIGHT",
+      "RETREAT_FROM_OPPONENT"
+    ],
+    "choice": "PUSH_OPPONENT",
+    "matches": false,
+    "request": {
+      "model": "english",
+      "state": {
+        "situation": "The enemy is right in front of me, winding up a shove that will hit me in 0.2 seconds."
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "What should I do next in this fight to knock my enemy off the roof and stay alive?",
+          "criteria": {
+            "APPROACH_OPPONENT": "Move closer to attack the enemy.",
+            "RETREAT_FROM_OPPONENT": "Back away from the enemy.",
+            "PUSH_OPPONENT": "Shove the nearby enemy.",
+            "GRAB_NEAREST_OBJECT": "Pick up a throwable weapon.",
+            "DODGE_LEFT": "Dodge the incoming attack to the left.",
+            "DODGE_RIGHT": "Dodge the incoming attack to the right.",
+            "MOVE_TOWARD_SAFETY": "Move away from the edge toward the center.",
+            "TAKE_COVER": "Hide behind cover.",
+            "JUMP": "Jump."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "PUSH_OPPONENT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.0008,
+            "RETREAT_FROM_OPPONENT": 0.0004,
+            "PUSH_OPPONENT": 0.9977,
+            "GRAB_NEAREST_OBJECT": 0.0,
+            "DODGE_LEFT": 0.0004,
+            "DODGE_RIGHT": 0.0004,
+            "MOVE_TOWARD_SAFETY": 0.0002,
+            "TAKE_COVER": 0.0001,
+            "JUMP": 0.0001
+          },
+          "confidence": 0.9909,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 191,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "plain_short",
+    "scenario": "punish",
+    "expected_examples": [
+      "PUSH_OPPONENT"
+    ],
+    "choice": "PUSH_OPPONENT",
+    "matches": true,
+    "request": {
+      "model": "english",
+      "state": {
+        "situation": "The enemy is within pushing range, recovering after an attack, with an open edge behind them. My shove is ready."
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "What should I do next in this fight to knock my enemy off the roof and stay alive?",
+          "criteria": {
+            "APPROACH_OPPONENT": "Move closer to attack the enemy.",
+            "RETREAT_FROM_OPPONENT": "Back away from the enemy.",
+            "PUSH_OPPONENT": "Shove the nearby enemy.",
+            "GRAB_NEAREST_OBJECT": "Pick up a throwable weapon.",
+            "DODGE_LEFT": "Dodge the incoming attack to the left.",
+            "DODGE_RIGHT": "Dodge the incoming attack to the right.",
+            "MOVE_TOWARD_SAFETY": "Move away from the edge toward the center.",
+            "TAKE_COVER": "Hide behind cover.",
+            "JUMP": "Jump."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "PUSH_OPPONENT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.0,
+            "RETREAT_FROM_OPPONENT": 0.0,
+            "PUSH_OPPONENT": 1.0,
+            "GRAB_NEAREST_OBJECT": 0.0,
+            "DODGE_LEFT": 0.0,
+            "DODGE_RIGHT": 0.0,
+            "MOVE_TOWARD_SAFETY": 0.0,
+            "TAKE_COVER": 0.0,
+            "JUMP": 0.0
+          },
+          "confidence": 1.0,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 192,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "plain_short",
+    "scenario": "throw",
+    "expected_examples": [
+      "THROW_HELD_OBJECT_AT_OPPONENT"
+    ],
+    "choice": "THROW_HELD_OBJECT_AT_OPPONENT",
+    "matches": true,
+    "request": {
+      "model": "english",
+      "state": {
+        "situation": "I am holding a barrel. The enemy is five meters away with a clear throwing lane."
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "What should I do next in this fight to knock my enemy off the roof and stay alive?",
+          "criteria": {
+            "APPROACH_OPPONENT": "Move closer to attack the enemy.",
+            "RETREAT_FROM_OPPONENT": "Back away from the enemy.",
+            "THROW_HELD_OBJECT_AT_OPPONENT": "Throw the weapon I am holding.",
+            "DODGE_LEFT": "Dodge the incoming attack to the left.",
+            "DODGE_RIGHT": "Dodge the incoming attack to the right.",
+            "MOVE_TOWARD_SAFETY": "Move away from the edge toward the center.",
+            "TAKE_COVER": "Hide behind cover.",
+            "JUMP": "Jump."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "THROW_HELD_OBJECT_AT_OPPONENT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.0029,
+            "RETREAT_FROM_OPPONENT": 0.0021,
+            "THROW_HELD_OBJECT_AT_OPPONENT": 0.9914,
+            "DODGE_LEFT": 0.001,
+            "DODGE_RIGHT": 0.0009,
+            "MOVE_TOWARD_SAFETY": 0.0012,
+            "TAKE_COVER": 0.0001,
+            "JUMP": 0.0004
+          },
+          "confidence": 0.9691,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 176,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "plain_short",
+    "scenario": "boundary",
+    "expected_examples": [
+      "MOVE_TOWARD_SAFETY"
+    ],
+    "choice": "DODGE_LEFT",
+    "matches": false,
+    "request": {
+      "model": "english",
+      "state": {
+        "situation": "I am outside the shrinking safe boundary and about to lose the round."
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "What should I do next in this fight to knock my enemy off the roof and stay alive?",
+          "criteria": {
+            "APPROACH_OPPONENT": "Move closer to attack the enemy.",
+            "RETREAT_FROM_OPPONENT": "Back away from the enemy.",
+            "GRAB_NEAREST_OBJECT": "Pick up a throwable weapon.",
+            "DODGE_LEFT": "Dodge the incoming attack to the left.",
+            "DODGE_RIGHT": "Dodge the incoming attack to the right.",
+            "MOVE_TOWARD_SAFETY": "Move away from the edge toward the center.",
+            "TAKE_COVER": "Hide behind cover.",
+            "JUMP": "Jump."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "DODGE_LEFT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.1211,
+            "RETREAT_FROM_OPPONENT": 0.1458,
+            "GRAB_NEAREST_OBJECT": 0.0242,
+            "DODGE_LEFT": 0.2939,
+            "DODGE_RIGHT": 0.1098,
+            "MOVE_TOWARD_SAFETY": 0.245,
+            "TAKE_COVER": 0.0221,
+            "JUMP": 0.0382
+          },
+          "confidence": 0.1429,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 166,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "plain_short",
+    "scenario": "pickup",
+    "expected_examples": [
+      "GRAB_NEAREST_OBJECT",
+      "APPROACH_OPPONENT"
+    ],
+    "choice": "GRAB_NEAREST_OBJECT",
+    "matches": true,
+    "request": {
+      "model": "english",
+      "state": {
+        "situation": "The enemy is ten meters away. A throwable barrel is within my reach. I am empty handed and away from edges."
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "What should I do next in this fight to knock my enemy off the roof and stay alive?",
+          "criteria": {
+            "APPROACH_OPPONENT": "Move closer to attack the enemy.",
+            "RETREAT_FROM_OPPONENT": "Back away from the enemy.",
+            "GRAB_NEAREST_OBJECT": "Pick up a throwable weapon.",
+            "DODGE_LEFT": "Dodge the incoming attack to the left.",
+            "DODGE_RIGHT": "Dodge the incoming attack to the right.",
+            "MOVE_TOWARD_SAFETY": "Move away from the edge toward the center.",
+            "TAKE_COVER": "Hide behind cover.",
+            "JUMP": "Jump."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "GRAB_NEAREST_OBJECT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.105,
+            "RETREAT_FROM_OPPONENT": 0.1127,
+            "GRAB_NEAREST_OBJECT": 0.4567,
+            "DODGE_LEFT": 0.0545,
+            "DODGE_RIGHT": 0.0346,
+            "MOVE_TOWARD_SAFETY": 0.2181,
+            "TAKE_COVER": 0.0067,
+            "JUMP": 0.0116
+          },
+          "confidence": 0.2628,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 177,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "plain_short",
+    "scenario": "chase",
+    "expected_examples": [
+      "APPROACH_OPPONENT"
+    ],
+    "choice": "GRAB_NEAREST_OBJECT",
+    "matches": false,
+    "request": {
+      "model": "english",
+      "state": {
+        "situation": "The enemy is five meters away. I am empty handed and away from edges. The nearest throwable object is eight meters away."
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "What should I do next in this fight to knock my enemy off the roof and stay alive?",
+          "criteria": {
+            "APPROACH_OPPONENT": "Move closer to attack the enemy.",
+            "RETREAT_FROM_OPPONENT": "Back away from the enemy.",
+            "GRAB_NEAREST_OBJECT": "Pick up a throwable weapon.",
+            "DODGE_LEFT": "Dodge the incoming attack to the left.",
+            "DODGE_RIGHT": "Dodge the incoming attack to the right.",
+            "MOVE_TOWARD_SAFETY": "Move away from the edge toward the center.",
+            "TAKE_COVER": "Hide behind cover.",
+            "JUMP": "Jump."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "GRAB_NEAREST_OBJECT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.1435,
+            "RETREAT_FROM_OPPONENT": 0.1389,
+            "GRAB_NEAREST_OBJECT": 0.3107,
+            "DODGE_LEFT": 0.0561,
+            "DODGE_RIGHT": 0.0387,
+            "MOVE_TOWARD_SAFETY": 0.2801,
+            "TAKE_COVER": 0.0134,
+            "JUMP": 0.0185
+          },
+          "confidence": 0.1865,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 178,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "plain_both",
+    "scenario": "edge",
+    "expected_examples": [
+      "MOVE_TOWARD_SAFETY"
+    ],
+    "choice": "PUSH_OPPONENT",
+    "matches": false,
+    "request": {
+      "model": "english",
+      "state": {
+        "situation": "I am dangerously close to falling off the roof. The enemy is within pushing range."
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Choose the best next action to win this rooftop fight. Avoid falling off and exploit opportunities to attack.",
+          "criteria": {
+            "APPROACH_OPPONENT": "Close the gap to a distant enemy when there is no immediate danger.",
+            "RETREAT_FROM_OPPONENT": "Back away from a nearby enemy to create space while my attack recovers.",
+            "PUSH_OPPONENT": "Attack an enemy within reach with a shove, especially during their recovery or near their edge.",
+            "GRAB_NEAREST_OBJECT": "Pick up a nearby weapon when empty handed and the enemy is far away.",
+            "DODGE_LEFT": "Evade an incoming projectile or close enemy attack by dodging left.",
+            "DODGE_RIGHT": "Evade an incoming projectile or close enemy attack by dodging right.",
+            "MOVE_TOWARD_SAFETY": "Escape a dangerous edge or shrinking boundary by moving toward the center.",
+            "TAKE_COVER": "Get behind solid cover against a distant enemy holding a throwable weapon.",
+            "JUMP": "Jump over a low obstacle or low projectile."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "PUSH_OPPONENT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.0587,
+            "RETREAT_FROM_OPPONENT": 0.1108,
+            "PUSH_OPPONENT": 0.2973,
+            "GRAB_NEAREST_OBJECT": 0.0546,
+            "DODGE_LEFT": 0.235,
+            "DODGE_RIGHT": 0.0758,
+            "MOVE_TOWARD_SAFETY": 0.0591,
+            "TAKE_COVER": 0.0329,
+            "JUMP": 0.0757
+          },
+          "confidence": 0.1169,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 261,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "plain_both",
+    "scenario": "projectile",
+    "expected_examples": [
+      "DODGE_LEFT",
+      "DODGE_RIGHT",
+      "TAKE_COVER"
+    ],
+    "choice": "DODGE_LEFT",
+    "matches": true,
+    "request": {
+      "model": "english",
+      "state": {
+        "situation": "A fast thrown object is flying toward me and will hit me soon. The enemy is five meters away."
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Choose the best next action to win this rooftop fight. Avoid falling off and exploit opportunities to attack.",
+          "criteria": {
+            "APPROACH_OPPONENT": "Close the gap to a distant enemy when there is no immediate danger.",
+            "RETREAT_FROM_OPPONENT": "Back away from a nearby enemy to create space while my attack recovers.",
+            "GRAB_NEAREST_OBJECT": "Pick up a nearby weapon when empty handed and the enemy is far away.",
+            "DODGE_LEFT": "Evade an incoming projectile or close enemy attack by dodging left.",
+            "DODGE_RIGHT": "Evade an incoming projectile or close enemy attack by dodging right.",
+            "MOVE_TOWARD_SAFETY": "Escape a dangerous edge or shrinking boundary by moving toward the center.",
+            "TAKE_COVER": "Get behind solid cover against a distant enemy holding a throwable weapon.",
+            "JUMP": "Jump over a low obstacle or low projectile."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "DODGE_LEFT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.1435,
+            "RETREAT_FROM_OPPONENT": 0.0806,
+            "GRAB_NEAREST_OBJECT": 0.1118,
+            "DODGE_LEFT": 0.2709,
+            "DODGE_RIGHT": 0.0692,
+            "MOVE_TOWARD_SAFETY": 0.072,
+            "TAKE_COVER": 0.1979,
+            "JUMP": 0.0541
+          },
+          "confidence": 0.0704,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 236,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "plain_both",
+    "scenario": "windup",
+    "expected_examples": [
+      "DODGE_LEFT",
+      "DODGE_RIGHT",
+      "RETREAT_FROM_OPPONENT"
+    ],
+    "choice": "PUSH_OPPONENT",
+    "matches": false,
+    "request": {
+      "model": "english",
+      "state": {
+        "situation": "The enemy is right in front of me, winding up a shove that will hit me in 0.2 seconds."
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Choose the best next action to win this rooftop fight. Avoid falling off and exploit opportunities to attack.",
+          "criteria": {
+            "APPROACH_OPPONENT": "Close the gap to a distant enemy when there is no immediate danger.",
+            "RETREAT_FROM_OPPONENT": "Back away from a nearby enemy to create space while my attack recovers.",
+            "PUSH_OPPONENT": "Attack an enemy within reach with a shove, especially during their recovery or near their edge.",
+            "GRAB_NEAREST_OBJECT": "Pick up a nearby weapon when empty handed and the enemy is far away.",
+            "DODGE_LEFT": "Evade an incoming projectile or close enemy attack by dodging left.",
+            "DODGE_RIGHT": "Evade an incoming projectile or close enemy attack by dodging right.",
+            "MOVE_TOWARD_SAFETY": "Escape a dangerous edge or shrinking boundary by moving toward the center.",
+            "TAKE_COVER": "Get behind solid cover against a distant enemy holding a throwable weapon.",
+            "JUMP": "Jump over a low obstacle or low projectile."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "PUSH_OPPONENT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.0638,
+            "RETREAT_FROM_OPPONENT": 0.0884,
+            "PUSH_OPPONENT": 0.5165,
+            "GRAB_NEAREST_OBJECT": 0.0336,
+            "DODGE_LEFT": 0.1304,
+            "DODGE_RIGHT": 0.0532,
+            "MOVE_TOWARD_SAFETY": 0.0386,
+            "TAKE_COVER": 0.0215,
+            "JUMP": 0.054
+          },
+          "confidence": 0.2569,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 267,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "plain_both",
+    "scenario": "punish",
+    "expected_examples": [
+      "PUSH_OPPONENT"
+    ],
+    "choice": "PUSH_OPPONENT",
+    "matches": true,
+    "request": {
+      "model": "english",
+      "state": {
+        "situation": "The enemy is within pushing range, recovering after an attack, with an open edge behind them. My shove is ready."
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Choose the best next action to win this rooftop fight. Avoid falling off and exploit opportunities to attack.",
+          "criteria": {
+            "APPROACH_OPPONENT": "Close the gap to a distant enemy when there is no immediate danger.",
+            "RETREAT_FROM_OPPONENT": "Back away from a nearby enemy to create space while my attack recovers.",
+            "PUSH_OPPONENT": "Attack an enemy within reach with a shove, especially during their recovery or near their edge.",
+            "GRAB_NEAREST_OBJECT": "Pick up a nearby weapon when empty handed and the enemy is far away.",
+            "DODGE_LEFT": "Evade an incoming projectile or close enemy attack by dodging left.",
+            "DODGE_RIGHT": "Evade an incoming projectile or close enemy attack by dodging right.",
+            "MOVE_TOWARD_SAFETY": "Escape a dangerous edge or shrinking boundary by moving toward the center.",
+            "TAKE_COVER": "Get behind solid cover against a distant enemy holding a throwable weapon.",
+            "JUMP": "Jump over a low obstacle or low projectile."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "PUSH_OPPONENT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.0016,
+            "RETREAT_FROM_OPPONENT": 0.0005,
+            "PUSH_OPPONENT": 0.9969,
+            "GRAB_NEAREST_OBJECT": 0.0001,
+            "DODGE_LEFT": 0.0001,
+            "DODGE_RIGHT": 0.0002,
+            "MOVE_TOWARD_SAFETY": 0.0004,
+            "TAKE_COVER": 0.0,
+            "JUMP": 0.0
+          },
+          "confidence": 0.9885,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 268,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "plain_both",
+    "scenario": "throw",
+    "expected_examples": [
+      "THROW_HELD_OBJECT_AT_OPPONENT"
+    ],
+    "choice": "THROW_HELD_OBJECT_AT_OPPONENT",
+    "matches": true,
+    "request": {
+      "model": "english",
+      "state": {
+        "situation": "I am holding a barrel. The enemy is five meters away with a clear throwing lane."
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Choose the best next action to win this rooftop fight. Avoid falling off and exploit opportunities to attack.",
+          "criteria": {
+            "APPROACH_OPPONENT": "Close the gap to a distant enemy when there is no immediate danger.",
+            "RETREAT_FROM_OPPONENT": "Back away from a nearby enemy to create space while my attack recovers.",
+            "THROW_HELD_OBJECT_AT_OPPONENT": "Attack by throwing my held weapon at the enemy through a clear lane.",
+            "DODGE_LEFT": "Evade an incoming projectile or close enemy attack by dodging left.",
+            "DODGE_RIGHT": "Evade an incoming projectile or close enemy attack by dodging right.",
+            "MOVE_TOWARD_SAFETY": "Escape a dangerous edge or shrinking boundary by moving toward the center.",
+            "TAKE_COVER": "Get behind solid cover against a distant enemy holding a throwable weapon.",
+            "JUMP": "Jump over a low obstacle or low projectile."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "THROW_HELD_OBJECT_AT_OPPONENT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.0354,
+            "RETREAT_FROM_OPPONENT": 0.0373,
+            "THROW_HELD_OBJECT_AT_OPPONENT": 0.8195,
+            "DODGE_LEFT": 0.0304,
+            "DODGE_RIGHT": 0.0214,
+            "MOVE_TOWARD_SAFETY": 0.0256,
+            "TAKE_COVER": 0.0162,
+            "JUMP": 0.0142
+          },
+          "confidence": 0.6087,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 238,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "plain_both",
+    "scenario": "boundary",
+    "expected_examples": [
+      "MOVE_TOWARD_SAFETY"
+    ],
+    "choice": "MOVE_TOWARD_SAFETY",
+    "matches": true,
+    "request": {
+      "model": "english",
+      "state": {
+        "situation": "I am outside the shrinking safe boundary and about to lose the round."
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Choose the best next action to win this rooftop fight. Avoid falling off and exploit opportunities to attack.",
+          "criteria": {
+            "APPROACH_OPPONENT": "Close the gap to a distant enemy when there is no immediate danger.",
+            "RETREAT_FROM_OPPONENT": "Back away from a nearby enemy to create space while my attack recovers.",
+            "GRAB_NEAREST_OBJECT": "Pick up a nearby weapon when empty handed and the enemy is far away.",
+            "DODGE_LEFT": "Evade an incoming projectile or close enemy attack by dodging left.",
+            "DODGE_RIGHT": "Evade an incoming projectile or close enemy attack by dodging right.",
+            "MOVE_TOWARD_SAFETY": "Escape a dangerous edge or shrinking boundary by moving toward the center.",
+            "TAKE_COVER": "Get behind solid cover against a distant enemy holding a throwable weapon.",
+            "JUMP": "Jump over a low obstacle or low projectile."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "MOVE_TOWARD_SAFETY",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.05,
+            "RETREAT_FROM_OPPONENT": 0.068,
+            "GRAB_NEAREST_OBJECT": 0.0397,
+            "DODGE_LEFT": 0.0604,
+            "DODGE_RIGHT": 0.0353,
+            "MOVE_TOWARD_SAFETY": 0.7298,
+            "TAKE_COVER": 0.0086,
+            "JUMP": 0.0082
+          },
+          "confidence": 0.491,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 229,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "plain_both",
+    "scenario": "pickup",
+    "expected_examples": [
+      "GRAB_NEAREST_OBJECT",
+      "APPROACH_OPPONENT"
+    ],
+    "choice": "GRAB_NEAREST_OBJECT",
+    "matches": true,
+    "request": {
+      "model": "english",
+      "state": {
+        "situation": "The enemy is ten meters away. A throwable barrel is within my reach. I am empty handed and away from edges."
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Choose the best next action to win this rooftop fight. Avoid falling off and exploit opportunities to attack.",
+          "criteria": {
+            "APPROACH_OPPONENT": "Close the gap to a distant enemy when there is no immediate danger.",
+            "RETREAT_FROM_OPPONENT": "Back away from a nearby enemy to create space while my attack recovers.",
+            "GRAB_NEAREST_OBJECT": "Pick up a nearby weapon when empty handed and the enemy is far away.",
+            "DODGE_LEFT": "Evade an incoming projectile or close enemy attack by dodging left.",
+            "DODGE_RIGHT": "Evade an incoming projectile or close enemy attack by dodging right.",
+            "MOVE_TOWARD_SAFETY": "Escape a dangerous edge or shrinking boundary by moving toward the center.",
+            "TAKE_COVER": "Get behind solid cover against a distant enemy holding a throwable weapon.",
+            "JUMP": "Jump over a low obstacle or low projectile."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "GRAB_NEAREST_OBJECT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.1667,
+            "RETREAT_FROM_OPPONENT": 0.1247,
+            "GRAB_NEAREST_OBJECT": 0.1785,
+            "DODGE_LEFT": 0.141,
+            "DODGE_RIGHT": 0.0893,
+            "MOVE_TOWARD_SAFETY": 0.1489,
+            "TAKE_COVER": 0.0989,
+            "JUMP": 0.0521
+          },
+          "confidence": 0.0267,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 240,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  },
+  {
+    "variant": "plain_both",
+    "scenario": "chase",
+    "expected_examples": [
+      "APPROACH_OPPONENT"
+    ],
+    "choice": "APPROACH_OPPONENT",
+    "matches": true,
+    "request": {
+      "model": "english",
+      "state": {
+        "situation": "The enemy is five meters away. I am empty handed and away from edges. The nearest throwable object is eight meters away."
+      },
+      "questions": {
+        "action": {
+          "type": "choice",
+          "instructions": "Choose the best next action to win this rooftop fight. Avoid falling off and exploit opportunities to attack.",
+          "criteria": {
+            "APPROACH_OPPONENT": "Close the gap to a distant enemy when there is no immediate danger.",
+            "RETREAT_FROM_OPPONENT": "Back away from a nearby enemy to create space while my attack recovers.",
+            "GRAB_NEAREST_OBJECT": "Pick up a nearby weapon when empty handed and the enemy is far away.",
+            "DODGE_LEFT": "Evade an incoming projectile or close enemy attack by dodging left.",
+            "DODGE_RIGHT": "Evade an incoming projectile or close enemy attack by dodging right.",
+            "MOVE_TOWARD_SAFETY": "Escape a dangerous edge or shrinking boundary by moving toward the center.",
+            "TAKE_COVER": "Get behind solid cover against a distant enemy holding a throwable weapon.",
+            "JUMP": "Jump over a low obstacle or low projectile."
+          }
+        }
+      }
+    },
+    "response": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "action": {
+          "type": "choice",
+          "choice": "APPROACH_OPPONENT",
+          "probabilities": {
+            "APPROACH_OPPONENT": 0.1737,
+            "RETREAT_FROM_OPPONENT": 0.1205,
+            "GRAB_NEAREST_OBJECT": 0.1342,
+            "DODGE_LEFT": 0.14,
+            "DODGE_RIGHT": 0.0785,
+            "MOVE_TOWARD_SAFETY": 0.1207,
+            "TAKE_COVER": 0.1358,
+            "JUMP": 0.0967
+          },
+          "confidence": 0.0114,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 241,
+        "output_tokens": 0
+      },
+      "routing": {
+        "model": "english",
+        "repo": "convaiinnovations/laya",
+        "reason": "explicit model='english'",
+        "detection": null,
+        "workflow": null
+      }
+    }
+  }
+]

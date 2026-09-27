@@ -1,0 +1,32 @@
+PASS reset facing persists through rigidbody interpolation
+PASS already-arrived approach is excluded as a no-op
+PASS push accepted
+PASS push has anticipation before contact
+PASS push contacts opponent after wind-up
+PASS attack recovery blocks dodge cancellation
+PASS solid cover blocks push
+PASS side dodge evades telegraphed push
+PASS miss has punishable recovery
+PASS heavy prop grab
+PASS heavy carry slows movement
+PASS stun consistently blocks every combat action
+PASS throw begins after recovery
+PASS heavy throw has wind-up
+PASS impact cancels pending throw
+PASS light prop grab
+PASS preview and actual launch share velocity
+PASS light prop has faster throw
+PASS arena camera keeps its fixed orientation
+PASS round reset cancels scheduled attacks
+PASS Crossfire layout loads
+PASS Flank layout loads
+PASS fixed baseline is reproducible
+PASS sudden death shrinks safe area
+PASS simultaneous sudden-death outs draw
+PASS tutorial is unscored with model disabled
+PASS tutorial advances on actual grab
+PASS tutorial advances on physical throw hit
+PASS training opponent telegraphs an attack
+PASS tutorial verifies an evaded attack
+PASS tutorial completes on a physical ring-out
+PASS leaving tutorial restores normal match rules

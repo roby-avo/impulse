@@ -4,8 +4,13 @@
   "assets": [
     {
       "asset": "robot_body",
-      "objects": 21,
-      "vertices": 2448
+      "objects": 14,
+      "vertices": 1776
+    },
+    {
+      "asset": "robot_head",
+      "objects": 12,
+      "vertices": 1152
     },
     {
       "asset": "robot_glove",
@@ -44,8 +49,8 @@
     },
     {
       "asset": "rooftop",
-      "objects": 185,
-      "vertices": 21284
+      "objects": 201,
+      "vertices": 22648
     },
     {
       "asset": "skyline",

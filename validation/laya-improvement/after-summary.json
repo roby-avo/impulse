@@ -1,0 +1,136 @@
+{
+  "round_fight_seconds": [
+    4.6,
+    4.42,
+    8.84,
+    33.56,
+    35.3
+  ],
+  "actors": {
+    "Laya": {
+      "requests": 280,
+      "executed": 243,
+      "stale": 37,
+      "requests_while_previous_action_running": 169,
+      "choices": {
+        "TAKE_COVER": 114,
+        "PUSH_OPPONENT": 14,
+        "RETREAT_FROM_OPPONENT": 4,
+        "APPROACH_OPPONENT": 78,
+        "GRAB_NEAREST_OBJECT": 20,
+        "DODGE_LEFT": 10,
+        "THROW_HELD_OBJECT_AT_OPPONENT": 3
+      },
+      "stationary_frame_percent": 17.3,
+      "note": "Stationary samples include attacking, recovery and intentional waiting."
+    }
+  },
+  "summary": {
+    "type": "summary",
+    "match_id": "20260927-155112-f819f5",
+    "experiment_id": "rooftop",
+    "condition_id": "baseline",
+    "left_actor": "Human",
+    "right_actor": "Laya",
+    "ai_players": [
+      {
+        "actor": "Laya",
+        "executed_decisions": 243,
+        "failed_requests": 0,
+        "stale_responses": 37,
+        "total_latency_ms": 29710.908203125,
+        "action_counts": [
+          78,
+          4,
+          14,
+          20,
+          3,
+          10,
+          0,
+          0,
+          114,
+          0
+        ]
+      }
+    ],
+    "schema_version": 3,
+    "left_wins": 5,
+    "right_wins": 0,
+    "left": {
+      "grabs": 0,
+      "throws": 0,
+      "hits": 0,
+      "pushes": 34,
+      "dodges": 0,
+      "self_ringouts": 0,
+      "opponent_caused_ringouts": 5,
+      "near_edge_seconds": 6.479994297027588,
+      "mean_edge_distance_m": 4.60525369644165
+    },
+    "right": {
+      "grabs": 3,
+      "throws": 3,
+      "hits": 1,
+      "pushes": 5,
+      "dodges": 10,
+      "self_ringouts": 0,
+      "opponent_caused_ringouts": 0,
+      "near_edge_seconds": 9.460025787353516,
+      "mean_edge_distance_m": 5.009859561920166
+    },
+    "human_wins": 5,
+    "laya_wins": 0,
+    "executed_decisions": 243,
+    "failed_requests": 0,
+    "stale_responses": 37,
+    "mean_latency_ms": 122.38023376464844,
+    "median_latency_ms": 122.35260009765625,
+    "p95_latency_ms": 133.9263916015625,
+    "human": {
+      "grabs": 0,
+      "throws": 0,
+      "hits": 0,
+      "pushes": 34,
+      "dodges": 0,
+      "self_ringouts": 0,
+      "opponent_caused_ringouts": 5,
+      "near_edge_seconds": 6.479994297027588,
+      "mean_edge_distance_m": 4.60525369644165
+    },
+    "laya": {
+      "grabs": 3,
+      "throws": 3,
+      "hits": 1,
+      "pushes": 5,
+      "dodges": 10,
+      "self_ringouts": 0,
+      "opponent_caused_ringouts": 0,
+      "near_edge_seconds": 9.460025787353516,
+      "mean_edge_distance_m": 5.009859561920166
+    },
+    "action_counts": [
+      78,
+      4,
+      14,
+      20,
+      3,
+      10,
+      0,
+      0,
+      114,
+      0
+    ],
+    "action_names": [
+      "APPROACH_OPPONENT",
+      "RETREAT_FROM_OPPONENT",
+      "PUSH_OPPONENT",
+      "GRAB_NEAREST_OBJECT",
+      "THROW_HELD_OBJECT_AT_OPPONENT",
+      "DODGE_LEFT",
+      "DODGE_RIGHT",
+      "MOVE_TOWARD_SAFETY",
+      "TAKE_COVER",
+      "JUMP"
+    ]
+  }
+}

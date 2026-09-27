@@ -1,1 +1,18 @@
-{"action":{"type":"choice","instructions":"Choose the best next action to win this physics rooftop duel by knocking the opponent off. Stay on the roof. Use the visible state and previous result.","criteria":{"APPROACH_OPPONENT":"Close distance to engage opponent.","RETREAT_FROM_OPPONENT":"Create distance from opponent.","PUSH_OPPONENT":"Shove opponent in close range.","GRAB_NEAREST_OBJECT":"Go to and pick up the observed nearest object.","THROW_HELD_OBJECT_AT_OPPONENT":"Throw the object currently held at opponent.","DODGE_LEFT":"Quick dodge left.","DODGE_RIGHT":"Quick dodge right.","MOVE_TOWARD_SAFETY":"Move to roof center away from open edges.","TAKE_COVER":"Move behind the observed ventilation unit.","JUMP":"Jump over a low threat."}}}
+{
+  "action": {
+    "type": "choice",
+    "instructions": "Choose the best next action to win this rooftop fight. Avoid falling off and exploit opportunities to attack.",
+    "criteria": {
+      "APPROACH_OPPONENT": "Close the gap to a distant enemy when there is no immediate danger.",
+      "RETREAT_FROM_OPPONENT": "Back away from a nearby enemy to create space while my attack recovers.",
+      "PUSH_OPPONENT": "Attack an enemy within reach with a shove, especially during their recovery or near their edge.",
+      "GRAB_NEAREST_OBJECT": "Pick up a nearby weapon when empty handed and the enemy is far away.",
+      "THROW_HELD_OBJECT_AT_OPPONENT": "Attack by throwing my held weapon at the enemy through a clear lane.",
+      "DODGE_LEFT": "Evade an incoming projectile or close enemy attack by dodging left.",
+      "DODGE_RIGHT": "Evade an incoming projectile or close enemy attack by dodging right.",
+      "MOVE_TOWARD_SAFETY": "Escape a dangerous edge or shrinking boundary by moving toward the center.",
+      "TAKE_COVER": "Get behind solid cover against a distant enemy holding a throwable weapon.",
+      "JUMP": "Jump over a low obstacle or low projectile."
+    }
+  }
+}
