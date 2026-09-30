@@ -1,7 +1,21 @@
 # Local Laya service
 
 Run `./ai/setup.sh` once to create the Python environment and cache weights.
-Run `./ai/start.sh`, then `ai/.venv/bin/python ai/smoke_test.py`.
+The game automatically starts the installed runtime when its local connection
+fails, and reconnects after a stopped service. This works when opening the Mac
+app directly from `Builds/`, as well as through the launcher. Startup is on demand;
+it does not install a login daemon or download weights. Missing setup and port
+conflicts appear in the model diagnostics.
+
+Both game and launcher use `ensure_service.py`: a cross-process startup lock,
+verified PID, detached process, and 15-second crash retry cooldown prevent
+duplicate launches and rapid restart loops. Service output goes to
+`ai/.runtime/service.log`. Keep the built app in this checkout's `Builds/` folder
+so it can locate the Python environment. Stop the game before using the stop
+command, otherwise active local play restarts the service.
+
+For manual diagnostics, run `./ai/start.sh`, then
+`ai/.venv/bin/python ai/smoke_test.py`.
 The service binds only `127.0.0.1:8000`, preloads the `english` checkpoint from
 `convaiinnovations/laya`, and pins every prediction to it. No other model or
 fallback decision policy chooses actions.

@@ -93,10 +93,13 @@ If Unity lives elsewhere, set `UNITY_EDITOR` to its executable path.
 Choose a matchup, select your rooftop, and press **Enter**. Start with
 **Learn the moves** for guided, unscored practice.
 
-> **Laya says “Service unavailable”?** Launch through the `.command` file so the
-> local service starts too, or run `./ai/start.sh` in a separate terminal. Opening
-> the built `.app` directly does not start Laya. The game retries automatically.
-> Use **Stop Local Laya.command** when you want to stop the background service.
+> **Local Laya starts automatically.** The game starts the installed service when
+> a local connection fails, including when you open the built `.app` directly,
+> and reconnects after the service stops. Keep the app in this project's `Builds`
+> folder so it can find `ai/`. First launch may take a few seconds to load weights.
+> If setup is missing, run `./ai/setup.sh` once. Startup diagnostics are saved to
+> `ai/.runtime/service.log`. **Stop Local Laya.command** stops the service;
+> quit or switch away from local Laya first to prevent the game restarting it.
 
 ### Run in the Unity editor
 

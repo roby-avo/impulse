@@ -1,0 +1,29 @@
+{
+  "direct_app_start": {
+    "status": "ok",
+    "loaded": [
+      "english"
+    ],
+    "device": "mps",
+    "runtime_version": "0.9.1",
+    "threads": 4,
+    "busy": true,
+    "last_inference_ms": 145.8,
+    "completed": 51
+  },
+  "first_pid": 4568,
+  "note": "Native game auto-pauses on focus loss; resumed it before checking inference.",
+  "recovered_pid": 5290,
+  "after_crash": {
+    "status": "ok",
+    "loaded": [
+      "english"
+    ],
+    "device": "mps",
+    "runtime_version": "0.9.1",
+    "threads": 4,
+    "busy": false,
+    "last_inference_ms": 146.8,
+    "completed": 7
+  }
+}
