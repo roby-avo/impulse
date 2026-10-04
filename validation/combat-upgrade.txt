@@ -30,3 +30,17 @@ PASS training opponent telegraphs an attack
 PASS tutorial verifies an evaded attack
 PASS tutorial completes on a physical ring-out
 PASS leaving tutorial restores normal match rules
+PASS a landed hit triggers a brief hit-stop
+PASS hit-stop hands back normal time
+PASS pause wins over hit-stop
+PASS time is normal after pausing during hit-stop
+PASS going over the edge triggers a slow-motion beat
+PASS slow motion ends on its own
+PASS a ground ring sits on the roof under each robot
+PASS the ring stays on the roof and shrinks while the robot is airborne
+PASS impact effects reuse a fixed particle pool
+PASS the music loop plays
+PASS screen kick stays off unless enabled
+PASS enabled screen kick nudges position only and settles back
+PASS AI intent label shows the action being executed
+PASS AI intent labels can be turned off

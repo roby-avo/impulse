@@ -205,3 +205,7 @@ Button.selected:focus { border-color: rgb(219,241,168); }
 .volume-slider .unity-base-slider__dragger { width: 14px; height: 14px; margin-top: -7px; border-radius: 7px; border-width: 0; background-color: rgb(103,232,226); }
 .setup-local { border-left-color: rgb(103,232,226); }
 .local-info { white-space: normal; margin: 6px 0; font-size: 11px; }
+.intent { position: absolute; width: 100px; padding: 3px 0; border-radius: 10px; border-width: 1px; background-color: rgba(9,22,28,0.86); }
+.intent-cyan { border-color: rgb(103,232,226); }
+.intent-orange { border-color: rgb(255,144,110); }
+.intent-text { font-size: 10px; -unity-font-style: bold; -unity-text-align: middle-center; color: rgb(238,241,230); }

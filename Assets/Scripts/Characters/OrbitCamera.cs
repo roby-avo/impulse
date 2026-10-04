@@ -4,6 +4,9 @@ namespace Playground {
 // The component name is retained for scene compatibility. Gameplay uses one fixed arena view.
 public class OrbitCamera:MonoBehaviour {
  public Fighter Target;
+ // Optional, off by default: a tiny positional kick on heavy hits. The view never rotates or zooms.
+ public static bool KickEnabled{get=>PlayerPrefs.GetInt("screen_kick",0)==1;set=>PlayerPrefs.SetInt("screen_kick",value?1:0);}
+ public Vector3 KickOffset{get;private set;}
  public const float FixedPitch=55;
  public static Quaternion ViewRotation=>Quaternion.Euler(FixedPitch,0,0);
  CinemachineCamera cine;
@@ -13,14 +16,14 @@ public class OrbitCamera:MonoBehaviour {
   cine=gameObject.AddComponent<CinemachineCamera>();cine.Lens.ModeOverride=LensSettings.OverrideModes.Orthographic;cine.Lens.OrthographicSize=13f;
   FrameArena();
  }
- void LateUpdate(){FrameArena();}
+ public void Kick(Vector3 direction,float strength){if(!KickEnabled)return;direction.y=0;KickOffset=Vector3.ClampMagnitude(direction.normalized*.14f*strength,.2f);}
+ void LateUpdate(){KickOffset*=Mathf.Exp(-22*Time.unscaledDeltaTime);if(KickOffset.sqrMagnitude<1e-6f)KickOffset=Vector3.zero;FrameArena();}
  void FrameArena(){
   // Leave room above robot heads for the scoreboard and below the roof for the HUD.
   // Fixed bearing, position and zoom; only aspect-ratio fitting changes on resize.
   float aspect=(float)Screen.width/Mathf.Max(1,Screen.height);
   cine.Lens.OrthographicSize=Mathf.Max(13f,13f/Mathf.Max(.3f,aspect));
-  transform.SetPositionAndRotation(Vector3.up*.7f+ViewRotation*Vector3.back*32,ViewRotation);
-  // Impact feedback stays on the fighters; the arena view never rotates.
+  transform.SetPositionAndRotation(Vector3.up*.7f+ViewRotation*Vector3.back*32+KickOffset,ViewRotation);
  }
 }
 }
