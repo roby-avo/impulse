@@ -39,6 +39,9 @@ public class GameFeedback:MonoBehaviour {
  void Event(Fighter fighter,string evt){if(!audioSource)return;AudioClip clip=evt=="jump"||evt=="dodge"?jump:evt=="land"?step:evt=="grab"||evt=="release"?grab:evt=="throw"?throwClip:evt=="push_windup"?throwClip:null;if(clip)PlayAt(clip,fighter.transform.position,evt=="push_windup"?.2f:.35f);
   if(evt=="impact"){Contact(fighter.ContactPoint,fighter.HitDirection,1);HitStop();if(fighter==a.Human)a.HUD.HitUntil=Time.unscaledTime+.16f;}
   if(evt=="dodge")Burst(fighter.transform.position+Vector3.up*.1f,new Color(.3f,.7f,.85f),8);
+  if(evt=="vent_launch"){PlayAt(whoosh,fighter.transform.position,.45f);Burst(fighter.transform.position,new Color(.45f,1,1),16);}
+  if(evt=="ledge_save"){PlayAt(jump,fighter.transform.position,.5f);Burst(fighter.transform.position,new Color(1,.9f,.4f),18);}
+  if(evt=="push_charged")PlayAt(impact,fighter.transform.position,.3f);
  }
  // The moment a robot drops past the roof edge: whoosh and a short slow-motion beat.
  void WatchFalls(){bool live=a.Match.Phase==RoundPhase.Fight||a.Tutorial.Running;for(int i=0;i<2;i++){var f=i==0?a.Human:a.AI;var p=f.transform.position;bool over=live&&p.y<-.4f&&Mathf.Max(Mathf.Abs(p.x),Mathf.Abs(p.z))>9.4f;if(over&&!falling[i]){falling[i]=true;PlayAt(whoosh,p,.7f);if(!a.Tutorial.Running)SlowMotion();}else if(!live||p.y>0)falling[i]=false;}}

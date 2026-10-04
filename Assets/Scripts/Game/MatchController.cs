@@ -6,8 +6,8 @@ public class MatchController:MonoBehaviour {
  public RoundPhase Phase;public int WinsRequired=5,HumanWins,AIWins,Round=1,Generation,HumanSelfOuts,AISelfOuts,HumanEnvironmentalKOs,AIEnvironmentalKOs;
  public int Layout;public bool TimedRounds;public float FightStarted;
  // Optional labelled handicap for the orange (right) fighter: harder shoves, steadier footing.
- public float RivalBoost;public static readonly float[] BoostLevels={0,.25f,.5f};
- public void ApplyRules(bool training=false){float boost=training?0:RivalBoost;a.AI.PushPower=1+boost;a.AI.Stability=1+boost*.6f;a.Human.PushPower=a.Human.Stability=1;}
+ public float RivalBoost;public static readonly float[] BoostLevels={0,.25f,.5f};public bool RisingKnockback=true;
+ public void ApplyRules(bool training=false){float boost=training?0:RivalBoost;a.AI.PushPower=1+boost;a.AI.Stability=1+boost*.6f;a.Human.PushPower=a.Human.Stability=1;a.Human.RisingKnockback=a.AI.RisingKnockback=RisingKnockback&&!training;}
  public bool SuddenDeath=>TimedRounds&&Phase==RoundPhase.Fight&&Time.time-FightStarted>=60;
  public float RoundRemaining=>Mathf.Max(0,60-(Time.time-FightStarted));
  public float SafeHalfExtent=>SuddenDeath?Mathf.Max(1.5f,10-(Time.time-FightStarted-60)*.16f):10;

@@ -38,11 +38,11 @@ public class ExperimentSettings:MonoBehaviour {
  void Awake(){ProfilePath=Path.Combine(Application.persistentDataPath,"Experiments","profile.json");Directory.CreateDirectory(Path.GetDirectoryName(ProfilePath));try{current=File.Exists(ProfilePath)?JsonUtility.FromJson<ExperimentProfile>(File.ReadAllText(ProfilePath)):Defaults();if(IsLegacyDefault(current)||IsPreviousFactoryDefault(current,Defaults()))current=Defaults();Error=current?.Validate()??(current==null?"Empty profile":null);}catch(Exception e){Error=e.Message;}if(current==null)current=Defaults();}
  // The untouched factory profile from before ATTACK_OPPONENT, CUT_OFF_OPPONENT and opponent.edge_behind_m
  // existed. Edited profiles are left exactly as saved; only the pristine default moves forward.
- public static readonly string[] Added={"ATTACK_OPPONENT","CUT_OFF_OPPONENT"};public const string AddedField="opponent.edge_behind_m";
+ public static readonly string[] Added={"ATTACK_OPPONENT","CUT_OFF_OPPONENT"};public static readonly string[] AddedFields={"opponent.edge_behind_m","self.knockback_bonus","opponent.knockback_bonus"};
  public static bool IsPreviousFactoryDefault(ExperimentProfile p,ExperimentProfile now){
   if(p==null||p.schema_version!=1||p.experiment_id!="rooftop"||p.condition_id!="baseline"||!string.IsNullOrEmpty(p.notes)||p.max_decisions_per_second!=now.max_decisions_per_second||p.questions?.action?.criteria==null||p.state_fields==null)return false;
   var oldActions=now.actions.Where(a=>!Added.Contains(a)).ToArray();if(p.actions==null||!p.actions.SequenceEqual(oldActions))return false;
-  if(!new HashSet<string>(p.state_fields).SetEquals(now.state_fields.Where(f=>f!=AddedField)))return false;
+  if(!new HashSet<string>(p.state_fields).SetEquals(now.state_fields.Where(f=>!AddedFields.Contains(f))))return false;
   if(p.questions.action.type!=now.questions.action.type||p.questions.action.instructions!=now.questions.action.instructions)return false;
   return oldActions.All(key=>(string)typeof(ChoiceCriteria).GetField(key).GetValue(p.questions.action.criteria)==(string)typeof(ChoiceCriteria).GetField(key).GetValue(now.questions.action.criteria));
  }

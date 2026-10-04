@@ -10,6 +10,7 @@ PASS arena view uses stable orthographic projection
 PASS all roof corners and fighter head heights fit in view
 PASS F starts a push with empty hands
 PASS keyboard push physically hits opponent
+PASS holding F charges the push; a tap stays an ordinary push
 PASS E grabs the nearby prop
 PASS E drops the held prop
 PASS E can pick the prop up again

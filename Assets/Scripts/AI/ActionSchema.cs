@@ -16,7 +16,8 @@ public static class ActionSchema {
     case SemanticAction.GRAB_NEAREST_OBJECT:executable=!s.Held&&ctx.Object;break;
     case SemanticAction.THROW_HELD_OBJECT_AT_OPPONENT:executable=s.Held;break;
     case SemanticAction.DODGE_LEFT:case SemanticAction.DODGE_RIGHT:executable=s.Grounded&&Time.time>=s.NextDodge;break;
-    case SemanticAction.JUMP:executable=s.Grounded;break;
+    // The shared ledge save is a jump too, offered during its short window after leaving the roof.
+    case SemanticAction.JUMP:executable=s.Grounded||s.CanLedgeSave;break;
     case SemanticAction.TAKE_COVER:executable=ctx.HasCover&&Vector3.ProjectOnPlane(s.transform.position-ctx.Cover,Vector3.up).magnitude>.6f;break;
     // A rush is offered while the shove is ready or nearly ready; holding a prop, the attack is a throw.
     case SemanticAction.ATTACK_OPPONENT:executable=!s.Held&&s.NextPush-Time.time<.5f;break;

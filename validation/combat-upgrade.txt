@@ -47,6 +47,14 @@ PASS AI intent labels can be turned off
 PASS a lost prop stays gone for a while
 PASS a lost prop drops back in during the round
 PASS the returned prop lands on the roof at its spawn point
-PASS rival boost shoves harder (8.0 → 12.0 m/s)
+PASS rival boost shoves harder (8.0 → 12.2 m/s)
 PASS boost applies only to the orange robot
 PASS the HUD labels the boosted rules
+PASS each hit taken adds 12% knockback (5.88, 6.72, 7.44 m/s)
+PASS rising knockback can be turned off
+PASS rising knockback is capped
+PASS holding the attack keeps charging the push
+PASS a fully charged push hits up to 60% harder
+PASS a jump just after stepping off the edge hops back onto the roof
+PASS the save window closes quickly
+PASS fan vents launch a robot upward (peak 5.9 m)

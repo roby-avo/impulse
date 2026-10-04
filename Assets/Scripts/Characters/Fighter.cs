@@ -9,6 +9,16 @@ public class Fighter : MonoBehaviour {
  public Vector3 Move; public bool Active=true; public string Actor="Human";
  // Labelled rule changes (Rival boost). 1 = the shared baseline rules.
  public float PushPower=1,Stability=1;
+ // Rising knockback: every hit taken this round makes the next one carry farther. Shared by both fighters.
+ public const float RisePerHit=.12f,MaxRise=.6f;public bool RisingKnockback=true;public int HitsTaken;
+ public float KnockbackBonus=>RisingKnockback?Mathf.Min(MaxRise,RisePerHit*HitsTaken):0;
+ // Charged push: holding the attack past the wind-up stores up to MaxCharge seconds for extra power.
+ public const float MaxCharge=.45f,ChargePower=.6f;public bool ChargeHeld;public float LastPushCharge{get;private set;}
+ public float Charge01=>Attack=="push"&&Time.time>AttackStarted+PushWindup?Mathf.Clamp01((Time.time-AttackStarted-PushWindup)/MaxCharge):0;
+ // Ledge save: a short window after stepping or sliding off the roof where a jump hops back up.
+ public const float LedgeWindow=.3f,LedgeReach=1f,LedgeLowest=-.5f;float leftRoofAt=-10;bool onRoof,ledgeUsed;
+ public float RoofEdge=>10-Mathf.Max(Mathf.Abs(transform.position.x),Mathf.Abs(transform.position.z));
+ public bool CanLedgeSave=>Active&&!ledgeUsed&&!Grounded&&Time.time-leftRoofAt<=LedgeWindow&&Time.time>=StunnedUntil&&-RoofEdge<=LedgeReach&&transform.position.y>LedgeLowest;
  public float StunnedUntil, DodgeUntil, NextDodge, NextPush; public Fighter LastAttacker; public float LastHitTime=-100;
  public int Grabs,Throws,Hits,Pushes,Dodges,Jumps; public float EdgeTime,EdgeSum,Samples;
  public Transform Visual; public event Action<string> Event;
@@ -30,10 +40,11 @@ public class Fighter : MonoBehaviour {
  public void Report(string action){Event?.Invoke(action);}
  void FixedUpdate(){
   bool grounded=Grounded;if(grounded&&Body.linearVelocity.y<.5f)lastGrounded=Time.time;
+  if(grounded){onRoof=true;ledgeUsed=false;}else if(onRoof&&RoofEdge<0){onRoof=false;leftRoofAt=Time.time;}
   if(!Active){CancelAttack();Body.linearVelocity=new Vector3(0,Body.linearVelocity.y,0);Move=Vector3.zero;}
   if(Active){EdgeSum+=Mathf.Max(0,Edge)*Time.fixedDeltaTime;Samples+=Time.fixedDeltaTime;if(Edge<2)EdgeTime+=Time.fixedDeltaTime;}
   if(jumpBufferedUntil>Time.time&&grounded&&CanAct)Jump();
-  if(WindingUp&&Time.time>=AttackAt){string attack=Attack;Attack="";if(Active&&Time.time>=StunnedUntil){if(attack=="push")ResolvePush();else LaunchThrow();}}
+  if(WindingUp&&Time.time>=AttackAt&&!(Attack=="push"&&ChargeHeld&&Time.time<AttackStarted+PushWindup+MaxCharge)){string attack=Attack;Attack="";if(Active&&Time.time>=StunnedUntil){if(attack=="push")ResolvePush();else LaunchThrow();}}
   if(Active&&Time.time>=StunnedUntil&&Time.time>=DodgeUntil){
    var horizontal=Vector3.ProjectOnPlane(Body.linearVelocity,Vector3.up);
    float commitment=WindingUp?.35f:Time.time<RecoveryUntil?.65f:1;
@@ -51,7 +62,8 @@ public class Fighter : MonoBehaviour {
  // Both input sources use the same bounded turn rate. Committed attacks lock facing.
  public void Face(Vector3 direction){direction.y=0;if(direction.sqrMagnitude>.001f&&!WindingUp){var rotation=Quaternion.RotateTowards(transform.rotation,Quaternion.LookRotation(direction),540*Time.deltaTime);Body.rotation=rotation;transform.rotation=rotation;}}
  public void SnapFace(Vector3 direction){direction.y=0;if(direction.sqrMagnitude>.001f){var rotation=Quaternion.LookRotation(direction);Body.rotation=rotation;transform.rotation=rotation;}}
- public bool Jump(){if(!CanAct||Time.time<nextJump)return false;if(!Grounded&&Time.time-lastGrounded>.10f){jumpBufferedUntil=Time.time+.12f;return false;}jumpBufferedUntil=-10;lastGrounded=-10;nextJump=Time.time+.2f;Body.linearVelocity=new Vector3(Body.linearVelocity.x,7.1f,Body.linearVelocity.z);Jumps++;Report("jump");return true;}
+ public bool Jump(){if(CanLedgeSave&&!WindingUp&&Time.time>=DodgeUntil){LedgeSave();return true;}if(!CanAct||Time.time<nextJump)return false;if(!Grounded&&Time.time-lastGrounded>.10f){jumpBufferedUntil=Time.time+.12f;return false;}jumpBufferedUntil=-10;lastGrounded=-10;nextJump=Time.time+.2f;Body.linearVelocity=new Vector3(Body.linearVelocity.x,7.1f,Body.linearVelocity.z);Jumps++;Report("jump");return true;}
+ void LedgeSave(){ledgeUsed=true;jumpBufferedUntil=-10;var inward=-Vector3.ProjectOnPlane(transform.position,Vector3.up);inward=Mathf.Abs(inward.x)>Mathf.Abs(inward.z)?new Vector3(Mathf.Sign(inward.x),0,0):new Vector3(0,0,Mathf.Sign(inward.z));Body.linearVelocity=inward*6.5f+Vector3.up*8.5f;nextJump=Time.time+.3f;Jumps++;Report("ledge_save");}
  public bool Dodge(Vector3 direction){if(!CanAct||Time.time<NextDodge||!Grounded)return false;if(direction.sqrMagnitude<.1f)direction=transform.forward;direction.y=0;Body.linearVelocity=direction.normalized*10.5f*CarryMultiplier+Vector3.up*1.2f;DodgeUntil=Time.time+.24f;NextDodge=Time.time+1.1f;Dodges++;Report("dodge");return true;}
  public Prop Nearest(){Prop best=null;float d=GrabRange;foreach(var p in Arena.Props){if(!p||!p.CanGrab||p.Holder||p.transform.position.y<-.2f)continue;float n=Vector3.Distance(transform.position+Vector3.up*.7f,p.transform.position);if(n<d&&!Physics.Linecast(transform.position+Vector3.up,p.transform.position,1<<8)){best=p;d=n;}}return best;}
  public bool Grab(Prop p){if(!CanAct||Held||!p||p.Holder||!p.CanGrab||Vector3.Distance(transform.position+Vector3.up*.7f,p.transform.position)>GrabRange||Physics.Linecast(transform.position+Vector3.up,p.transform.position,1<<8))return false;
@@ -64,21 +76,21 @@ public class Fighter : MonoBehaviour {
  void LaunchThrow(){if(!Held)return;var p=Held;var velocity=LaunchVelocity(attackDirection,p.ThrowSpeed);Held=null;p.Holder=null;p.Body.isKinematic=false;p.Body.linearVelocity=velocity;p.Body.angularVelocity=transform.right*(p.Kind=="chair"?9:4);p.Owner=this;p.ThrownAt=Time.time;p.ResetHit();p.RestoreCollisionAfter(this,.3f);Throws++;Report("throw");}
  void Drop(){if(!Held)return;var p=Held;Held=null;p.Holder=null;p.Owner=null;p.Body.isKinematic=false;p.Body.linearVelocity=Body.linearVelocity;p.RestoreCollisionAfter(this,.3f);Report("release");}
  public bool Push(){if(!CanAct||Time.time<NextPush)return false;Attack="push";AttackStarted=Time.time;AttackAt=Time.time+PushWindup;NextPush=Time.time+.78f;RecoveryUntil=AttackAt+.3f;attackDirection=transform.forward;LastPushHit=false;Report("push_windup");return true;}
- void ResolvePush(){bool hit=false;pushed.Clear();var origin=transform.position+Vector3.up*.8f;
+ void ResolvePush(){bool hit=false;pushed.Clear();var origin=transform.position+Vector3.up*.8f;LastPushCharge=Mathf.Clamp01((Time.time-AttackStarted-PushWindup)/MaxCharge);float power=PushPower*(1+ChargePower*LastPushCharge);NextPush=Mathf.Max(NextPush,Time.time+.56f+.4f*LastPushCharge);if(LastPushCharge>.5f)Report("push_charged");
   foreach(var col in Physics.OverlapSphere(origin+attackDirection*.9f,1.05f,(1<<9)|(1<<10))){
    var rb=col.attachedRigidbody;if(!rb||rb==Body||!pushed.Add(rb))continue;
    var point=col.ClosestPoint(origin);var delta=rb.worldCenterOfMass-origin;
    if(Vector3.Dot(delta.normalized,attackDirection)<.45f||!ClearPushLine(origin,point,rb))continue;
-   var other=rb.GetComponent<Fighter>();if(other){other.Knock(attackDirection*8*PushPower+Vector3.up*2,this,point);hit=true;}
-   else if(!rb.isKinematic){rb.AddForce((attackDirection*10+Vector3.up*2)*Mathf.Min(rb.mass,18),ForceMode.Impulse);Arena.Instance.Feedback?.Contact(point,attackDirection,.5f);hit=true;}
+   var other=rb.GetComponent<Fighter>();if(other){other.Knock(attackDirection*8*power+Vector3.up*2,this,point);hit=true;}
+   else if(!rb.isKinematic){rb.AddForce((attackDirection*10*power+Vector3.up*2)*Mathf.Min(rb.mass,18),ForceMode.Impulse);Arena.Instance.Feedback?.Contact(point,attackDirection,.5f);hit=true;}
   }
   LastPushHit=hit;RecoveryUntil=Time.time+(hit?.24f:.42f);if(hit)Pushes++;Report(hit?"push_hit":"push_miss");
  }
  bool ClearPushLine(Vector3 origin,Vector3 point,Rigidbody target){var delta=point-origin;int count=Physics.RaycastNonAlloc(origin,delta.normalized,obstructionHits,delta.magnitude,(1<<8)|(1<<9),QueryTriggerInteraction.Ignore);for(int i=0;i<count;i++){var hit=obstructionHits[i];if(hit.rigidbody==target||hit.rigidbody==Body||(Held&&hit.rigidbody==Held.Body))continue;return false;}return true;}
  public void Knock(Vector3 velocity,Fighter attacker){Knock(velocity,attacker,transform.position+Vector3.up);}
- public void Knock(Vector3 velocity,Fighter attacker,Vector3 point){if(!Active)return;CancelAttack();Body.AddForce(velocity/Mathf.Max(.1f,Stability),ForceMode.VelocityChange);StunnedUntil=Time.time+.28f;LastAttacker=attacker;LastHitTime=Time.time;ContactPoint=point;HitDirection=velocity.normalized;Report("impact");}
- public void CancelAttack(){if(WindingUp)Report("attack_cancelled");Attack="";}
- public void ResetAt(Vector3 p){CancelAttack();Drop();Body.isKinematic=true;Body.isKinematic=false;Body.position=p;transform.position=p;Body.linearVelocity=Vector3.zero;Body.angularVelocity=Vector3.zero;Move=Vector3.zero;StunnedUntil=DodgeUntil=NextDodge=NextPush=RecoveryUntil=0;nextJump=0;lastGrounded=jumpBufferedUntil=-10;LastAttacker=null;LastHitTime=-100;SnapFace(-p);}
+ public void Knock(Vector3 velocity,Fighter attacker,Vector3 point){if(!Active)return;CancelAttack();Body.AddForce(velocity*(1+KnockbackBonus)/Mathf.Max(.1f,Stability),ForceMode.VelocityChange);if(attacker&&attacker!=this)HitsTaken++;StunnedUntil=Time.time+.28f;LastAttacker=attacker;LastHitTime=Time.time;ContactPoint=point;HitDirection=velocity.normalized;Report("impact");}
+ public void CancelAttack(){if(WindingUp)Report("attack_cancelled");Attack="";ChargeHeld=false;}
+ public void ResetAt(Vector3 p){CancelAttack();Drop();Body.isKinematic=true;Body.isKinematic=false;Body.position=p;transform.position=p;Body.linearVelocity=Vector3.zero;Body.angularVelocity=Vector3.zero;Move=Vector3.zero;StunnedUntil=DodgeUntil=NextDodge=NextPush=RecoveryUntil=0;nextJump=0;HitsTaken=0;ChargeHeld=false;LastPushCharge=0;onRoof=true;ledgeUsed=false;leftRoofAt=-10;lastGrounded=jumpBufferedUntil=-10;LastAttacker=null;LastHitTime=-100;SnapFace(-p);}
  public void ClearStats(){Grabs=Throws=Hits=Pushes=Dodges=Jumps=0;EdgeTime=EdgeSum=Samples=0;}
 }
 }

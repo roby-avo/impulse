@@ -28,6 +28,8 @@ public class HumanInput:MonoBehaviour {
   if(k.leftShiftKey.wasPressedThisFrame||k.rightShiftKey.wasPressedThisFrame)Fighter.Dodge(Fighter.Move.sqrMagnitude>.01f?Fighter.Move:Sidestep());
   if(k.eKey.wasPressedThisFrame){attackUntil=-1;if(Fighter.Held)Fighter.Release(false,aim);else Fighter.Grab(Fighter.Nearest());}
   if(k.fKey.wasPressedThisFrame)attackUntil=Time.time+.4f;
+  // Holding the attack key past the wind-up charges a push; a tap is an ordinary push.
+  Fighter.ChargeHeld=k.fKey.isPressed&&Fighter.Attack=="push";
   // A short input buffer lets an attack wait for bounded automatic facing/recovery.
   // The key chooses the attack; there is no automatic firing, snapping or homing.
   if(attackUntil>=Time.time&&Fighter.CanAct&&Vector3.Angle(Fighter.transform.forward,Vector3.ProjectOnPlane(aim,Vector3.up))<=12){
