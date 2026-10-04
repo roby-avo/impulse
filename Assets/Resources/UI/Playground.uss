@@ -199,3 +199,7 @@ Toggle > .unity-base-field__input { background-color: rgba(0,0,0,0); border-widt
 .unity-scroller--vertical .unity-base-slider__dragger { width: 6px; min-width: 6px; margin-left: 0; }
 
 Button.selected:focus { border-color: rgb(219,241,168); }
+.volume-slider { margin: 8px 0 4px; }
+.volume-slider > Label { min-width: 120px; color: rgb(155,174,178); font-size: 13px; }
+.volume-slider .unity-base-slider__tracker { height: 4px; margin-top: -2px; border-width: 0; border-radius: 2px; background-color: rgb(30,58,68); }
+.volume-slider .unity-base-slider__dragger { width: 14px; height: 14px; margin-top: -7px; border-radius: 7px; border-width: 0; background-color: rgb(103,232,226); }

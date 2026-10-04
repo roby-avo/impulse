@@ -29,7 +29,7 @@ public class PlayValidation:MonoBehaviour {
  if(SessionState.GetInt("PG.Milestone",1)>=4){
   a.Match.Practice=false;a.Match.NewMatch();a.Brain.Enabled=true;float deadline=Time.time+20;while(a.Brain.ExecutedDecisions<3&&Time.time<deadline)yield return null;Check(a.Brain.ExecutedDecisions>=3,"M4 autonomous real Laya loop");Check(System.Array.IndexOf(ActionSchema.Available(a.Executor,a.Executor.ObserveContext()),a.AI.Held?"GRAB_NEAREST_OBJECT":"THROW_HELD_OBJECT_AT_OPPONENT")<0,"M4 impossible interaction actions excluded");
   a.Brain.Enabled=false;while(a.Client.Busy)yield return null;a.Executor.Finish(false,"validation");
-  a.Match.NewMatch();yield return new WaitForSeconds(2.6f);a.Match.RingOut(a.Human);a.Match.RingOut(a.AI);yield return null;yield return null;Check(a.Match.HumanWins==0&&a.Match.AIWins==0,"M4 simultaneous ring-out draw");
+  a.Match.NewMatch();yield return new WaitForSeconds(2.6f);a.Match.RingOut(a.Human);a.Match.RingOut(a.AI);yield return null;yield return null;Check(a.Match.HumanWins==0&&a.Match.AIWins==0,"M4 simultaneous ring-out draw");Check(a.Match.LastRoundWinner==null,"draw celebrates neither fighter");
   a.Match.NewMatch();
   for(int round=0;round<5;round++){while(a.Match.Phase!=RoundPhase.Fight)yield return null;a.AI.ResetAt(new Vector3(12,.5f,0));float until=Time.time+5;while(a.Match.Phase==RoundPhase.Fight&&Time.time<until)yield return null;Check(a.Match.HumanWins==round+1,"M4 ring-out score round "+(round+1));yield return new WaitForSeconds(2.4f);}
   Check(a.Match.Phase==RoundPhase.MatchOver&&a.Match.HumanWins==5,"M4 first-to-five match completed");Check(File.Exists(a.Telemetry.FilePath)&&new FileInfo(a.Telemetry.FilePath).Length>0,"M4 JSONL telemetry persisted");

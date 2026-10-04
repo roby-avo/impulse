@@ -3,7 +3,7 @@ using Unity.Cinemachine;
 namespace Playground {
 // The component name is retained for scene compatibility. Gameplay uses one fixed arena view.
 public class OrbitCamera:MonoBehaviour {
- public Fighter Target; public float Impulse;
+ public Fighter Target;
  public const float FixedPitch=55;
  public static Quaternion ViewRotation=>Quaternion.Euler(FixedPitch,0,0);
  CinemachineCamera cine;
@@ -20,7 +20,7 @@ public class OrbitCamera:MonoBehaviour {
   float aspect=(float)Screen.width/Mathf.Max(1,Screen.height);
   cine.Lens.OrthographicSize=Mathf.Max(13f,13f/Mathf.Max(.3f,aspect));
   transform.SetPositionAndRotation(Vector3.up*.7f+ViewRotation*Vector3.back*32,ViewRotation);
-  Impulse=0; // Impact feedback stays on the fighters; the arena view never shakes or rotates.
+  // Impact feedback stays on the fighters; the arena view never rotates.
  }
 }
 }

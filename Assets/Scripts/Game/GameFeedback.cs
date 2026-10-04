@@ -7,13 +7,13 @@ public class GameFeedback:MonoBehaviour {
  data[i]=(noise?metallic+random*.55f*Mathf.Exp(-t*40):Mathf.Sin(2*Mathf.PI*(frequency*t+100*t*t))*.45f)*envelope;}var clip=AudioClip.Create(name,n,1,22050,false);clip.SetData(data,0);return clip;}
  public void Footstep(Vector3 position){PlayAt(step,position,.13f);}
  void PlayAt(AudioClip clip,Vector3 position,float volume){if(!clip||voices==null)return;var source=voices[nextVoice++%voices.Length];source.transform.position=position;source.clip=clip;source.volume=volume;source.pitch=Random.Range(.94f,1.06f);source.Play();}
- public void Contact(Vector3 point,Vector3 direction,float strength){Burst(point,Color.Lerp(new Color(.3f,.85f,1),new Color(1,.65f,.25f),strength),12);PlayAt(impact,point,.4f+strength*.2f);a.CameraRig.Impulse=Mathf.Max(a.CameraRig.Impulse,.045f*strength);}
+ public void Contact(Vector3 point,Vector3 direction,float strength){Burst(point,Color.Lerp(new Color(.3f,.85f,1),new Color(1,.65f,.25f),strength),12);PlayAt(impact,point,.4f+strength*.2f);}
 
  void Event(Fighter fighter,string evt){if(!audioSource)return;AudioClip clip=evt=="jump"||evt=="dodge"?jump:evt=="land"?step:evt=="grab"||evt=="release"?grab:evt=="throw"?throwClip:evt=="push_windup"?throwClip:null;if(clip)PlayAt(clip,fighter.transform.position,evt=="push_windup"?.2f:.35f);
   if(evt=="impact"){Contact(fighter.ContactPoint,fighter.HitDirection,1);if(fighter==a.Human)a.HUD.HitUntil=Time.unscaledTime+.16f;}
   if(evt=="dodge")Burst(fighter.transform.position+Vector3.up*.1f,new Color(.3f,.7f,.85f),8);
  }
- void Update(){if(!a)return;if(a.Match.Phase!=phase){phase=a.Match.Phase;if(phase==RoundPhase.Winner){audioSource.PlayOneShot(win,.7f);var winner=a.Match.Announcement.StartsWith(a.LeftName.ToUpperInvariant())?a.Human:a.AI;Burst(winner.transform.position+Vector3.up*2, winner==a.Human?Color.cyan:new Color(1,.45f,.2f),50);}else if(phase==RoundPhase.Fight)audioSource.PlayOneShot(grab,.8f);}
+ void Update(){if(!a)return;if(a.Match.Phase!=phase){phase=a.Match.Phase;if(phase==RoundPhase.Winner){var winner=a.Match.LastRoundWinner;if(winner){audioSource.PlayOneShot(win,.7f);Burst(winner.transform.position+Vector3.up*2,winner==a.Human?Color.cyan:new Color(1,.45f,.2f),50);}else audioSource.PlayOneShot(impact,.5f);}else if(phase==RoundPhase.Fight)audioSource.PlayOneShot(grab,.8f);}
   int tick=Mathf.CeilToInt(a.Match.PhaseEnds-Time.time);if(a.Match.Phase==RoundPhase.Countdown&&tick!=countdown){countdown=tick;audioSource.PlayOneShot(grab,.35f);}}
  void Burst(Vector3 position,Color color,int count){var g=new GameObject("Impact sparks");g.transform.position=position;var p=g.AddComponent<ParticleSystem>();p.Stop(true,ParticleSystemStopBehavior.StopEmittingAndClear);var main=p.main;main.duration=.5f;main.loop=false;main.startLifetime=.35f;main.startSpeed=3.5f;main.startSize=.09f;main.startColor=color;main.gravityModifier=1.3f;main.maxParticles=60;var emission=p.emission;emission.enabled=false;var shape=p.shape;shape.shapeType=ParticleSystemShapeType.Sphere;shape.radius=.15f;if(sparkMaterial)p.GetComponent<ParticleSystemRenderer>().sharedMaterial=sparkMaterial;p.Play();p.Emit(count);Destroy(g,1);}
 }

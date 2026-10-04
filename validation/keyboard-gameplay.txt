@@ -17,7 +17,11 @@ PASS throw aim targets the opponent automatically
 PASS the same F key throws when holding a prop
 PASS keyboard-only throw physically hits the opponent
 PASS Shift without a movement key dodges sideways
+PASS standing dodge sidesteps away from the nearer edge
 PASS Space jumps
 PASS Escape pauses and releases gameplay keys without mouse capture
 PASS paused gameplay ignores move and attack keys
 PASS resume does not leak a paused attack into gameplay
+PASS volume setting applies and persists
+PASS tapping R does not restart the match
+PASS holding R restarts the match

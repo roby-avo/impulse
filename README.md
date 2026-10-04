@@ -120,8 +120,8 @@ and throws aim automatically, so gameplay stays keyboard-only.
 | **E** | Grab or drop a prop |
 | **F** | Push, or throw a held prop |
 | **Enter** | Start the selected matchup |
-| **Escape** | Pause, change matchup, or adjust graphics |
-| **R** | Start a fresh match |
+| **Escape** | Pause, change matchup, or adjust graphics and volume |
+| **R** (hold) | Start a fresh match |
 | **H** | Show controls |
 | **Tab** (hold) | Match statistics |
 | **F4** | Model diagnostics |
