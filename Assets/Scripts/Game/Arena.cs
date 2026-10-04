@@ -6,8 +6,8 @@ public class Arena:MonoBehaviour {
  public readonly List<Collider> Cover=new();
  public Fighter Human,AI; public AIActionExecutor Executor;public LayaClient Client;public MatchController Match;public Telemetry Telemetry;public LayaDecisionController Brain;public ExperimentSettings Experiments;public ResearchPanel Research;public GameHUD HUD;public GameFeedback Feedback; public OrbitCamera CameraRig; public string Banner="ROOFTOP // SANDBOX"; public int Resets;
  public AIActionExecutor LeftExecutor;public LayaClient LeftClient;public LayaDecisionController LeftBrain;public MatchSetup Setup;public CombatGuide Guide;public TutorialDirector Tutorial;
- public bool Spectating=>Setup&&Setup.Mode==MatchMode.LayaVsTypeSafe;
- public string LeftName=>Spectating?"Laya":"Human";public string RightName=>Setup&&Setup.Mode!=MatchMode.HumanVsLaya?"TypeSafe":"Laya";
+ public bool Spectating=>Setup&&Setup.Mode==MatchMode.AIVsAI;
+ public string LeftName=>Setup?Setup.LeftName:"Human";public string RightName=>Setup?Setup.RightName:"Laya";
  public void StopExecutors(string reason){Executor.Finish(false,reason);LeftExecutor.Finish(false,reason);}
  public static Material Material(Color c,bool glow=false){var template=Resources.Load<Material>("Surface");var m=template?new Material(template):new Material(Shader.Find("Universal Render Pipeline/Lit"));m.color=c;m.SetFloat("_Smoothness",.25f);if(glow){m.EnableKeyword("_EMISSION");m.SetColor("_EmissionColor",c*2);}return m;}
  public static GameObject Shape(string name,PrimitiveType type,Vector3 pos,Vector3 scale,Material mat,bool solid=true,Transform parent=null){var g=GameObject.CreatePrimitive(type);g.name=name;g.transform.SetParent(parent,false);g.transform.localPosition=pos;g.transform.localScale=scale;g.GetComponent<Renderer>().sharedMaterial=mat;g.layer=8;if(!solid)Destroy(g.GetComponent<Collider>());return g;}

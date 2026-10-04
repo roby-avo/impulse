@@ -11,9 +11,13 @@ namespace Playground.Editor {
 class PersistentMemoryStore:CredentialStore.IBackend {string secret;public bool Persistent=>true;public string Load()=>secret;public bool Save(string value){secret=value;return true;}public bool Delete(){secret=null;return true;}}
 public class MatchupValidation:MonoBehaviour {
  const string Fixture="http://127.0.0.1:8766",Key="fixture-test-key";Arena a;int checks;
- void Check(bool ok,string label){if(!ok){Debug.LogError("MATCHUP FAIL: "+label);File.AppendAllText("validation/matchups.txt","FAIL "+label+"\n");EditorApplication.Exit(1);throw new Exception(label);}checks++;Debug.Log("MATCHUP PASS: "+label);File.AppendAllText("validation/matchups.txt","PASS "+label+"\n");}
+ Action restoreOnFailure;
+ void Check(bool ok,string label){if(!ok){restoreOnFailure?.Invoke();Debug.LogError("MATCHUP FAIL: "+label);File.AppendAllText("validation/matchups.txt","FAIL "+label+"\n");EditorApplication.Exit(1);throw new Exception(label);}checks++;Debug.Log("MATCHUP PASS: "+label);File.AppendAllText("validation/matchups.txt","PASS "+label+"\n");}
  void Remote(string suffix=""){a.Client.Configure(AIProvider.TypeSafe,"jev-fixture",Key);a.Client.Endpoint=Fixture+suffix;}
- IEnumerator Start(){File.WriteAllText("validation/matchups.txt","");yield return new WaitForSeconds(.6f);a=Arena.Instance;a.Brain.Enabled=false;a.LeftBrain.Enabled=false;
+ // Editor play mode shares the player's real PlayerPrefs; restore every setup choice afterwards.
+ static readonly string[] IntPrefs={"setup_mode","setup_layout","setup_length","setup_timed","remember_key"},StringPrefs={"typesafe_model","laya_model","watch_left","watch_right"};
+ static Action SnapshotPrefs(){var ints=IntPrefs.Where(PlayerPrefs.HasKey).ToDictionary(k=>k,k=>PlayerPrefs.GetInt(k));var strings=StringPrefs.Where(PlayerPrefs.HasKey).ToDictionary(k=>k,k=>PlayerPrefs.GetString(k));return()=>{foreach(var k in IntPrefs.Concat(StringPrefs))PlayerPrefs.DeleteKey(k);foreach(var p in ints)PlayerPrefs.SetInt(p.Key,p.Value);foreach(var p in strings)PlayerPrefs.SetString(p.Key,p.Value);PlayerPrefs.Save();};}
+ IEnumerator Start(){var restorePrefs=restoreOnFailure=SnapshotPrefs();File.WriteAllText("validation/matchups.txt","");yield return new WaitForSeconds(.6f);a=Arena.Instance;a.Brain.Enabled=false;a.LeftBrain.Enabled=false;
   string answer="{\"model\":\"jev-test\",\"answers\":{\"action\":{\"type\":\"choice\",\"choice\":\"JUMP\",\"confidence\":0.9}}}";
   Check(LayaClient.Parse(answer,new[]{"JUMP"},true).Valid,"typed choice accepted");
   Check(!LayaClient.Parse(answer,new[]{"PUSH_OPPONENT"},true).Valid,"out-of-schema choice rejected");
@@ -28,7 +32,7 @@ public class MatchupValidation:MonoBehaviour {
   Remote("/rate");yield return a.Client.Decide(AIPerception.Capture(a.Executor,a.Executor.ObserveContext()),r=>result=r);Check(!result.Valid&&!a.Client.Blocked&&!a.Client.ReadyToRequest,"429 enters timed backoff");yield return new WaitForSecondsRealtime(3.1f);Check(a.Client.ReadyToRequest,"429 retries become eligible after delay");
   Check(a.Setup.Configure(MatchMode.HumanVsLaya)&&!a.Spectating&&!a.LeftBrain.Enabled&&a.Client.Provider==AIProvider.Laya,"Human vs Laya mapping");
   Check(a.Setup.Configure(MatchMode.HumanVsTypeSafe,"jev-fixture",Key)&&!a.Spectating&&!a.LeftBrain.Enabled&&a.RightName=="TypeSafe","Human vs TypeSafe mapping");
-  Check(a.Setup.Configure(MatchMode.LayaVsTypeSafe,"jev-fixture",Key)&&a.Spectating&&a.LeftBrain.Enabled&&a.LeftName=="Laya"&&a.RightName=="TypeSafe","Laya vs TypeSafe mapping");a.Client.Endpoint=Fixture;
+  Check(a.Setup.Configure(MatchMode.AIVsAI,"jev-fixture",Key)&&a.Spectating&&a.LeftBrain.Enabled&&a.LeftName=="Laya"&&a.RightName=="TypeSafe","Laya vs TypeSafe mapping");a.Client.Endpoint=Fixture;
   a.Human.GetComponent<HumanInput>().Capture(true);Check(!a.Human.GetComponent<HumanInput>().Captured,"spectator disables player control and unlocks cursor");
   var original=a.Experiments.Current;var p=a.Experiments.Defaults();p.experiment_id="matchup-validation";p.actions=new[]{"APPROACH_OPPONENT","PUSH_OPPONENT","MOVE_TOWARD_SAFETY"};p.max_decisions_per_second=2;a.Experiments.Apply(p,false);a.Match.NewMatch();int lb=a.LeftBrain.ExecutedDecisions,rb=a.Brain.ExecutedDecisions;float deadline=Time.time+30;while((a.LeftBrain.ExecutedDecisions<lb+2||a.Brain.ExecutedDecisions<rb+2)&&Time.time<deadline)yield return null;
   Check(a.LeftBrain.ExecutedDecisions>=lb+2&&a.Brain.ExecutedDecisions>=rb+2,"independent real-Laya and fixture-TypeSafe loops execute");
@@ -47,12 +51,26 @@ public class MatchupValidation:MonoBehaviour {
   a.Setup.Forget();Check(CredentialStore.Load()==null&&field.value=="","Forget removes the saved key and clears the field");
   field.value=Key;yield return a.Setup.CheckKey();Check(CredentialStore.Load()==Key,"key saved again after reconnecting");remember.value=false;Check(CredentialStore.Load()==null,"turning Remember off deletes the saved key");
   field.value=Key;yield return a.Setup.CheckKey();Check(CredentialStore.Load()==null,"key is not saved while Remember is off");remember.value=true;CredentialStore.Delete();CredentialStore.Backend=previousStore;a.Setup.DiscoveryEndpoint=LayaClient.TypeSafeEndpoint;
-  string[] prefKeys={"setup_mode","setup_layout","setup_length","setup_timed"};var savedPrefs=prefKeys.Select(k=>PlayerPrefs.GetInt(k,-1)).ToArray();
-  a.HUD.Root.Q<DropdownField>("matchup").value="Human vs Laya";a.HUD.Root.Q<DropdownField>("arena").index=1;a.HUD.Root.Q<DropdownField>("match-length").index=0;a.Setup.StartFromKeyboard();
+    a.HUD.Root.Q<DropdownField>("matchup").value="Human vs Laya";a.HUD.Root.Q<DropdownField>("arena").index=1;a.HUD.Root.Q<DropdownField>("match-length").index=0;a.Setup.StartFromKeyboard();
   Check(!a.Setup.Open&&PlayerPrefs.GetInt("setup_mode")==0&&PlayerPrefs.GetInt("setup_layout")==1&&PlayerPrefs.GetInt("setup_length")==0&&a.Match.Layout==1&&a.Match.WinsRequired==3,"chosen matchup, arena and match length persist for the next launch");
-  for(int i=0;i<prefKeys.Length;i++){if(savedPrefs[i]<0)PlayerPrefs.DeleteKey(prefKeys[i]);else PlayerPrefs.SetInt(prefKeys[i],savedPrefs[i]);}
+
   a.Telemetry.Flush();string report=MatchExport.Export(oldPath);string csv=File.ReadAllText(Path.Combine(Path.GetDirectoryName(report),"decisions.csv"));Check(csv.Contains("actor,provider,model,response_model")&&!csv.Contains(Key),"exports include actor provenance and exclude credentials");File.Copy(oldPath,"validation/matchup-sample.jsonl",true);
-  a.Experiments.Apply(original,false);SessionState.SetBool("PG.Matchups",false);Debug.Log("MATCHUP COMPLETE: "+checks+" checks; TypeSafe used HTTP fixture, Laya used real model.");EditorApplication.Exit(0);
+  // Local model manager: the real service catalog, an uninstalled entry and two local models in one match.
+  a.Setup.Show();deadline=Time.realtimeSinceStartup+10;while(a.Setup.Local==null&&Time.realtimeSinceStartup<deadline)yield return null;var english=a.Setup.Local?.models?.FirstOrDefault(m=>m.name=="english");
+  Check(english!=null&&english.installed&&a.HUD.Root.Q<DropdownField>("laya-model").choices.Count==a.Setup.Local.models.Length,"setup lists the local model catalog from the service");
+  string localCatalog="ai/models.local.json",previousCatalog=File.Exists(localCatalog)?File.ReadAllText(localCatalog):null;File.WriteAllText(localCatalog,"{\"models\":[{\"id\":\"validation-missing\",\"label\":\"Validation missing\",\"repo\":\"impulse/validation-missing\",\"size_mb\":5}]}");
+  a.HUD.Root.Q<DropdownField>("matchup").value="Human vs Laya";deadline=Time.realtimeSinceStartup+6;while(a.Setup.Local?.models?.Any(m=>m.name=="validation-missing")!=true&&Time.realtimeSinceStartup<deadline)yield return null;
+  var picker=a.HUD.Root.Q<DropdownField>("laya-model");picker.index=picker.choices.FindIndex(c=>c.StartsWith("Validation missing"));yield return null;
+  Check(a.Setup.LayaModel=="validation-missing"&&!a.HUD.Root.Q<Button>("start-match").enabledSelf&&a.HUD.Root.Q<Button>("download-model").style.display.value==DisplayStyle.Flex,"an uninstalled model blocks Start and offers Download");
+  picker.index=picker.choices.IndexOf(english.label);yield return null;Check(a.HUD.Root.Q<Button>("start-match").enabledSelf,"an installed model can start");
+  if(previousCatalog==null)File.Delete(localCatalog);else File.WriteAllText(localCatalog,previousCatalog);
+  a.Setup.Close();Check(a.Setup.Configure(MatchMode.AIVsAI,Seat.Laya("english"),Seat.Laya("typed-decisions"))&&a.Spectating&&a.LeftName=="Laya english"&&a.RightName=="Laya typed-decisions"&&a.LeftClient.Model=="english"&&a.Client.Model=="typed-decisions","two local models map to distinct named players");
+  Check(!a.Setup.Configure(MatchMode.AIVsAI,Seat.Laya("english"),Seat.TypeSafe("jev-fixture")),"a cloud seat still requires credentials");a.Setup.Configure(MatchMode.AIVsAI,Seat.Laya("english"),Seat.Laya("typed-decisions"));
+  a.Experiments.Apply(p,false);a.Match.NewMatch();lb=a.LeftBrain.ExecutedDecisions;rb=a.Brain.ExecutedDecisions;deadline=Time.realtimeSinceStartup+45;while((a.LeftBrain.ExecutedDecisions<lb+2||a.Brain.ExecutedDecisions<rb+2)&&Time.realtimeSinceStartup<deadline)yield return null;
+  Check(a.LeftBrain.ExecutedDecisions>=lb+2&&a.Brain.ExecutedDecisions>=rb+2,"two local models share the service and both decide");
+  a.Brain.Enabled=a.LeftBrain.Enabled=false;while(a.Client.Busy||a.LeftClient.Busy)yield return null;a.StopExecutors("validation");a.Telemetry.Flush();var local=File.ReadAllLines(a.Telemetry.FilePath).Where(x=>x.Contains("\"type\":\"decision\"")).Select(x=>JsonUtility.FromJson<DecisionRecord>(x)).Where(d=>d.execution_status=="executed").ToArray();
+  Check(local.Any(d=>d.actor=="Laya english"&&d.model=="english"&&d.response_model=="english")&&local.Any(d=>d.actor=="Laya typed-decisions"&&d.model=="typed-decisions"&&d.response_model=="typed-decisions"),"each local player is served by its own model, never a substitute");
+  restorePrefs();a.Experiments.Apply(original,false);SessionState.SetBool("PG.Matchups",false);Debug.Log("MATCHUP COMPLETE: "+checks+" checks; TypeSafe used HTTP fixture, Laya used real model.");EditorApplication.Exit(0);
  }
 }
 }

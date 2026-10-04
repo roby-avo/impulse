@@ -9,7 +9,7 @@ resume without applying changes. **Restore defaults** changes the draft only.
 
 The cap is request starts per **game second**, excluding pauses (0.25–10 Hz).
 Each AI player has at most one request in flight and one committed action at a time.
-In Laya-vs-TypeSafe mode the same cap and schema apply independently to both players. Inference and
+In AI-vs-AI mode the same cap and schema apply independently to both players. Inference and
 action duration can lower the actual rate. Neither inference latency nor model
 mistakes are hidden by a replacement policy.
 
@@ -90,6 +90,12 @@ Match metadata includes the matchup and both participants' actor, controller,
 requested model and endpoint. Decisions include `actor`, `provider`, `model`
 (requested alias), and `response_model` (the version returned by the service).
 Decision IDs include actor identity so the two independent loops cannot collide.
+Since runtime 0.10.0 the local service returns the catalog id it served (for
+example `english`) as `response_model`; earlier recordings show `laya-rl-agent`.
+The matchup value for AI-vs-AI is `AIVsAI` (earlier: `LayaVsTypeSafe`). When both
+players use the same provider, actor names include the model, for example
+`Laya english` and `Laya typed-decisions`. Local model sources and pinned
+revisions are listed in `ai/models.json`.
 Each request captures its original match, actor and profile; switching matchups
 aborts outstanding requests, and late results remain in the original recording.
 

@@ -40,3 +40,10 @@ PASS turning Remember off deletes the saved key
 PASS key is not saved while Remember is off
 PASS chosen matchup, arena and match length persist for the next launch
 PASS exports include actor provenance and exclude credentials
+PASS setup lists the local model catalog from the service
+PASS an uninstalled model blocks Start and offers Download
+PASS an installed model can start
+PASS two local models map to distinct named players
+PASS a cloud seat still requires credentials
+PASS two local models share the service and both decide
+PASS each local player is served by its own model, never a substitute

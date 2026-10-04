@@ -1,6 +1,6 @@
 # TypeSafe and AI-vs-AI matches
 
-Open the game, choose **Human vs TypeSafe** or **Laya vs TypeSafe**, and enter an
+Open the game, choose **Play TypeSafe**, or **Watch AI** with a TypeSafe player, and enter an
 API key from [TypeSafe's console](https://console.typesafe.ai). Select
 **Connect & load models** to authenticate and discover the models available to
 your account. Select a model, then **Enter the arena**. The default suggestion

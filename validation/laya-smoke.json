@@ -2,46 +2,47 @@
   "health": {
     "status": "ok",
     "loaded": [
-      "english"
+      "english",
+      "multilingual"
     ],
-    "device": "cpu"
+    "loading": [],
+    "default": "english",
+    "device": "mps",
+    "runtime_version": "0.10.0",
+    "threads": 4,
+    "busy": false,
+    "last_inference_ms": 144.2,
+    "completed": 7
   },
-  "action": "GRAB_NEAREST_OBJECT",
-  "latency_ms": 370.7,
+  "action": "PUSH_OPPONENT",
+  "latency_ms": 141.1,
   "response": {
-    "model": "laya-rl-agent",
+    "model": "english",
     "answers": {
       "action": {
         "type": "choice",
-        "choice": "GRAB_NEAREST_OBJECT",
+        "choice": "PUSH_OPPONENT",
         "probabilities": {
-          "APPROACH_OPPONENT": 0.1266,
-          "RETREAT_FROM_OPPONENT": 0.0978,
-          "PUSH_OPPONENT": 0.1237,
-          "GRAB_NEAREST_OBJECT": 0.1572,
-          "THROW_HELD_OBJECT_AT_OPPONENT": 0.1512,
-          "DODGE_LEFT": 0.0271,
-          "DODGE_RIGHT": 0.0143,
-          "MOVE_TOWARD_SAFETY": 0.155,
-          "TAKE_COVER": 0.0587,
-          "JUMP": 0.0884
+          "APPROACH_OPPONENT": 0.1021,
+          "RETREAT_FROM_OPPONENT": 0.1069,
+          "PUSH_OPPONENT": 0.1724,
+          "GRAB_NEAREST_OBJECT": 0.1458,
+          "THROW_HELD_OBJECT_AT_OPPONENT": 0.1266,
+          "DODGE_LEFT": 0.096,
+          "DODGE_RIGHT": 0.0708,
+          "MOVE_TOWARD_SAFETY": 0.0838,
+          "TAKE_COVER": 0.0521,
+          "JUMP": 0.0433
         },
-        "confidence": 0.0652,
+        "confidence": 0.0325,
         "action": {
           "act_probability": 1.0
         }
       }
     },
     "usage": {
-      "input_tokens": 296,
+      "input_tokens": 362,
       "output_tokens": 0
-    },
-    "routing": {
-      "model": "english",
-      "repo": "convaiinnovations/laya",
-      "reason": "explicit model='english'",
-      "detection": null,
-      "workflow": null
     }
   }
 }

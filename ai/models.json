@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "default": "english",
+  "models": [
+    {
+      "id": "english",
+      "label": "Laya English",
+      "runtime": "laya",
+      "repo": "convaiinnovations/laya",
+      "revision": "5e7b2b1b8ca2ecdd3f2322d94069c9b6ce7e844b",
+      "size_mb": 804,
+      "description": "Default English checkpoint (ModernBERT-large, 421M). The configuration validated for IMPULSE.",
+      "agent_config": {"max_len": 1024, "head_max_len": 384}
+    },
+    {
+      "id": "multilingual",
+      "label": "Laya Multilingual",
+      "runtime": "laya",
+      "repo": "convaiinnovations/laya",
+      "subfolder": "multilingual",
+      "revision": "5e7b2b1b8ca2ecdd3f2322d94069c9b6ce7e844b",
+      "size_mb": 614,
+      "description": "100+ languages (mmBERT-base, 322M). Experimental in IMPULSE: the game's prompts are English.",
+      "agent_config": {"max_len": 1024, "head_max_len": 384}
+    },
+    {
+      "id": "typed-decisions",
+      "label": "Laya Typed Decisions",
+      "runtime": "laya",
+      "repo": "convaiinnovations/laya",
+      "subfolder": "typed-decisions",
+      "revision": "5e7b2b1b8ca2ecdd3f2322d94069c9b6ce7e844b",
+      "size_mb": 804,
+      "description": "ModernBERT-large fine-tuned on typed-decision workflows. Experimental in IMPULSE.",
+      "agent_config": {"max_len": 1024, "head_max_len": 384}
+    }
+  ]
+}

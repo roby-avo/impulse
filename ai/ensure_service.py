@@ -1,23 +1,49 @@
 """Idempotent, detached startup shared by the game and desktop launcher."""
 import fcntl
 import json
+import os
 from pathlib import Path
+import signal
 import socket
 import subprocess
 import time
 import urllib.request
+from models import RUNTIME_VERSION
 
 ROOT = Path(__file__).resolve().parent.parent
 RUNTIME = ROOT / 'ai/.runtime'
 
 
-def healthy():
+def health():
     try:
         with urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=1) as response:
             state = json.load(response)
-        return state.get('status') == 'ok' and 'english' in state.get('loaded', []) and 'runtime_version' in state
+        return state if state.get('status') == 'ok' and 'runtime_version' in state else None
     except (OSError, ValueError, TypeError, AttributeError):
-        return False
+        return None
+
+
+def healthy():
+    state = health()
+    return bool(state) and state['runtime_version'] == RUNTIME_VERSION
+
+
+def stop_outdated():
+    """Replace a service this project started with an older runtime; never touch others."""
+    state = health()
+    if not state or state['runtime_version'] == RUNTIME_VERSION:
+        return None
+    pid = managed_pid()
+    if not pid:
+        return {'state': 'error', 'message': 'An older local Laya is running · stop it, then relaunch'}
+    os.kill(pid, signal.SIGTERM)
+    for _ in range(50):
+        if health() is None:
+            break
+        time.sleep(.1)
+    (RUNTIME / 'service.pid').unlink(missing_ok=True)
+    (RUNTIME / 'last-start').unlink(missing_ok=True)
+    return None
 
 
 def managed_pid():
@@ -43,6 +69,9 @@ def ensure():
         fcntl.flock(lock, fcntl.LOCK_EX)
         if healthy():
             return {'state': 'ready', 'message': 'Local Laya ready'}
+        outdated = stop_outdated()
+        if outdated:
+            return outdated
         pid = managed_pid()
         if pid:
             return {'state': 'starting', 'message': 'Laya is loading · reconnecting automatically', 'pid': pid}

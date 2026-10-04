@@ -21,6 +21,7 @@ with ThreadPoolExecutor(2) as pool:
   assert time.perf_counter()<deadline
  start=time.perf_counter();during=get('/health');health_ms=(time.perf_counter()-start)*1000
  overlapping=post();first=running.result()
-assert during['busy'] and overlapping['status']==429 and first['status']==200,(during,overlapping,first)
+# Overlap waits briefly for the single worker (two AI players share it), never in an open-ended queue.
+assert during['busy'] and first['status']==200 and (overlapping['status']==429 or (overlapping['status']==200 and overlapping['ms']<first['ms']+1000)),(during,overlapping,first)
 result={'health':health,'runs':runs,'median_ms':statistics.median(r['ms'] for r in runs),'max_ms':max(r['ms'] for r in runs),'health_during_inference_ms':health_ms,'overlap':overlapping}
 Path(args.output).write_text(json.dumps(result,indent=2));print(json.dumps(result,indent=2))

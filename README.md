@@ -29,7 +29,7 @@ send a robot off the roof.
 It's a fun, hands-on way to explore how different decision-making models behave
 in the same game, with tools to inspect the choices behind the action.
 
-- **Play or spectate.** Challenge local Laya, face a model through TypeSafe, or watch Laya versus TypeSafe.
+- **Play or spectate.** Challenge local Laya, face a model through TypeSafe, or watch any two models face off.
 - **Make it your experiment.** Adjust instructions, observations, available actions, and decision frequency in the built-in experiment lab.
 - **See more than the score.** Inspect action distributions, model responses, inference latency, and recorded matches.
 - **Keep the physics shared.** Every fighter uses the same movement, cooldowns, interactions, and combat rules.
@@ -41,9 +41,13 @@ in the same game, with tools to inspect the choices behind the action.
 |---|---|---|
 | **Play Laya** | You versus local Laya | Local Python setup and downloaded model weights; no API key |
 | **Play TypeSafe** | You versus a model available through TypeSafe | A TypeSafe API key and internet access |
-| **Watch AI** | Local Laya versus your selected TypeSafe model | Both of the above |
+| **Watch AI** | Any two models: local Laya models, TypeSafe models, or one of each | Whatever each side needs; two local models need no API key |
 
 ![IMPULSE matchup menu with local, cloud, and AI-versus-AI modes](docs/images/match-setup.jpg)
+
+Local models come from a small catalog (`english`, `multilingual`, `typed-decisions`,
+plus any you add). The setup screen shows which are installed and downloads a
+missing one with a click. See [local models](ai/README.md#models).
 
 TypeSafe models are discovered from your account in the setup screen. Cloud
 requests use your account's allowance. With **Remember key on this Mac** (on by
