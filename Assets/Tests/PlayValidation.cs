@@ -25,7 +25,10 @@ public class PlayValidation:MonoBehaviour {
   }
   File.AppendAllText("validation/results.txt","M2 COMPLETE\n");
  }
- if(SessionState.GetInt("PG.Milestone",1)>=3){a.ResetArena();yield return new WaitForSeconds(.3f);DecisionResult result=null;yield return a.Client.Decide(AIPerception.Capture(a.Executor,a.Executor.ObserveContext()),r=>result=r);Check(result!=null&&result.Valid,"M3 real Laya action in Play Mode");Check(result.LatencyMs>0,"M3 measured asynchronous latency");File.WriteAllText("validation/unity-laya-response.json",result.Raw);File.AppendAllText("validation/results.txt","M3 COMPLETE\n");}
+ if(SessionState.GetInt("PG.Milestone",1)>=3){a.ResetArena();yield return new WaitForSeconds(.3f);
+  // Like the setup screen, ask the service to load the model first: it may have unloaded it for others.
+  yield return LayaClient.LocalCommand(a.Client.Model,"load");bool resident=false;float warm=Time.realtimeSinceStartup+90;while(!resident&&Time.realtimeSinceStartup<warm){yield return LayaClient.LocalModels((list,error)=>resident=list?.models!=null&&System.Array.Exists(list.models,m=>m.name==a.Client.Model&&m.loaded));if(!resident)yield return new WaitForSecondsRealtime(.5f);}
+  DecisionResult result=null;yield return a.Client.Decide(AIPerception.Capture(a.Executor,a.Executor.ObserveContext()),r=>result=r);Check(result!=null&&result.Valid,"M3 real Laya action in Play Mode");Check(result.LatencyMs>0,"M3 measured asynchronous latency");File.WriteAllText("validation/unity-laya-response.json",result.Raw);File.AppendAllText("validation/results.txt","M3 COMPLETE\n");}
  if(SessionState.GetInt("PG.Milestone",1)>=4){
   a.Match.Practice=false;a.Match.NewMatch();a.Brain.Enabled=true;float deadline=Time.time+20;while(a.Brain.ExecutedDecisions<3&&Time.time<deadline)yield return null;Check(a.Brain.ExecutedDecisions>=3,"M4 autonomous real Laya loop");Check(System.Array.IndexOf(ActionSchema.Available(a.Executor,a.Executor.ObserveContext()),a.AI.Held?"GRAB_NEAREST_OBJECT":"THROW_HELD_OBJECT_AT_OPPONENT")<0,"M4 impossible interaction actions excluded");
   a.Brain.Enabled=false;while(a.Client.Busy)yield return null;a.Executor.Finish(false,"validation");

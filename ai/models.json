@@ -1,5 +1,5 @@
 {
-  "schema": 1,
+  "schema": 2,
   "default": "english",
   "models": [
     {
@@ -10,7 +10,10 @@
       "revision": "5e7b2b1b8ca2ecdd3f2322d94069c9b6ce7e844b",
       "size_mb": 804,
       "description": "Default English checkpoint (ModernBERT-large, 421M). The configuration validated for IMPULSE.",
-      "agent_config": {"max_len": 1024, "head_max_len": 384}
+      "agent_config": {
+        "max_len": 1024,
+        "head_max_len": 384
+      }
     },
     {
       "id": "multilingual",
@@ -21,7 +24,10 @@
       "revision": "5e7b2b1b8ca2ecdd3f2322d94069c9b6ce7e844b",
       "size_mb": 614,
       "description": "100+ languages (mmBERT-base, 322M). Experimental in IMPULSE: the game's prompts are English.",
-      "agent_config": {"max_len": 1024, "head_max_len": 384}
+      "agent_config": {
+        "max_len": 1024,
+        "head_max_len": 384
+      }
     },
     {
       "id": "typed-decisions",
@@ -32,7 +38,224 @@
       "revision": "5e7b2b1b8ca2ecdd3f2322d94069c9b6ce7e844b",
       "size_mb": 804,
       "description": "ModernBERT-large fine-tuned on typed-decision workflows. Experimental in IMPULSE.",
-      "agent_config": {"max_len": 1024, "head_max_len": 384}
+      "agent_config": {
+        "max_len": 1024,
+        "head_max_len": 384
+      }
+    },
+    {
+      "id": "von",
+      "label": "Von 1.3",
+      "runtime": "von",
+      "repo": "wfzyx/von",
+      "revision": "498ceba33390b32cfefaab6422ec380318ba9b99",
+      "request_model": "von-1.3.0",
+      "size_mb": 3017,
+      "description": "ModernBERT-large encoder (395M) with an option-marker head. English only. Apache-2.0."
+    },
+    {
+      "id": "kev-0.8b",
+      "label": "Kev 0.8B",
+      "runtime": "kev",
+      "repo": "jaredpalmer/kev-0.8b",
+      "revision": "bf75a6a8848ea6960ff2ed108d9ed44c2941174f",
+      "request_model": "kev-latest",
+      "size_mb": 1700,
+      "description": "Qwen3.5-0.8B with a LoRA adapter and pointer head, served with MLX. The first start downloads the Qwen base model. Apache-2.0."
+    },
+    {
+      "id": "system-one-qwen3-0.6b",
+      "label": "System One 0.6B",
+      "runtime": "system-one",
+      "repo": "mpuig/system-one-qwen3-0.6b",
+      "revision": "1d1491933a78f0b09f76bad493ef150e666100d1",
+      "request_model": "system-one",
+      "size_mb": 1250,
+      "serve_args": [
+        "--model",
+        "Qwen/Qwen3-0.6B",
+        "--adapter",
+        "{weights}",
+        "--temperature",
+        "{weights}/temperature.json"
+      ],
+      "description": "Qwen3-0.6B with an MLX LoRA adapter (volume tier). The first start downloads the Qwen base model. MIT; research prototype."
+    },
+    {
+      "id": "system-one-minicpm5-2b",
+      "label": "System One 2B (q8)",
+      "runtime": "system-one",
+      "repo": "mpuig/system-one-minicpm5-2b-q8",
+      "revision": "44736c7084bf79a9f9a18c3a4a88840e7846c223",
+      "request_model": "system-one",
+      "size_mb": 2593,
+      "serve_args": [
+        "--model",
+        "{weights}",
+        "--temperature",
+        "{src}/release/temperature-minicpm5-2b-q8.json"
+      ],
+      "description": "MiniCPM5-2B, 8-bit MLX weights (quality tier). MIT; research prototype.",
+      "files": [
+        "config.json",
+        "generation_config.json",
+        "model.safetensors",
+        "model.safetensors.index.json",
+        "tokenizer.json",
+        "tokenizer_config.json",
+        "chat_template.jinja"
+      ]
+    },
+    {
+      "id": "openthai-systemone",
+      "label": "OpenThai-SystemOne 0.8B",
+      "runtime": "openthai",
+      "repo": "iapp/OpenThai-SystemOne",
+      "revision": "dc67b0295ab7ac94b05d27187150d9a4b5784554",
+      "request_model": "openthai-systemone",
+      "size_mb": 1455,
+      "description": "Qwen3.5-0.8B with a 256-slot decision head; Thai and English. Loads model code from its repository (trust_remote_code). Apache-2.0."
+    },
+    {
+      "id": "lafalce-system-one",
+      "label": "System One student (lafalce)",
+      "runtime": "lafalce",
+      "repo": "lafalce/system-one-model",
+      "revision": "b7b34611754fd106800fd893682bede9dedb06cd",
+      "request_model": "system-one",
+      "size_mb": 680,
+      "description": "ModernBERT-base + LoRA student. English only; 512-token input cap. Apache-2.0; experimental."
     }
-  ]
+  ],
+  "runtimes": {
+    "von": {
+      "family": "Von",
+      "homepage": "https://github.com/wfzyx/von",
+      "license": "Apache-2.0",
+      "install": {
+        "kind": "pip",
+        "python": "3.13",
+        "packages": [
+          "von-sdk==1.3.7"
+        ]
+      },
+      "serve": {
+        "argv": [
+          "{bin}/von",
+          "serve",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "{port}",
+          "--device",
+          "{device}"
+        ],
+        "env": {
+          "VON_MODEL_ID": "{weights}",
+          "VON_CHECKPOINT_DIR": "{weights}",
+          "VON_CHAINS_DIR": "off"
+        }
+      }
+    },
+    "kev": {
+      "family": "Kev",
+      "homepage": "https://github.com/jaredpalmer/kev",
+      "license": "Apache-2.0",
+      "install": {
+        "kind": "git",
+        "url": "https://github.com/jaredpalmer/kev",
+        "ref": "6b719c3c3f367295f6ef336f4f751cf5ff970abc",
+        "python": "3.13",
+        "sync": [
+          "--extra",
+          "serve"
+        ]
+      },
+      "serve": {
+        "argv": [
+          "{python}",
+          "-m",
+          "kev.serve",
+          "--run",
+          "{weights}",
+          "--port",
+          "{port}"
+        ]
+      }
+    },
+    "system-one": {
+      "family": "System One",
+      "homepage": "https://github.com/mpuig/system-one",
+      "license": "MIT",
+      "install": {
+        "kind": "git",
+        "url": "https://github.com/mpuig/system-one",
+        "ref": "ed076ed47d5e09187b66697982f6aa65263387dc",
+        "python": "3.13"
+      },
+      "serve": {
+        "argv": [
+          "{python}",
+          "scripts/serve.py",
+          "{args}",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "{port}"
+        ]
+      }
+    },
+    "openthai": {
+      "family": "OpenThai",
+      "homepage": "https://huggingface.co/iapp/OpenThai-SystemOne",
+      "license": "Apache-2.0",
+      "install": {
+        "kind": "pip",
+        "python": "3.13",
+        "packages": [
+          "openthai-systemone[server]==0.1.0"
+        ]
+      },
+      "serve": {
+        "argv": [
+          "{python}",
+          "-m",
+          "uvicorn",
+          "openthai_systemone.server:app",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "{port}"
+        ],
+        "env": {
+          "OPENTHAI_SYSTEMONE_MODEL": "{weights}"
+        }
+      }
+    },
+    "lafalce": {
+      "family": "System One (lafalce)",
+      "homepage": "https://github.com/mateolafalce/system-one-model",
+      "license": "Apache-2.0",
+      "install": {
+        "kind": "git",
+        "url": "https://github.com/mateolafalce/system-one-model",
+        "ref": "2ab12742bb2f109c82b96cc482d34d676378d18d",
+        "python": "3.13"
+      },
+      "serve": {
+        "argv": [
+          "{python}",
+          "scripts/07_serve.py",
+          "--ckpt",
+          "{weights}",
+          "--temperatures",
+          "{weights}/temps.json",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "{port}"
+        ]
+      }
+    }
+  }
 }

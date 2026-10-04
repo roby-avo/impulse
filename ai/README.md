@@ -23,50 +23,100 @@ chooses actions.
 
 ## Models
 
-Local System One checkpoints are managed from one catalog. `models.json` lists the
-shipped Laya checkpoints, pinned to a repository revision; your own entries go in
-`models.local.json` (untracked). Installed checkpoints live in `ai/models/<id>/`
-(untracked). The game's setup screen lists the same catalog, shows install and
-loading state, and can download a missing model with one click.
+Local System One models are managed from one catalog. `models.json` lists the shipped
+models, each pinned to a repository revision; your own entries (and runtimes) go in
+`models.local.json` (untracked). The game's setup screen lists the same catalog, shows
+install and loading state, and downloads a missing model with one click.
 
 ```sh
-ai/.venv/bin/python ai/models.py list
-ai/.venv/bin/python ai/models.py download multilingual
-ai/.venv/bin/python ai/models.py verify multilingual        # real game question, legal answer?
-ai/.venv/bin/python ai/models.py remove multilingual
+ai/.venv/bin/python ai/models.py list                 # models, install state, verification
+ai/.venv/bin/python ai/models.py runtimes             # runtime recipes and install state
+ai/.venv/bin/python ai/models.py download von         # runtime + weights + verified first start
+ai/.venv/bin/python ai/models.py verify von           # real game question, legal answer?
+ai/.venv/bin/python ai/models.py remove von           # weights; `remove-runtime von` for the environment
 ```
 
-| Model | Size | Notes |
-|---|---|---|
-| `english` | 804 MB | Default; the configuration validated for IMPULSE |
-| `multilingual` | 614 MB | mmBERT-base, 100+ languages; experimental here (prompts are English) |
-| `typed-decisions` | 804 MB | Fine-tuned on typed-decision workflows; experimental here |
+There are two kinds of model:
 
-Downloads fetch only the selected checkpoint's files. If the Hugging Face cache
-already holds them (for example from an earlier `setup.sh`), installation is
-offline and hardlinks the weights, so it costs no extra disk space.
+- **Laya checkpoints** (`runtime: "laya"`) run inside this service with the pinned
+  Laya SDK, on the Apple GPU.
+- **Other open System One models** run through a **runtime**: the project's own code in
+  an isolated environment under `ai/runtimes/<runtime>/` (a pinned pip package, or a
+  pinned git commit set up with `uv sync`), serving the TypeSafe `/v1/systemone`
+  protocol. This service starts that server on a free `127.0.0.1` port when the model
+  is selected, forwards requests for the model to it, and stops it when the model is
+  unloaded. The game always talks to port 8000. Server output goes to
+  `ai/.runtime/models/<model>.log`.
 
-**Adding a new model.** Any checkpoint in the Laya format (`rl_agent_config.json`,
-`model.safetensors`, `tokenizer/`, `encoder/`) works:
+| Model | Family / runtime | Base | License |
+|---|---|---|---|
+| `english` | Laya (built in) | ModernBERT-large, 421M | Apache-2.0 |
+| `multilingual` | Laya (built in) | mmBERT-base, 322M | Apache-2.0 |
+| `typed-decisions` | Laya (built in) | ModernBERT-large, 421M | Apache-2.0 |
+| `von` | Von · `von-sdk` 1.3.7 | ModernBERT-large, 395M | Apache-2.0 |
+| `kev-0.8b` | Kev · git `kev-1.0` (MLX) | Qwen3.5-0.8B + LoRA | Apache-2.0 |
+| `system-one-qwen3-0.6b` | System One · git (MLX) | Qwen3-0.6B + LoRA | MIT |
+| `system-one-minicpm5-2b` | System One · git (MLX) | MiniCPM5-2B, 8-bit | MIT |
+| `openthai-systemone` | OpenThai · `openthai-systemone` 0.1.0 | Qwen3.5-0.8B, Thai + English | Apache-2.0 |
+| `lafalce-system-one` | lafalce · git (CPU) | ModernBERT-base + LoRA | Apache-2.0 |
+
+Measured start times, latency and probe scores on this machine are in
+[`validation/LOCAL_MODELS.md`](../validation/LOCAL_MODELS.md). Larger models of the same
+families (Kev 4B/9B/27B) need more memory than an 18 GB Mac can spare beside the game.
+
+**What `download` does.** It installs the runtime if it is missing, fetches the
+pinned weights (reusing the Hugging Face cache offline, hardlinking large files), then
+performs a **first start with network access** so the server can fetch any base model
+it needs. That start must answer the real game question with a legal action and finite
+confidence, or the model is not marked installed. Later starts are offline. The manager
+keeps its bookkeeping in `ai/models/.meta/`, outside model folders, because some
+runtimes fingerprint every file in a model folder.
+
+**Adding a model of an existing family** (for example a fine-tuned Kev or Von):
 
 ```sh
+ai/.venv/bin/python ai/models.py add my-kev org/kev-finetune --runtime kev --revision <commit>
 ai/.venv/bin/python ai/models.py add my-laya org/repo --revision <commit> --size-mb 800
-ai/.venv/bin/python ai/models.py add my-finetune ~/checkpoints/run-7   # a local folder
+ai/.venv/bin/python ai/models.py add my-run ~/checkpoints/run-7      # Laya-format folder
 ```
 
-A Hugging Face entry then downloads from the game or with `download`; a folder entry
-is used in place and never deleted by `remove`. Pin `--revision` for reproducible
-experiments. Entries may set `agent_config` (default `max_len` 1024,
-`head_max_len` 384). The `runtime` field is `laya` today; other runtimes would need
-an adapter in `server.py`.
+**Adding a new family.** Add a runtime and a model to `models.local.json`:
 
-Every model is checked before it serves a match: loading runs a warm-up with the
-real game question, and a model whose answer the game could not execute is
-reported instead of used. Results are kept in `ai/models/.verified/`.
+```json
+{
+  "runtimes": {
+    "myfamily": {
+      "family": "MyFamily",
+      "install": {"kind": "pip", "python": "3.13", "packages": ["myfamily-sdk==1.2.3"]},
+      "serve": {"argv": ["{python}", "-m", "myfamily.serve", "--port", "{port}", "--model", "{weights}"],
+                "env": {"MYFAMILY_DEVICE": "{device}"}}
+    }
+  },
+  "models": [
+    {"id": "myfamily-small", "label": "MyFamily Small", "runtime": "myfamily",
+     "repo": "org/myfamily-small", "revision": "<commit>", "size_mb": 900,
+     "request_model": "myfamily-small"}
+  ]
+}
+```
 
-**Memory.** At most two models stay resident (`LAYA_MAX_LOADED`, default 2); loading
-a third unloads the least recently used one. Two local AI players share one
-inference worker, so in Laya-vs-Laya matches each model's decision rate is lower.
+`install.kind` is `pip` (packages) or `git` (`url`, a pinned `ref`, optional `sync`
+extras and extra `packages`). Placeholders: `{python}`, `{bin}`, `{src}` (git checkout),
+`{weights}` (the model folder), `{port}`, `{device}` and `{args}` (the model's
+`serve_args`). Optional model fields: `files` (only these files), `ignore`,
+`serve_args`, `serve_env`, `request_model` (the `model` value sent to the server; if
+the server rejects it, the name it lists on `GET /v1/models` is used). The server must
+implement `POST /v1/systemone` and answer `choice` questions with `choice` and a
+`confidence`.
+
+Installing a runtime runs that project's code from PyPI or GitHub, so pin exact
+versions and review projects you add. `openthai-systemone` loads model code shipped in
+its Hugging Face repository (`trust_remote_code`).
+
+**Memory.** At most two models stay resident across all kinds (`LAYA_MAX_LOADED`,
+default 2); loading a third unloads the least recently used one and stops its server.
+Two local AI players share one request worker, so in local-vs-local matches each
+model's decision rate is lower.
 
 ## Runtime and acceleration
 

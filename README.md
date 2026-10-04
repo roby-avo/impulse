@@ -29,7 +29,7 @@ send a robot off the roof.
 It's a fun, hands-on way to explore how different decision-making models behave
 in the same game, with tools to inspect the choices behind the action.
 
-- **Play or spectate.** Challenge local Laya, face a model through TypeSafe, or watch any two models face off.
+- **Play or spectate.** Challenge a local open-source model, face a model through TypeSafe, or watch any two models face off.
 - **Make it your experiment.** Adjust instructions, observations, available actions, and decision frequency in the built-in experiment lab.
 - **See more than the score.** Inspect action distributions, model responses, inference latency, and recorded matches.
 - **Keep the physics shared.** Every fighter uses the same movement, cooldowns, interactions, and combat rules.
@@ -39,16 +39,18 @@ in the same game, with tools to inspect the choices behind the action.
 
 | Mode | Who plays | What you need |
 |---|---|---|
-| **Play Laya** | You versus local Laya | Local Python setup and downloaded model weights; no API key |
+| **Play local AI** | You versus a model on this Mac: Laya, Von, Kev, System One, OpenThai, … | Local Python setup; models download from the setup screen; no API key |
 | **Play TypeSafe** | You versus a model available through TypeSafe | A TypeSafe API key and internet access |
 | **Watch AI** | Any two models: local Laya models, TypeSafe models, or one of each | Whatever each side needs; two local models need no API key |
 | **2 Players** | Two people on one keyboard (or two gamepads) | Nothing extra |
 
 ![IMPULSE matchup menu with local, cloud, and AI-versus-AI modes](docs/images/match-setup.jpg)
 
-Local models come from a small catalog (`english`, `multilingual`, `typed-decisions`,
-plus any you add). The setup screen shows which are installed and downloads a
-missing one with a click. See [local models](ai/README.md#models).
+Local models come from a catalog of open System One models from Hugging Face: Laya,
+Von, Kev, System One, OpenThai and more, plus any you add. Each non-Laya family runs
+in its own isolated environment behind the same local service. The setup screen shows
+which are installed and downloads a missing one with a click. See
+[local models](ai/README.md#models) and the [measured comparison](validation/LOCAL_MODELS.md).
 
 TypeSafe models are discovered from your account in the setup screen. Cloud
 requests use your account's allowance. With **Remember key on this Mac** (on by

@@ -28,6 +28,58 @@ from models import RUNTIME_VERSION
 QUEUE_WAIT_S = .6     # Two AI players share one worker; a short wait beats a 429 storm.
 REWARM_AFTER_S = 60   # Accelerators page out after long idle; the game asks for a re-warm.
 log = logging.getLogger('uvicorn.error')
+SERVERS_FILE = catalog.AI / '.runtime' / 'model-servers.json'
+
+
+class ServerModel:
+    """A model answered by its own /v1/systemone process (a catalog runtime). The process is
+    started by this service, bound to 127.0.0.1 on a free port and stopped when unloaded."""
+    def __init__(self, item):
+        self.item = item
+        self.port = catalog.free_port()
+        self.process = catalog.start_server(item, self.port)
+        self.device = item['runtime']
+        _remember_servers()
+
+    @property
+    def alive(self):
+        return self.process.poll() is None
+
+    def wait(self):
+        catalog.wait_ready(self.item, self.port, self.process, catalog.START_TIMEOUT)
+
+    def system_one(self, state, questions):
+        result, _ = catalog.post(self.port, {'state': state, 'questions': questions}, self.item, timeout=30)
+        return result
+
+    def close(self):
+        catalog.stop_server(self.process)
+        _remember_servers()
+
+
+_servers = set()
+
+
+def _remember_servers():
+    """Record child server PIDs so a later start can clean up after a crash."""
+    alive = [m for m in _servers if m.alive]
+    SERVERS_FILE.parent.mkdir(parents=True, exist_ok=True)
+    SERVERS_FILE.write_text(json.dumps([m.process.pid for m in alive]))
+
+
+def stop_orphaned_servers():
+    try:
+        pids = json.loads(SERVERS_FILE.read_text())
+    except (OSError, ValueError):
+        return
+    for pid in pids:
+        command = subprocess.run(['ps', '-p', str(pid), '-o', 'command='], capture_output=True, text=True).stdout
+        if str(catalog.RUNTIMES_DIR) in command:
+            try:
+                os.killpg(pid, 15)
+            except OSError:
+                pass
+    SERVERS_FILE.unlink(missing_ok=True)
 
 
 class InferenceRuntime:
@@ -70,7 +122,7 @@ class InferenceRuntime:
         try:
             result = self.run(agent, name, request['state'], request['questions'])
         except RuntimeError:
-            if agent.device.type == 'cpu':
+            if isinstance(agent, ServerModel) or agent.device.type == 'cpu':
                 raise
             # Device recovery keeps exactly the same checkpoint and weights, never another model.
             agent.device = torch.device('cpu')
@@ -84,18 +136,21 @@ class InferenceRuntime:
     def install(self, name, item, agent):
         """Runs on the inference worker: Metal is not thread-safe, so every accelerator step
         (move, warm-up, eviction, cache release) shares the thread that serves inference."""
-        if str(self.device) != 'cpu':
+        if str(self.device) != 'cpu' and not isinstance(agent, ServerModel):
             agent.model.to(self.device)
             agent.device = torch.device(self.device)
         self.warm(name, item, agent)
         with self.lock:
             self.agents[name] = agent
             self.agents.move_to_end(name)
+            self.loading.discard(name)   # loaded and loading must never both be true
             evicted = []
             while len(self.agents) > self.max_loaded:
                 evicted.append(self.agents.popitem(last=False))
             self.errors.pop(name, None)
-        for old_name in [entry[0] for entry in evicted]:
+        for old_name, old in evicted:
+            if isinstance(old, ServerModel):
+                old.close()
             log.info('Unloaded %s to stay within %d resident models', old_name, self.max_loaded)
         evicted.clear()  # release evicted weights here, on the worker
         gc.collect()
@@ -106,7 +161,19 @@ class InferenceRuntime:
         """Read weights on the loader thread (CPU only), then install on the worker. Blocking."""
         try:
             item = catalog.entry(name)
-            agent = self.load_agent(item, 'cpu')
+            if catalog.is_server(item):
+                if not catalog.installed(item):
+                    raise catalog.ModelError(f'{name} is not installed')
+                # Its own process does the accelerator work; this thread only waits for it over HTTP.
+                agent = ServerModel(item)
+                _servers.add(agent)
+                try:
+                    agent.wait()
+                except Exception:
+                    agent.close()
+                    raise
+            else:
+                agent = self.load_agent(item, 'cpu')
             self.worker.submit(self.install, name, item, agent).result()
             log.info('Model ready: %s on %s (warm-up %.0f ms)', name, agent.device, self.last_ms)
         except Exception as exc:
@@ -121,6 +188,11 @@ class InferenceRuntime:
     def ensure(self, name, retry=False):
         """'loaded', 'loading' or 'error'. Loads in the background; never blocks a request."""
         with self.lock:
+            agent = self.agents.get(name)
+            if isinstance(agent, ServerModel) and not agent.alive:
+                del self.agents[name]
+                self.errors[name] = f'{name} server stopped unexpectedly; see ai/.runtime/models/{name}.log'
+                log.error(self.errors[name])
             if name in self.agents:
                 self.agents.move_to_end(name)
                 return 'loaded'
@@ -199,6 +271,8 @@ def create_game_app(runtime):
     async def lifespan(_):
         yield
         runtime.loader.shutdown(wait=False, cancel_futures=True)
+        for model in list(_servers):
+            model.close()
         runtime.worker.shutdown(wait=True, cancel_futures=True)
 
     app = FastAPI(title='IMPULSE · local System One', lifespan=lifespan)
@@ -291,6 +365,7 @@ def main():
     device = os.environ.get('LAYA_DEVICE') or ('mps' if torch.backends.mps.is_available() else 'cpu')
     torch.set_num_threads(int(os.environ['LAYA_THREADS']))
     torch.set_num_interop_threads(1)
+    stop_orphaned_servers()
     runtime = InferenceRuntime(device, int(os.environ.get('LAYA_MAX_LOADED', '2')))
     default = catalog.default_model()
     item = catalog.entry(default)

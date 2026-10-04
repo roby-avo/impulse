@@ -1,6 +1,7 @@
 """Model catalog, installation and service endpoints with fake checkpoints (no weights loaded)."""
 import json
 from pathlib import Path
+import sys
 import tempfile
 import time
 import unittest
@@ -45,7 +46,7 @@ class Sandbox(unittest.TestCase):
             {'id': 'beta', 'label': 'Beta', 'repo': 'org/bundle', 'subfolder': 'beta', 'size_mb': 1}]}))
         for name, value in [('CATALOG', self.root / 'models.json'), ('LOCAL_CATALOG', self.root / 'models.local.json'),
                             ('STORE', self.root / 'store'), ('PARTIAL', self.root / 'store/.partial'),
-                            ('VERIFIED', self.root / 'store/.verified')]:
+                            ('VERIFIED', self.root / 'store/.verified'), ('META', self.root / 'store/.meta')]:
             patcher = patch.object(catalog, name, value)
             patcher.start()
             self.addCleanup(patcher.stop)
@@ -197,6 +198,93 @@ class ServiceTests(Sandbox):
         health = self.client.get('/health').json()
         self.assertEqual(health['runtime_version'], catalog.RUNTIME_VERSION)
         self.assertEqual(health['loaded'], ['alpha'])
+
+
+FAKE_SERVER = """
+import json, sys
+from http.server import BaseHTTPRequestHandler, HTTPServer
+class H(BaseHTTPRequestHandler):
+    def log_message(self, *a): pass
+    def do_POST(self):
+        body = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
+        criteria = list(body['questions']['action']['criteria'])
+        out = json.dumps({'model': body['model'], 'answers': {'action': {'type': 'choice', 'choice': criteria[-1], 'confidence': .5}}}).encode()
+        self.send_response(200); self.send_header('Content-Type', 'application/json'); self.send_header('Content-Length', str(len(out))); self.end_headers(); self.wfile.write(out)
+HTTPServer(('127.0.0.1', int(sys.argv[1])), H).serve_forever()
+"""
+
+
+class RuntimeTests(Sandbox):
+    """A fake System One server stands in for a real runtime; no packages are installed."""
+    def setUp(self):
+        super().setUp()
+        for name, value in [('RUNTIMES_DIR', self.root / 'runtimes'), ('LOGS', self.root / 'logs')]:
+            patcher = patch.object(catalog, name, value)
+            patcher.start()
+            self.addCleanup(patcher.stop)
+        patcher = patch.object(server, 'SERVERS_FILE', self.root / 'servers.json')
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        (self.root / 'fake_server.py').write_text(FAKE_SERVER)
+        (self.root / 'weights').mkdir()
+        data = json.loads((self.root / 'models.json').read_text())
+        data['runtimes'] = {'fake': {'family': 'Fake', 'install': {'kind': 'pip', 'packages': ['fake==1']},
+                                     'serve': {'argv': ['{python}', str(self.root / 'fake_server.py'), '{port}']}}}
+        data['models'].append({'id': 'fakey', 'runtime': 'fake', 'path': str(self.root / 'weights'), 'request_model': 'fake-latest'})
+        (self.root / 'models.json').write_text(json.dumps(data))
+        venv = self.root / 'runtimes/fake/.venv/bin'
+        venv.mkdir(parents=True)
+        (venv / 'python').symlink_to(sys.executable)
+        (self.root / 'runtimes/fake/.installed.json').write_text(json.dumps({'install': catalog.runtime_fingerprint('fake')}))
+
+    def test_runtime_recipes_are_validated(self):
+        data = json.loads((self.root / 'models.json').read_text())
+        data['runtimes']['bad'] = {'install': {'kind': 'curl-pipe-bash'}, 'serve': {'argv': ['x']}}
+        (self.root / 'models.json').write_text(json.dumps(data))
+        with self.assertRaises(catalog.ModelError):
+            catalog.catalog()
+
+    def test_unknown_runtime_is_rejected(self):
+        (self.root / 'models.local.json').write_text(json.dumps({'models': [{'id': 'x', 'runtime': 'nope', 'repo': 'a/b'}]}))
+        with self.assertRaises(catalog.ModelError):
+            catalog.catalog()
+
+    def test_serve_command_fills_placeholders(self):
+        argv, env, _ = catalog.serve_command(catalog.entry('fakey'), 4321)
+        self.assertEqual(argv[-1], '4321')
+        self.assertTrue(argv[0].endswith('runtimes/fake/.venv/bin/python'))
+        self.assertEqual(catalog.entry('fakey')['family'], 'Fake')
+
+    def test_first_start_verifies_then_server_model_is_served_and_stopped(self):
+        item = catalog.entry('fakey')
+        self.assertFalse(catalog.installed(item))
+        self.assertEqual(catalog.download('fakey')['state'], 'installed')
+        self.assertTrue(catalog.installed(item) and catalog.status(item)['verified'])
+        runtime = server.InferenceRuntime('cpu', max_loaded=1, loader=lambda item, device: FakeAgent())
+        client = TestClient(server.create_game_app(runtime))
+        request = {'model': 'fakey', 'state': {'x': 1}, 'questions': QUESTIONS}
+        self.assertEqual(client.post('/v1/systemone', json=request).status_code, 503)
+        deadline = time.time() + 10
+        while runtime.ensure('fakey') == 'loading' and time.time() < deadline:
+            time.sleep(.05)
+        reply = client.post('/v1/systemone', json=request)
+        self.assertEqual(reply.status_code, 200)
+        self.assertEqual(reply.json()['model'], 'fakey')
+        process = runtime.agents['fakey'].process
+        with runtime.lock:
+            runtime.agents.pop('fakey').close()
+        self.assertIsNotNone(process.poll())
+
+    def test_a_dead_server_is_reported_not_replaced(self):
+        catalog.download('fakey')
+        runtime = server.InferenceRuntime('cpu', max_loaded=1)
+        runtime.ensure('fakey')
+        deadline = time.time() + 10
+        while runtime.ensure('fakey') == 'loading' and time.time() < deadline:
+            time.sleep(.05)
+        catalog.stop_server(runtime.agents['fakey'].process)
+        self.assertEqual(runtime.ensure('fakey'), 'error')
+        self.assertIn('stopped unexpectedly', runtime.errors['fakey'])
 
 
 if __name__ == '__main__':

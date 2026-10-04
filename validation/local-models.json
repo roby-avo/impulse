@@ -1,0 +1,177 @@
+{
+  "machine": "Apple M3 Pro",
+  "note": "Latency is end-to-end through the game service; probes are 8 hand-authored situations, one request each.",
+  "results": [
+    {
+      "model": "english",
+      "family": "Laya",
+      "runtime": "laya",
+      "load_seconds": 0.0,
+      "median_ms": 82,
+      "p90_ms": 83,
+      "probe_score": "6/8",
+      "probe": [
+        "OK rush: enemy far, little roof behind    -> ATTACK_OPPONENT                top3=[('ATTACK_OPPON', 0.73), ('APPROACH_OPP', 0.1), ('DODGE_LEFT', 0.04)]",
+        "OK in reach, little roof behind           -> ATTACK_OPPONENT                top3=[('ATTACK_OPPON', 0.69), ('PUSH_OPPONEN', 0.18), ('APPROACH_OPP', 0.06)]",
+        "OK enemy near edge but I am on edge side  -> APPROACH_OPPONENT              top3=[('APPROACH_OPP', 0.21), ('TAKE_COVER', 0.13), ('DODGE_LEFT', 0.13)]",
+        "OK open center fight                      -> APPROACH_OPPONENT              top3=[('APPROACH_OPP', 0.22), ('TAKE_COVER', 0.15), ('ATTACK_OPPON', 0.13)]",
+        "-- edge pressure                          -> ATTACK_OPPONENT                top3=[('ATTACK_OPPON', 0.32), ('PUSH_OPPONEN', 0.31), ('APPROACH_OPP', 0.07)]",
+        "OK incoming throw                         -> DODGE_LEFT                     top3=[('DODGE_LEFT', 0.18), ('APPROACH_OPP', 0.17), ('TAKE_COVER', 0.16)]",
+        "-- enemy winding up close                 -> PUSH_OPPONENT                  top3=[('PUSH_OPPONEN', 0.55), ('ATTACK_OPPON', 0.17), ('APPROACH_OPP', 0.09)]",
+        "OK held barrel at range                   -> THROW_HELD_OBJECT_AT_OPPONENT  top3=[('THROW_HELD_O', 0.56), ('TAKE_COVER', 0.14), ('APPROACH_OPP', 0.07)]"
+      ]
+    },
+    {
+      "model": "multilingual",
+      "family": "Laya",
+      "runtime": "laya",
+      "load_seconds": 3.4,
+      "median_ms": 35,
+      "p90_ms": 36,
+      "probe_score": "5/8",
+      "probe": [
+        "OK rush: enemy far, little roof behind    -> ATTACK_OPPONENT                top3=[('ATTACK_OPPON', 0.93), ('APPROACH_OPP', 0.03), ('JUMP', 0.02)]",
+        "OK in reach, little roof behind           -> PUSH_OPPONENT                  top3=[('PUSH_OPPONEN', 0.76), ('ATTACK_OPPON', 0.22), ('APPROACH_OPP', 0.0)]",
+        "OK enemy near edge but I am on edge side  -> ATTACK_OPPONENT                top3=[('ATTACK_OPPON', 0.49), ('APPROACH_OPP', 0.3), ('MOVE_TOWARD_', 0.04)]",
+        "OK open center fight                      -> APPROACH_OPPONENT              top3=[('APPROACH_OPP', 0.52), ('ATTACK_OPPON', 0.32), ('GRAB_NEAREST', 0.05)]",
+        "-- edge pressure                          -> ATTACK_OPPONENT                top3=[('ATTACK_OPPON', 0.47), ('PUSH_OPPONEN', 0.4), ('APPROACH_OPP', 0.08)]",
+        "-- incoming throw                         -> ATTACK_OPPONENT                top3=[('ATTACK_OPPON', 0.5), ('APPROACH_OPP', 0.31), ('JUMP', 0.09)]",
+        "-- enemy winding up close                 -> ATTACK_OPPONENT                top3=[('ATTACK_OPPON', 0.5), ('PUSH_OPPONEN', 0.41), ('APPROACH_OPP', 0.05)]",
+        "OK held barrel at range                   -> THROW_HELD_OBJECT_AT_OPPONENT  top3=[('THROW_HELD_O', 0.59), ('APPROACH_OPP', 0.17), ('MOVE_TOWARD_', 0.07)]"
+      ]
+    },
+    {
+      "model": "typed-decisions",
+      "family": "Laya",
+      "runtime": "laya",
+      "load_seconds": 3.8,
+      "median_ms": 88,
+      "p90_ms": 90,
+      "probe_score": "4/8",
+      "probe": [
+        "OK rush: enemy far, little roof behind    -> ATTACK_OPPONENT                top3=[('ATTACK_OPPON', 0.32), ('APPROACH_OPP', 0.12), ('MOVE_TOWARD_', 0.11)]",
+        "OK in reach, little roof behind           -> ATTACK_OPPONENT                top3=[('ATTACK_OPPON', 0.31), ('PUSH_OPPONEN', 0.29), ('APPROACH_OPP', 0.07)]",
+        "-- enemy near edge but I am on edge side  -> MOVE_TOWARD_SAFETY             top3=[('MOVE_TOWARD_', 0.18), ('TAKE_COVER', 0.18), ('APPROACH_OPP', 0.12)]",
+        "-- open center fight                      -> TAKE_COVER                     top3=[('TAKE_COVER', 0.19), ('GRAB_NEAREST', 0.14), ('MOVE_TOWARD_', 0.13)]",
+        "-- edge pressure                          -> PUSH_OPPONENT                  top3=[('PUSH_OPPONEN', 0.24), ('ATTACK_OPPON', 0.2), ('TAKE_COVER', 0.1)]",
+        "OK incoming throw                         -> TAKE_COVER                     top3=[('TAKE_COVER', 0.22), ('MOVE_TOWARD_', 0.13), ('ATTACK_OPPON', 0.11)]",
+        "-- enemy winding up close                 -> PUSH_OPPONENT                  top3=[('PUSH_OPPONEN', 0.29), ('ATTACK_OPPON', 0.16), ('TAKE_COVER', 0.1)]",
+        "OK held barrel at range                   -> THROW_HELD_OBJECT_AT_OPPONENT  top3=[('THROW_HELD_O', 0.35), ('TAKE_COVER', 0.21), ('MOVE_TOWARD_', 0.1)]"
+      ]
+    },
+    {
+      "model": "von",
+      "family": "Von",
+      "runtime": "von",
+      "load_seconds": 18.1,
+      "median_ms": 69,
+      "p90_ms": 74,
+      "probe_score": "4/8",
+      "probe": [
+        "OK rush: enemy far, little roof behind    -> APPROACH_OPPONENT              top3=[('APPROACH_OPP', 0.13), ('TAKE_COVER', 0.13), ('RETREAT_FROM', 0.12)]",
+        "-- in reach, little roof behind           -> RETREAT_FROM_OPPONENT          top3=[('RETREAT_FROM', 0.15), ('TAKE_COVER', 0.11), ('MOVE_TOWARD_', 0.11)]",
+        "-- enemy near edge but I am on edge side  -> RETREAT_FROM_OPPONENT          top3=[('RETREAT_FROM', 0.18), ('JUMP', 0.14), ('DODGE_RIGHT', 0.11)]",
+        "-- open center fight                      -> RETREAT_FROM_OPPONENT          top3=[('RETREAT_FROM', 0.16), ('DODGE_RIGHT', 0.14), ('DODGE_LEFT', 0.14)]",
+        "OK edge pressure                          -> MOVE_TOWARD_SAFETY             top3=[('MOVE_TOWARD_', 0.21), ('JUMP', 0.11), ('RETREAT_FROM', 0.11)]",
+        "OK incoming throw                         -> TAKE_COVER                     top3=[('TAKE_COVER', 0.16), ('DODGE_RIGHT', 0.15), ('DODGE_LEFT', 0.14)]",
+        "OK enemy winding up close                 -> DODGE_RIGHT                    top3=[('DODGE_RIGHT', 0.13), ('TAKE_COVER', 0.13), ('RETREAT_FROM', 0.12)]",
+        "-- held barrel at range                   -> TAKE_COVER                     top3=[('TAKE_COVER', 0.18), ('THROW_HELD_O', 0.17), ('APPROACH_OPP', 0.12)]"
+      ]
+    },
+    {
+      "model": "kev-0.8b",
+      "family": "Kev",
+      "runtime": "kev",
+      "load_seconds": 16.0,
+      "median_ms": 54,
+      "p90_ms": 56,
+      "probe_score": "5/8",
+      "probe": [
+        "OK rush: enemy far, little roof behind    -> ATTACK_OPPONENT                top3=[('ATTACK_OPPON', 0.36), ('APPROACH_OPP', 0.13), ('RETREAT_FROM', 0.12)]",
+        "OK in reach, little roof behind           -> PUSH_OPPONENT                  top3=[('PUSH_OPPONEN', 0.63), ('ATTACK_OPPON', 0.11), ('RETREAT_FROM', 0.06)]",
+        "OK enemy near edge but I am on edge side  -> ATTACK_OPPONENT                top3=[('ATTACK_OPPON', 0.22), ('APPROACH_OPP', 0.18), ('RETREAT_FROM', 0.13)]",
+        "OK open center fight                      -> GRAB_NEAREST_OBJECT            top3=[('GRAB_NEAREST', 0.25), ('ATTACK_OPPON', 0.2), ('APPROACH_OPP', 0.14)]",
+        "-- edge pressure                          -> PUSH_OPPONENT                  top3=[('PUSH_OPPONEN', 0.24), ('ATTACK_OPPON', 0.22), ('RETREAT_FROM', 0.11)]",
+        "-- incoming throw                         -> ATTACK_OPPONENT                top3=[('ATTACK_OPPON', 0.2), ('DODGE_RIGHT', 0.14), ('APPROACH_OPP', 0.12)]",
+        "-- enemy winding up close                 -> PUSH_OPPONENT                  top3=[('PUSH_OPPONEN', 0.44), ('ATTACK_OPPON', 0.33), ('RETREAT_FROM', 0.07)]",
+        "OK held barrel at range                   -> THROW_HELD_OBJECT_AT_OPPONENT  top3=[('THROW_HELD_O', 0.51), ('APPROACH_OPP', 0.13), ('TAKE_COVER', 0.08)]"
+      ]
+    },
+    {
+      "model": "system-one-qwen3-0.6b",
+      "family": "System One",
+      "runtime": "system-one",
+      "load_seconds": 7.0,
+      "median_ms": 98,
+      "p90_ms": 99,
+      "probe_score": "4/8",
+      "probe": [
+        "OK rush: enemy far, little roof behind    -> ATTACK_OPPONENT                top3=[('ATTACK_OPPON', 0.64), ('DODGE_LEFT', 0.09), ('TAKE_COVER', 0.08)]",
+        "OK in reach, little roof behind           -> PUSH_OPPONENT                  top3=[('PUSH_OPPONEN', 0.75), ('ATTACK_OPPON', 0.11), ('RETREAT_FROM', 0.03)]",
+        "-- enemy near edge but I am on edge side  -> DODGE_LEFT                     top3=[('DODGE_LEFT', 0.25), ('ATTACK_OPPON', 0.17), ('TAKE_COVER', 0.15)]",
+        "-- open center fight                      -> TAKE_COVER                     top3=[('TAKE_COVER', 0.32), ('DODGE_LEFT', 0.15), ('ATTACK_OPPON', 0.15)]",
+        "-- edge pressure                          -> PUSH_OPPONENT                  top3=[('PUSH_OPPONEN', 0.44), ('ATTACK_OPPON', 0.15), ('DODGE_LEFT', 0.1)]",
+        "OK incoming throw                         -> DODGE_LEFT                     top3=[('DODGE_LEFT', 0.29), ('TAKE_COVER', 0.2), ('ATTACK_OPPON', 0.16)]",
+        "-- enemy winding up close                 -> PUSH_OPPONENT                  top3=[('PUSH_OPPONEN', 0.32), ('DODGE_LEFT', 0.17), ('ATTACK_OPPON', 0.17)]",
+        "OK held barrel at range                   -> THROW_HELD_OBJECT_AT_OPPONENT  top3=[('THROW_HELD_O', 0.7), ('DODGE_LEFT', 0.09), ('TAKE_COVER', 0.09)]"
+      ]
+    },
+    {
+      "model": "system-one-minicpm5-2b",
+      "family": "System One",
+      "runtime": "system-one",
+      "load_seconds": 7.8,
+      "median_ms": 340,
+      "p90_ms": 347,
+      "probe_score": "3/8",
+      "probe": [
+        "-- rush: enemy far, little roof behind    -> MOVE_TOWARD_SAFETY             top3=[('MOVE_TOWARD_', 0.38), ('ATTACK_OPPON', 0.3), ('TAKE_COVER', 0.12)]",
+        "OK in reach, little roof behind           -> PUSH_OPPONENT                  top3=[('PUSH_OPPONEN', 0.89), ('MOVE_TOWARD_', 0.04), ('GRAB_NEAREST', 0.02)]",
+        "-- enemy near edge but I am on edge side  -> MOVE_TOWARD_SAFETY             top3=[('MOVE_TOWARD_', 0.49), ('TAKE_COVER', 0.2), ('ATTACK_OPPON', 0.12)]",
+        "-- open center fight                      -> TAKE_COVER                     top3=[('TAKE_COVER', 0.46), ('GRAB_NEAREST', 0.19), ('APPROACH_OPP', 0.13)]",
+        "-- edge pressure                          -> PUSH_OPPONENT                  top3=[('PUSH_OPPONEN', 0.46), ('MOVE_TOWARD_', 0.36), ('GRAB_NEAREST', 0.05)]",
+        "OK incoming throw                         -> TAKE_COVER                     top3=[('TAKE_COVER', 0.54), ('DODGE_LEFT', 0.17), ('GRAB_NEAREST', 0.09)]",
+        "-- enemy winding up close                 -> PUSH_OPPONENT                  top3=[('PUSH_OPPONEN', 0.57), ('MOVE_TOWARD_', 0.2), ('GRAB_NEAREST', 0.05)]",
+        "OK held barrel at range                   -> THROW_HELD_OBJECT_AT_OPPONENT  top3=[('THROW_HELD_O', 0.88), ('TAKE_COVER', 0.08), ('APPROACH_OPP', 0.01)]"
+      ]
+    },
+    {
+      "model": "openthai-systemone",
+      "family": "OpenThai",
+      "runtime": "openthai",
+      "load_seconds": 15.0,
+      "median_ms": 322,
+      "p90_ms": 323,
+      "probe_score": "3/8",
+      "probe": [
+        "-- rush: enemy far, little roof behind    -> MOVE_TOWARD_SAFETY             top3=[('MOVE_TOWARD_', 0.59), ('TAKE_COVER', 0.12), ('APPROACH_OPP', 0.12)]",
+        "OK in reach, little roof behind           -> PUSH_OPPONENT                  top3=[('PUSH_OPPONEN', 0.5), ('MOVE_TOWARD_', 0.33), ('APPROACH_OPP', 0.08)]",
+        "-- enemy near edge but I am on edge side  -> MOVE_TOWARD_SAFETY             top3=[('MOVE_TOWARD_', 0.63), ('TAKE_COVER', 0.17), ('APPROACH_OPP', 0.1)]",
+        "-- open center fight                      -> TAKE_COVER                     top3=[('TAKE_COVER', 0.55), ('GRAB_NEAREST', 0.2), ('MOVE_TOWARD_', 0.16)]",
+        "OK edge pressure                          -> MOVE_TOWARD_SAFETY             top3=[('MOVE_TOWARD_', 0.56), ('PUSH_OPPONEN', 0.17), ('GRAB_NEAREST', 0.13)]",
+        "-- incoming throw                         -> GRAB_NEAREST_OBJECT            top3=[('GRAB_NEAREST', 0.33), ('MOVE_TOWARD_', 0.28), ('TAKE_COVER', 0.19)]",
+        "-- enemy winding up close                 -> PUSH_OPPONENT                  top3=[('PUSH_OPPONEN', 0.37), ('MOVE_TOWARD_', 0.31), ('GRAB_NEAREST', 0.12)]",
+        "OK held barrel at range                   -> THROW_HELD_OBJECT_AT_OPPONENT  top3=[('THROW_HELD_O', 0.65), ('TAKE_COVER', 0.28), ('MOVE_TOWARD_', 0.03)]"
+      ]
+    },
+    {
+      "model": "lafalce-system-one",
+      "family": "System One (lafalce)",
+      "runtime": "lafalce",
+      "load_seconds": 15.5,
+      "median_ms": 163,
+      "p90_ms": 172,
+      "probe_score": "4/8",
+      "probe": [
+        "OK rush: enemy far, little roof behind    -> ATTACK_OPPONENT                top3=[('ATTACK_OPPON', 0.28), ('RETREAT_FROM', 0.19), ('JUMP', 0.13)]",
+        "OK in reach, little roof behind           -> ATTACK_OPPONENT                top3=[('ATTACK_OPPON', 0.39), ('PUSH_OPPONEN', 0.16), ('RETREAT_FROM', 0.1)]",
+        "OK enemy near edge but I am on edge side  -> ATTACK_OPPONENT                top3=[('ATTACK_OPPON', 0.24), ('RETREAT_FROM', 0.18), ('MOVE_TOWARD_', 0.11)]",
+        "OK open center fight                      -> ATTACK_OPPONENT                top3=[('ATTACK_OPPON', 0.26), ('RETREAT_FROM', 0.18), ('JUMP', 0.11)]",
+        "-- edge pressure                          -> ATTACK_OPPONENT                top3=[('ATTACK_OPPON', 0.31), ('PUSH_OPPONEN', 0.14), ('RETREAT_FROM', 0.13)]",
+        "-- incoming throw                         -> ATTACK_OPPONENT                top3=[('ATTACK_OPPON', 0.25), ('RETREAT_FROM', 0.18), ('JUMP', 0.12)]",
+        "-- enemy winding up close                 -> ATTACK_OPPONENT                top3=[('ATTACK_OPPON', 0.35), ('PUSH_OPPONEN', 0.16), ('RETREAT_FROM', 0.12)]",
+        "-- held barrel at range                   -> JUMP                           top3=[('JUMP', 0.25), ('RETREAT_FROM', 0.19), ('TAKE_COVER', 0.12)]"
+      ]
+    }
+  ]
+}

@@ -236,3 +236,17 @@ All five Unity suites (M1–M7, keyboard, combat, AI decisions, matchups) and th
 Python service tests pass; the macOS build was visually checked with the
 `--pg-screenshot` hook. Human playtesting of the new mechanics and of the opponent
 with and without Rival boost is the next step.
+
+## 0.15.0 — Other open System One models
+
+The local model manager now runs any open System One model, not only Laya checkpoints.
+`ai/models.json` gains **runtimes**: pinned install recipes (pip package or git commit,
+set up with uv in `ai/runtimes/<runtime>/`) plus a serve command for the project's own
+`/v1/systemone` server. The local service (0.11.0) starts that server on demand, forwards
+requests to it, counts it toward the two resident models and stops it when unloaded.
+`download` installs the runtime and weights, then performs a verified first start.
+
+Installed and measured on this Mac (M3 Pro, 18 GB): Von 1.3, Kev 0.8B, System One 0.6B
+and 2B (MLX), OpenThai-SystemOne and the lafalce student, besides the three Laya
+checkpoints. Laya vs Von plays in the game with per-player model provenance. Larger Kev
+models do not fit beside the game on 18 GB. See `validation/LOCAL_MODELS.md`.

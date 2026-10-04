@@ -12,7 +12,7 @@ public enum AIProvider { Laya, TypeSafe }
 [Serializable] public class ModelEntry {public string name;}
 [Serializable] public class ModelList {public ModelEntry[] models;}
 // One checkpoint from the local service catalog (GET /v1/models on 127.0.0.1).
-[Serializable] public class LocalModel {public string name,label,description,source,error,download_error;public int size_mb;public bool installed,verified,loaded,loading,downloading,local_path;public float download_progress;}
+[Serializable] public class LocalModel {public string name,label,family,runtime,description,source,error,download_error,download_phase;public int size_mb;public bool installed,verified,loaded,loading,downloading,local_path;public float download_progress;}
 [Serializable] public class LocalModelList {public string @default;public LocalModel[] models;}
 public class DecisionResult {public bool Valid;public SemanticAction Action;public float Confidence,LatencyMs,InferenceMs;public string Device;public string Error,Raw,RequestedAt,RespondedAt,Provider,Model,ResponseModel;}
 // Shared System One transport. The original component name is retained for scene compatibility.
@@ -21,9 +21,11 @@ public class LayaClient:MonoBehaviour {
  public string Endpoint="http://127.0.0.1:8000",Model="english";public AIProvider Provider;public int TimeoutSeconds=8;
  public float RequestAge=>Busy?Time.realtimeSinceStartup-requestStarted:0;public string WaitStatus=>Busy?$"Deciding · {RequestAge:0.0}s / {TimeoutSeconds}s":(LastRequestFailed&&Provider==AIProvider.Laya&&LocalLayaService.CanManage(Endpoint)&&localStartup?LocalLayaService.Message??Status:Status);
  public bool LastRequestFailed{get;private set;}public bool Busy{get;private set;}public bool Blocked{get;private set;}public string Status="Waiting for local Laya";public float LastLatency;public int ValidResponses,Failures;public string LastDevice{get;private set;}
- public string Backend=>Provider==AIProvider.Laya?(LastDevice=="mps"?"Apple GPU":LastDevice=="cpu"?"CPU":"local"):"cloud";
+ public string Backend=>Provider==AIProvider.Laya?(LastDevice=="mps"?"Apple GPU":LastDevice=="cpu"?"CPU":LastDevice!=null?LastDevice+" runtime":"local"):"cloud";
  public bool ReadyToRequest=>!Busy&&!Blocked&&Time.realtimeSinceStartup>=retryAt;
- public string DisplayName=>Provider==AIProvider.Laya?"Laya":"TypeSafe";
+ // Local models report their family (Laya, Von, Kev, ...); the provider value stays "Laya" in recordings.
+ public string Family="Laya";
+ public string DisplayName=>Provider==AIProvider.Laya?Family:"TypeSafe";
  bool localStartup;string apiKey;QuestionFile questionFile;UnityWebRequest pending;int revision,consecutiveFailures;float retryAt,requestStarted;
  void Awake(){questionFile=JsonUtility.FromJson<QuestionFile>(File.ReadAllText(Path.Combine(Application.streamingAssetsPath,"laya-question.json")));}
  public void Configure(AIProvider provider,string model=null,string key=null){CancelPending();Provider=provider;Endpoint=provider==AIProvider.Laya?LocalEndpoint:TypeSafeEndpoint;Model=provider==AIProvider.Laya&&string.IsNullOrWhiteSpace(model)?"english":model;apiKey=key;localStartup=false;Blocked=false;LastRequestFailed=false;retryAt=0;consecutiveFailures=0;LastDevice=null;Status="Ready · "+DisplayName;}

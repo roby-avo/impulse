@@ -48,3 +48,5 @@ PASS two local models map to distinct named players
 PASS a cloud seat still requires credentials
 PASS two local models share the service and both decide
 PASS each local player is served by its own model, never a substitute
+PASS a second model family is named by family
+PASS Laya vs Von: each side is served by its own model through the local service

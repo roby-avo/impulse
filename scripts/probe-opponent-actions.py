@@ -1,7 +1,8 @@
 """Hand-authored situations sent to real local Laya; example sets are judgment calls, not a benchmark.
-Usage: python3 scripts/probe-opponent-actions.py [question.json] [--with-cut-off]"""
+Usage: python3 scripts/probe-opponent-actions.py [question.json] [--with-cut-off] [--model=<catalog id>]"""
 import copy,json,sys,urllib.request
 args=[a for a in sys.argv[1:] if not a.startswith('--')]
+model=next((a.split('=',1)[1] for a in sys.argv[1:] if a.startswith('--model=')),'english')
 q=json.load(open(args[0] if args else 'Assets/StreamingAssets/laya-question.json'))
 if '--with-cut-off' not in sys.argv: q['action']['criteria'].pop('CUT_OFF_OPPONENT',None)  # opt-in, as in the default profile
 def state(sit,self={},opp={},**kw):
@@ -25,7 +26,7 @@ for name,s,ok,remove in cases:
     for k in remove: c.pop(k,None)
     if s['self']['holding_object']: c.pop('GRAB_NEAREST_OBJECT',None)
     else: c.pop('THROW_HELD_OBJECT_AT_OPPONENT',None)
-    r=json.load(urllib.request.urlopen(urllib.request.Request('http://127.0.0.1:8000/v1/systemone',json.dumps({'model':'english','state':s,'questions':qq}).encode(),{'Content-Type':'application/json'}),timeout=30))
+    r=json.load(urllib.request.urlopen(urllib.request.Request('http://127.0.0.1:8000/v1/systemone',json.dumps({'model':model,'state':s,'questions':qq}).encode(),{'Content-Type':'application/json'}),timeout=30))
     a=r['answers']['action'];probs=sorted(a.get('probabilities',{}).items(),key=lambda x:-x[1])[:3]
     hit=a['choice'] in ok;good+=hit
     print(f"{'OK ' if hit else '-- '}{name:38s} -> {a['choice']:30s} top3={[(k[:12],round(v,2)) for k,v in probs]}")

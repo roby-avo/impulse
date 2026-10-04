@@ -14,6 +14,7 @@ __pycache__/
 *.slnx
 ai/.runtime/
 ai/models/
+ai/runtimes/
 ai/models.local.json
 validation/*.log
 

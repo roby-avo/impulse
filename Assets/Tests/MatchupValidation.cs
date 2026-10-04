@@ -70,6 +70,14 @@ public class MatchupValidation:MonoBehaviour {
   Check(a.LeftBrain.ExecutedDecisions>=lb+2&&a.Brain.ExecutedDecisions>=rb+2,"two local models share the service and both decide");
   a.Brain.Enabled=a.LeftBrain.Enabled=false;while(a.Client.Busy||a.LeftClient.Busy)yield return null;a.StopExecutors("validation");a.Telemetry.Flush();var local=File.ReadAllLines(a.Telemetry.FilePath).Where(x=>x.Contains("\"type\":\"decision\"")).Select(x=>JsonUtility.FromJson<DecisionRecord>(x)).Where(d=>d.execution_status=="executed").ToArray();
   Check(local.Any(d=>d.actor=="Laya english"&&d.model=="english"&&d.response_model=="english")&&local.Any(d=>d.actor=="Laya typed-decisions"&&d.model=="typed-decisions"&&d.response_model=="typed-decisions"),"each local player is served by its own model, never a substitute");
+  // Another System One family through its own runtime (Von), when it is installed on this machine.
+  a.Setup.Show();yield return new WaitForSecondsRealtime(2);var vonModel=a.Setup.Local?.models?.FirstOrDefault(m=>m.name=="von");a.Setup.Close();
+  if(vonModel!=null&&vonModel.installed){
+   Check(vonModel.family=="Von"&&a.Setup.Configure(MatchMode.AIVsAI,Seat.Laya("english"),Seat.Laya("von"))&&a.LeftName=="Laya"&&a.RightName=="Von"&&a.Client.DisplayName=="Von","a second model family is named by family");
+   a.Experiments.Apply(p,false);a.Match.NewMatch();lb=a.LeftBrain.ExecutedDecisions;rb=a.Brain.ExecutedDecisions;deadline=Time.realtimeSinceStartup+60;while((a.LeftBrain.ExecutedDecisions<lb+2||a.Brain.ExecutedDecisions<rb+2)&&Time.realtimeSinceStartup<deadline)yield return null;
+   a.Brain.Enabled=a.LeftBrain.Enabled=false;while(a.Client.Busy||a.LeftClient.Busy)yield return null;a.StopExecutors("validation");a.Telemetry.Flush();var vonDecisions=File.ReadAllLines(a.Telemetry.FilePath).Where(x=>x.Contains("\"type\":\"decision\"")).Select(x=>JsonUtility.FromJson<DecisionRecord>(x)).Where(d=>d.execution_status=="executed").ToArray();
+   Check(vonDecisions.Any(d=>d.actor=="Von"&&d.model=="von"&&d.response_model=="von")&&vonDecisions.Any(d=>d.actor=="Laya"&&d.response_model=="english"),"Laya vs Von: each side is served by its own model through the local service");
+  }else File.AppendAllText("validation/matchups.txt","SKIP Laya vs Von (Von is not installed on this machine)\n");
   restorePrefs();a.Experiments.Apply(original,false);SessionState.SetBool("PG.Matchups",false);Debug.Log("MATCHUP COMPLETE: "+checks+" checks; TypeSafe used HTTP fixture, Laya used real model.");EditorApplication.Exit(0);
  }
 }
