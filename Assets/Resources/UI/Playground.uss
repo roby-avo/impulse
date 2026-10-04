@@ -209,3 +209,4 @@ Button.selected:focus { border-color: rgb(219,241,168); }
 .intent-cyan { border-color: rgb(103,232,226); }
 .intent-orange { border-color: rgb(255,144,110); }
 .intent-text { font-size: 10px; -unity-font-style: bold; -unity-text-align: middle-center; color: rgb(238,241,230); }
+.boost-note { white-space: normal; font-size: 11px; margin: 2px 0 10px; }

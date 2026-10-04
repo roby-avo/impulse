@@ -7,6 +7,8 @@ public class Fighter : MonoBehaviour {
  public const float MoveSpeed=6f, GrabRange=2.5f, PushRange=2.3f, PushWindup=.22f;
  public Rigidbody Body {get;private set;} public Prop Held {get;private set;}
  public Vector3 Move; public bool Active=true; public string Actor="Human";
+ // Labelled rule changes (Rival boost). 1 = the shared baseline rules.
+ public float PushPower=1,Stability=1;
  public float StunnedUntil, DodgeUntil, NextDodge, NextPush; public Fighter LastAttacker; public float LastHitTime=-100;
  public int Grabs,Throws,Hits,Pushes,Dodges,Jumps; public float EdgeTime,EdgeSum,Samples;
  public Transform Visual; public event Action<string> Event;
@@ -67,14 +69,14 @@ public class Fighter : MonoBehaviour {
    var rb=col.attachedRigidbody;if(!rb||rb==Body||!pushed.Add(rb))continue;
    var point=col.ClosestPoint(origin);var delta=rb.worldCenterOfMass-origin;
    if(Vector3.Dot(delta.normalized,attackDirection)<.45f||!ClearPushLine(origin,point,rb))continue;
-   var other=rb.GetComponent<Fighter>();if(other){other.Knock(attackDirection*8+Vector3.up*2,this,point);hit=true;}
+   var other=rb.GetComponent<Fighter>();if(other){other.Knock(attackDirection*8*PushPower+Vector3.up*2,this,point);hit=true;}
    else if(!rb.isKinematic){rb.AddForce((attackDirection*10+Vector3.up*2)*Mathf.Min(rb.mass,18),ForceMode.Impulse);Arena.Instance.Feedback?.Contact(point,attackDirection,.5f);hit=true;}
   }
   LastPushHit=hit;RecoveryUntil=Time.time+(hit?.24f:.42f);if(hit)Pushes++;Report(hit?"push_hit":"push_miss");
  }
  bool ClearPushLine(Vector3 origin,Vector3 point,Rigidbody target){var delta=point-origin;int count=Physics.RaycastNonAlloc(origin,delta.normalized,obstructionHits,delta.magnitude,(1<<8)|(1<<9),QueryTriggerInteraction.Ignore);for(int i=0;i<count;i++){var hit=obstructionHits[i];if(hit.rigidbody==target||hit.rigidbody==Body||(Held&&hit.rigidbody==Held.Body))continue;return false;}return true;}
  public void Knock(Vector3 velocity,Fighter attacker){Knock(velocity,attacker,transform.position+Vector3.up);}
- public void Knock(Vector3 velocity,Fighter attacker,Vector3 point){if(!Active)return;CancelAttack();Body.AddForce(velocity,ForceMode.VelocityChange);StunnedUntil=Time.time+.28f;LastAttacker=attacker;LastHitTime=Time.time;ContactPoint=point;HitDirection=velocity.normalized;Report("impact");}
+ public void Knock(Vector3 velocity,Fighter attacker,Vector3 point){if(!Active)return;CancelAttack();Body.AddForce(velocity/Mathf.Max(.1f,Stability),ForceMode.VelocityChange);StunnedUntil=Time.time+.28f;LastAttacker=attacker;LastHitTime=Time.time;ContactPoint=point;HitDirection=velocity.normalized;Report("impact");}
  public void CancelAttack(){if(WindingUp)Report("attack_cancelled");Attack="";}
  public void ResetAt(Vector3 p){CancelAttack();Drop();Body.isKinematic=true;Body.isKinematic=false;Body.position=p;transform.position=p;Body.linearVelocity=Vector3.zero;Body.angularVelocity=Vector3.zero;Move=Vector3.zero;StunnedUntil=DodgeUntil=NextDodge=NextPush=RecoveryUntil=0;nextJump=0;lastGrounded=jumpBufferedUntil=-10;LastAttacker=null;LastHitTime=-100;SnapFace(-p);}
  public void ClearStats(){Grabs=Throws=Hits=Pushes=Dodges=Jumps=0;EdgeTime=EdgeSum=Samples=0;}

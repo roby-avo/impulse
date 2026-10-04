@@ -5,6 +5,9 @@ public enum RoundPhase{Countdown,Fight,Winner,MatchOver}
 public class MatchController:MonoBehaviour {
  public RoundPhase Phase;public int WinsRequired=5,HumanWins,AIWins,Round=1,Generation,HumanSelfOuts,AISelfOuts,HumanEnvironmentalKOs,AIEnvironmentalKOs;
  public int Layout;public bool TimedRounds;public float FightStarted;
+ // Optional labelled handicap for the orange (right) fighter: harder shoves, steadier footing.
+ public float RivalBoost;public static readonly float[] BoostLevels={0,.25f,.5f};
+ public void ApplyRules(bool training=false){float boost=training?0:RivalBoost;a.AI.PushPower=1+boost;a.AI.Stability=1+boost*.6f;a.Human.PushPower=a.Human.Stability=1;}
  public bool SuddenDeath=>TimedRounds&&Phase==RoundPhase.Fight&&Time.time-FightStarted>=60;
  public float RoundRemaining=>Mathf.Max(0,60-(Time.time-FightStarted));
  public float SafeHalfExtent=>SuddenDeath?Mathf.Max(1.5f,10-(Time.time-FightStarted-60)*.16f):10;
@@ -12,7 +15,7 @@ public class MatchController:MonoBehaviour {
  public float PhaseEnds;public string Announcement;public Fighter LastRoundWinner;public bool Practice;int pending;
  Arena a;
  void Start(){a=Arena.Instance;var path=System.IO.Path.Combine(Application.streamingAssetsPath,"game-config.json");if(System.IO.File.Exists(path)){var config=JsonUtility.FromJson<GameConfig>(System.IO.File.ReadAllText(path));WinsRequired=Mathf.Clamp(config.wins_required,1,20);}NewMatch();}
- public void NewMatch(){if(!a)a=Arena.Instance;if(a.Tutorial&&a.Tutorial.Running)a.Tutorial.Stop(false);Generation++;HumanWins=AIWins=HumanSelfOuts=AISelfOuts=HumanEnvironmentalKOs=AIEnvironmentalKOs=0;Round=1;a.Human.ClearStats();a.AI.ClearStats();a.ResetArena();a.Telemetry.NewMatch();Countdown();}
+ public void NewMatch(){if(!a)a=Arena.Instance;if(a.Tutorial&&a.Tutorial.Running)a.Tutorial.Stop(false);Generation++;HumanWins=AIWins=HumanSelfOuts=AISelfOuts=HumanEnvironmentalKOs=AIEnvironmentalKOs=0;Round=1;a.Human.ClearStats();a.AI.ClearStats();ApplyRules();a.ResetArena();a.Telemetry.NewMatch();Countdown();}
  void Countdown(){Generation++;pending=0;leftOutside=rightOutside=0;Phase=RoundPhase.Countdown;PhaseEnds=Time.time+2.4f;Announcement="READY";a.Human.Active=a.AI.Active=false;a.Human.Move=a.AI.Move=Vector3.zero;}
  void Update(){if(Practice)return;if(Phase==RoundPhase.Countdown&&Time.time>=PhaseEnds){Phase=RoundPhase.Fight;FightStarted=Time.time;Announcement="FIGHT!";a.Human.Active=a.AI.Active=true;a.Telemetry.LogEvent("round_start","game","fight");}
   if(SuddenDeath){

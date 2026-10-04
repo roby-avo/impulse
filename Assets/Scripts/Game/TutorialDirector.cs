@@ -7,7 +7,7 @@ public class TutorialDirector:MonoBehaviour {
  Arena a;float nextPush,finishAt;bool savedLeft,savedRight;int dodgesAtWindup;bool checkingDodge;
  void Awake(){a=Arena.Instance;}
  public void Begin(){if(Running)return;savedLeft=a.LeftBrain.Enabled;savedRight=a.Brain.Enabled;a.Client.CancelPending();a.LeftClient.CancelPending();a.StopExecutors("tutorial");Stage=0;checkingDodge=false;a.Match.NewMatch();
-  Running=true;a.Match.Practice=true;a.Match.Phase=RoundPhase.Fight;a.Brain.Enabled=a.LeftBrain.Enabled=false;a.Human.Active=a.AI.Active=true;a.ResetArena();a.AI.ResetAt(new Vector3(0,.15f,1));a.Human.Event+=OnHuman;a.Telemetry.LogEvent("tutorial_start","game","unscored_training");a.HUD.Pause(false);
+  Running=true;a.Match.Practice=true;a.Match.ApplyRules(true);a.Match.Phase=RoundPhase.Fight;a.Brain.Enabled=a.LeftBrain.Enabled=false;a.Human.Active=a.AI.Active=true;a.ResetArena();a.AI.ResetAt(new Vector3(0,.15f,1));a.Human.Event+=OnHuman;a.Telemetry.LogEvent("tutorial_start","game","unscored_training");a.HUD.Pause(false);
  }
  public void Stop(bool newMatch=true){if(!Running)return;Running=false;a.Human.Event-=OnHuman;a.Match.Practice=false;a.Brain.Enabled=savedRight;a.LeftBrain.Enabled=savedLeft;a.StopExecutors("tutorial_end");a.Telemetry.LogEvent("tutorial_end","game",Stage>=4?"completed":"exited");if(newMatch)a.Match.NewMatch();}
  void OnHuman(string action){if(Stage==0&&action=="grab")Stage=1;else if(Stage==1&&action=="throw_hit"){Stage=2;a.Human.ResetAt(new Vector3(0,.15f,-1.5f));a.AI.ResetAt(new Vector3(0,.15f,0));nextPush=Time.time+1.8f;}}

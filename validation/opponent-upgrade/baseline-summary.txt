@@ -1,0 +1,8 @@
+matches 3 score {'human': 15, 'laya': 0} mean round s 6.9 Laya push hits 8 executed 233
+  APPROACH_OPPONENT                 98  42.1%
+  TAKE_COVER                        72  30.9%
+  PUSH_OPPONENT                     41  17.6%
+  RETREAT_FROM_OPPONENT              9   3.9%
+  GRAB_NEAREST_OBJECT                7   3.0%
+  DODGE_LEFT                         5   2.1%
+  THROW_HELD_OBJECT_AT_OPPONENT      1   0.4%

@@ -1,1 +1,1 @@
-PASS LIVE full physical match: Human 5, Laya 0, 243 real model decisions, 122 ms average, 110s elapsed. Log: /Users/robertoavogadro/Library/Application Support/Impulse/Physics Playground/Telemetry/20260927-155112-f819f5.jsonl
+PASS LIVE full physical match (rival boost 0): Human 5, Laya 0, 43 real model decisions, 173 ms average, 47s elapsed. Log: /Users/robertoavogadro/Library/Application Support/Impulse/Physics Playground/Telemetry/20261004-163559-12d114.jsonl

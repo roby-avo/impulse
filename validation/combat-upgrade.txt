@@ -44,3 +44,9 @@ PASS screen kick stays off unless enabled
 PASS enabled screen kick nudges position only and settles back
 PASS AI intent label shows the action being executed
 PASS AI intent labels can be turned off
+PASS a lost prop stays gone for a while
+PASS a lost prop drops back in during the round
+PASS the returned prop lands on the roof at its spawn point
+PASS rival boost shoves harder (8.0 → 12.0 m/s)
+PASS boost applies only to the orange robot
+PASS the HUD labels the boosted rules

@@ -33,7 +33,7 @@ in the same game, with tools to inspect the choices behind the action.
 - **Make it your experiment.** Adjust instructions, observations, available actions, and decision frequency in the built-in experiment lab.
 - **See more than the score.** Inspect action distributions, model responses, inference latency, and recorded matches.
 - **Keep the physics shared.** Every fighter uses the same movement, cooldowns, interactions, and combat rules.
-- **Bring some chaos.** Three arena layouts, throwable props, first-to-3/5/7 matches, and optional sudden death.
+- **Bring some chaos.** Three arena layouts, throwable props that return when knocked off, first-to-3/5/7 matches, optional sudden death, and an optional, clearly labelled **Rival boost**.
 
 ## Choose your matchup
 

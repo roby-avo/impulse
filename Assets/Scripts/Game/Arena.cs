@@ -53,7 +53,10 @@ public class Arena:MonoBehaviour {
   for(int i=0;i<Props.Count&&i<points.Length;i++)Props[i].SetSpawn(points[i]);
  }
  public void RingOut(Fighter f){if(Tutorial&&Tutorial.Running){Tutorial.RingOut(f);return;}if(Match)Match.RingOut(f);else ResetArena();}
- void Update(){if(Human.transform.position.y<-7)RingOut(Human);if(AI.transform.position.y<-7)RingOut(AI);}
+ public const float PropReturnSeconds=8,PropDropHeight=7;
+ void Update(){if(Human.transform.position.y<-7)RingOut(Human);if(AI.transform.position.y<-7)RingOut(AI);ReturnLostProps();}
+ // Props knocked off the roof come back during a round, so long rounds keep their weapons.
+ void ReturnLostProps(){if(!Match||Match.Phase!=RoundPhase.Fight||Tutorial&&Tutorial.Running)return;foreach(var p in Props){if(!p||p.Holder||p.transform.position.y>-3){if(p)p.FellAt=-1;continue;}if(p.FellAt<0)p.FellAt=Time.time;else if(Time.time-p.FellAt>=PropReturnSeconds){p.DropIn(PropDropHeight);Telemetry.LogEvent("prop_returned","game",p.name);}}}
 
 }
 public class KnockoutVolume:MonoBehaviour {void OnTriggerEnter(Collider c){var f=c.GetComponent<Fighter>();if(f&&Arena.Instance)Arena.Instance.RingOut(f);}}

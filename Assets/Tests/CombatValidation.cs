@@ -4,6 +4,7 @@ using System.Collections;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 namespace Playground.Editor {
 [InitializeOnLoad] public static class CombatValidationLauncher {
  static CombatValidationLauncher(){EditorApplication.playModeStateChanged+=state=>{if(state==PlayModeStateChange.EnteredPlayMode&&SessionState.GetBool("PG.Combat",false))new GameObject("Combat validation").AddComponent<CombatValidation>();};}
@@ -43,6 +44,13 @@ public class CombatValidation:MonoBehaviour {
   Check(moved&&level&&Vector3.Distance(home,a.CameraRig.transform.position)<.005f,"enabled screen kick nudges position only and settles back");OrbitCamera.KickEnabled=kickSetting;
   GameHUD.IntentLabels=true;a.Brain.Enabled=true;a.ResetArena();f.ResetAt(new Vector3(0,.1f,-5));o.ResetAt(new Vector3(0,.1f,5));yield return null;a.Executor.Begin(SemanticAction.APPROACH_OPPONENT,a.Executor.ObserveContext());yield return null;yield return null;
   Check(a.HUD.IntentText(1)=="CLOSING IN","AI intent label shows the action being executed");GameHUD.IntentLabels=false;yield return null;Check(a.HUD.IntentText(1)==null,"AI intent labels can be turned off");GameHUD.IntentLabels=intentSetting;a.StopExecutors("validation");a.Brain.Enabled=false;
+  // Stronger rounds: lost props return; the optional rival boost is a visible, recorded rule change.
+  a.Match.Phase=RoundPhase.Fight;a.ResetArena();var lost=Arena.Props.Find(x=>x.Kind=="crate");lost.Body.position=new Vector3(0,-4,-14);lost.transform.position=lost.Body.position;yield return new WaitForSeconds(Arena.PropReturnSeconds-1);Check(lost.transform.position.y<-3,"a lost prop stays gone for a while");
+  yield return new WaitForSeconds(1.3f);Check(lost.transform.position.y>-1&&lost.FellAt<0,"a lost prop drops back in during the round");yield return new WaitForSeconds(2);var landed=Vector3.ProjectOnPlane(lost.transform.position-lost.Spawn,Vector3.up).magnitude;Check(lost.transform.position.y>-.2f&&lost.transform.position.y<1.5f&&landed<1.5f,"the returned prop lands on the roof at its spawn point");
+  System.Collections.Generic.List<float> speeds=new();Action<string> measure=e=>{if(e=="impact")speeds.Add(-1);};f.Event+=measure;
+  foreach(float boostLevel in new[]{0f,.5f}){a.Match.RivalBoost=boostLevel;a.Match.ApplyRules();a.ResetArena();o.ResetAt(new Vector3(0,.1f,0));f.ResetAt(new Vector3(0,.1f,1.65f));o.SnapFace(Vector3.forward);yield return new WaitForSeconds(.15f);int before=speeds.Count;o.Push();until=Time.time+1;while(speeds.Count==before&&Time.time<until)yield return null;yield return new WaitForFixedUpdate();speeds[speeds.Count-1]=Vector3.ProjectOnPlane(f.Body.linearVelocity,Vector3.up).magnitude;}
+  f.Event-=measure;Check(speeds.Count==2&&speeds[1]>speeds[0]*1.35f,$"rival boost shoves harder ({speeds[0]:0.0} → {(speeds.Count>1?speeds[1]:0):0.0} m/s)");Check(o.Stability>1.25f&&f.Stability==1&&f.PushPower==1,"boost applies only to the orange robot");
+  a.Match.TimedRounds=false;a.Match.Practice=false;a.Match.Phase=RoundPhase.Fight;yield return new WaitForSecondsRealtime(.25f);Check(a.HUD.Root.Query<Label>().ToList().Exists(l=>l.text.Contains("+50%")),"the HUD labels the boosted rules");a.Match.RivalBoost=0;a.Match.ApplyRules();a.Match.Practice=true;
   SessionState.SetBool("PG.Combat",false);Debug.Log("COMBAT UPGRADE VALIDATION COMPLETE");EditorApplication.Exit(0);
  }
 }

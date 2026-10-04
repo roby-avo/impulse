@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 namespace Playground {
-[Serializable] public class ChoiceCriteria {public string APPROACH_OPPONENT,RETREAT_FROM_OPPONENT,PUSH_OPPONENT,GRAB_NEAREST_OBJECT,THROW_HELD_OBJECT_AT_OPPONENT,DODGE_LEFT,DODGE_RIGHT,MOVE_TOWARD_SAFETY,TAKE_COVER,JUMP;}
+[Serializable] public class ChoiceCriteria {public string APPROACH_OPPONENT,RETREAT_FROM_OPPONENT,PUSH_OPPONENT,GRAB_NEAREST_OBJECT,THROW_HELD_OBJECT_AT_OPPONENT,DODGE_LEFT,DODGE_RIGHT,MOVE_TOWARD_SAFETY,TAKE_COVER,JUMP,ATTACK_OPPONENT,CUT_OFF_OPPONENT;}
 [Serializable] public class ChoiceQuestion {public string type,instructions;public ChoiceCriteria criteria;}
 [Serializable] public class QuestionFile {public ChoiceQuestion action;}
 public static class ActionSchema {
@@ -18,6 +18,9 @@ public static class ActionSchema {
     case SemanticAction.DODGE_LEFT:case SemanticAction.DODGE_RIGHT:executable=s.Grounded&&Time.time>=s.NextDodge;break;
     case SemanticAction.JUMP:executable=s.Grounded;break;
     case SemanticAction.TAKE_COVER:executable=ctx.HasCover&&Vector3.ProjectOnPlane(s.transform.position-ctx.Cover,Vector3.up).magnitude>.6f;break;
+    // A rush is offered while the shove is ready or nearly ready; holding a prop, the attack is a throw.
+    case SemanticAction.ATTACK_OPPONENT:executable=!s.Held&&s.NextPush-Time.time<.5f;break;
+    case SemanticAction.CUT_OFF_OPPONENT:executable=Vector3.ProjectOnPlane(s.transform.position-e.CutOffPoint(),Vector3.up).magnitude>.8f;break;
    } if(executable)list.Add(action.ToString());
   }return list.ToArray();
  }
