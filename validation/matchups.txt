@@ -22,6 +22,7 @@ PASS credentials absent from complete match log
 PASS separate per-player distributions and latency
 PASS AI-vs-AI match ends with correct winner
 PASS opposite AI winner and rematch score reset
+PASS finished matches update the head-to-head record (memory only in tests)
 PASS request in flight before matchup switch
 PASS HUD reports elapsed in-flight time
 PASS cancelled request does not leave deciding status behind

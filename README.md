@@ -42,6 +42,7 @@ in the same game, with tools to inspect the choices behind the action.
 | **Play Laya** | You versus local Laya | Local Python setup and downloaded model weights; no API key |
 | **Play TypeSafe** | You versus a model available through TypeSafe | A TypeSafe API key and internet access |
 | **Watch AI** | Any two models: local Laya models, TypeSafe models, or one of each | Whatever each side needs; two local models need no API key |
+| **2 Players** | Two people on one keyboard (or two gamepads) | Nothing extra |
 
 ![IMPULSE matchup menu with local, cloud, and AI-versus-AI modes](docs/images/match-setup.jpg)
 
@@ -121,10 +122,10 @@ and throws aim automatically, so gameplay stays keyboard-only.
 | Key | Action |
 |---|---|
 | **WASD / arrows** | Move |
-| **Space** | Jump |
+| **Space** | Jump; right after slipping off the edge, a last-chance save |
 | **Shift** | Dodge |
 | **E** | Grab or drop a prop |
-| **F** | Push, or throw a held prop |
+| **F** | Push, or throw a held prop; hold F for a charged push |
 | **Enter** | Start the selected matchup |
 | **Escape** | Pause, change matchup, or adjust graphics and volume |
 | **R** (hold) | Start a fresh match |
@@ -133,6 +134,16 @@ and throws aim automatically, so gameplay stays keyboard-only.
 | **F4** | Model diagnostics |
 | **F2** | Experiment lab |
 | **F3** | Export and inspect a match |
+
+**Gamepad:** left stick or d-pad to move, A jump, X push/throw (hold to charge), Y grab,
+B or right bumper to dodge, Start to pause. **2 Players:** cyan uses WASD, F, E, Left Shift
+and Space; orange uses the arrows, `.` (push/throw), `,` (grab), Right Shift and `/` (jump).
+Gamepad 1 controls cyan and gamepad 2 controls orange.
+
+Knockback grows with each hit taken in a round (+12% per hit, up to +60%; a setup
+toggle). The fan vents launch anything that lands on them. Props knocked off the roof
+drop back in after a few seconds. Your win/loss record against each opponent is kept
+across sessions.
 
 ## Experiment with decisions
 
