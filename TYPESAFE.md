@@ -2,14 +2,23 @@
 
 Open the game, choose **Human vs TypeSafe** or **Laya vs TypeSafe**, and enter an
 API key from [TypeSafe's console](https://console.typesafe.ai). Select
-**Check key & load models** to authenticate and discover the models available to
+**Connect & load models** to authenticate and discover the models available to
 your account. Select a model, then **Enter the arena**. The default suggestion
 is `jev-latest`; the authenticated model list is authoritative.
 
-The key stays in memory for this game session. It is not stored in PlayerPrefs,
-profile JSON, the repository, telemetry or exports. Relaunching requires entering
-it again unless the game process inherits `TYPESAFE_API_KEY`. Do not put a real
-key in source files or share it in screenshots. This is a desktop client: it
+**Remember key on this Mac** is on by default. After the key connects, it is
+saved as a generic password (service `ai.impulse.typesafe`) in your login
+Keychain, and the next launch fills it in and reconnects automatically. Turn the
+option off, or select **Forget saved key**, to delete it from the Keychain; the
+key then lasts only for the current session. macOS may ask to allow access the
+first time a rebuilt app reads the saved key.
+
+The key is never stored in PlayerPrefs, profile JSON, the repository, telemetry or
+exports. A key in the `TYPESAFE_API_KEY` environment variable takes precedence over
+the saved one. Do not put a real key in source files or share it in screenshots.
+
+The setup screen also remembers your last matchup, arena, match length, sudden
+death setting and model (non-secret choices, stored in PlayerPrefs). This is a desktop client: it
 sends the key directly to TypeSafe over HTTPS, with no intermediary game server.
 
 **Escape → Change matchup / API key** pauses the game and lets you switch modes.

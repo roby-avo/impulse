@@ -31,4 +31,12 @@ PASS setup pauses game
 PASS cannot bypass initial setup by unpausing
 PASS API key UI is masked
 PASS unverified cloud key cannot start paid requests
+PASS native Keychain saves, updates, reads and deletes a secret
+PASS verified key is saved when Remember is on
+PASS saved key fills in and reconnects automatically
+PASS Forget removes the saved key and clears the field
+PASS key saved again after reconnecting
+PASS turning Remember off deletes the saved key
+PASS key is not saved while Remember is off
+PASS chosen matchup, arena and match length persist for the next launch
 PASS exports include actor provenance and exclude credentials

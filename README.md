@@ -46,8 +46,10 @@ in the same game, with tools to inspect the choices behind the action.
 ![IMPULSE matchup menu with local, cloud, and AI-versus-AI modes](docs/images/match-setup.jpg)
 
 TypeSafe models are discovered from your account in the setup screen. Cloud
-requests use your account's allowance. Keys stay in session memory and are
-excluded from saved settings and match exports. See [TypeSafe setup](TYPESAFE.md).
+requests use your account's allowance. With **Remember key on this Mac** (on by
+default) the key is stored in your macOS Keychain and reconnects automatically next
+launch; otherwise it stays in session memory. Keys are never written to settings,
+recordings or exports. See [TypeSafe setup](TYPESAFE.md).
 
 ## Get started
 
