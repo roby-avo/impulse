@@ -1,18 +1,36 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 using static Playground.UIFactory;
 namespace Playground {
-public enum MatchMode { HumanVsLaya, HumanVsTypeSafe, LayaVsTypeSafe }
-// Credentials live only in this session. This component never serializes or logs them.
+public enum MatchMode { HumanVsLaya, HumanVsTypeSafe, AIVsAI, HumanVsHuman }
+// One AI player: a provider and the model it runs. Local models are catalog ids served by ai/server.py.
+[Serializable] public struct Seat {
+ public AIProvider Provider;public string Model;
+ public Seat(AIProvider provider,string model){Provider=provider;Model=model;}
+ public static Seat Laya(string model)=>new(AIProvider.Laya,model);public static Seat TypeSafe(string model)=>new(AIProvider.TypeSafe,model);
+ public string Id=>(Provider==AIProvider.Laya?"laya:":"typesafe:")+Model;
+ // Local models are named by family (Laya, Von, Kev, ...) from the service catalog once it is known.
+ public static Func<string,string> LocalFamily=model=>model=="english"||model=="multilingual"||model=="typed-decisions"?"Laya":model;
+ public string ProviderName=>Provider==AIProvider.Laya?LocalFamily(Model):"TypeSafe";
+ public static Seat Parse(string id,Seat fallback){if(string.IsNullOrEmpty(id))return fallback;int split=id.IndexOf(':');if(split<1||split==id.Length-1)return fallback;var model=id.Substring(split+1);return id.StartsWith("laya:")?Laya(model):id.StartsWith("typesafe:")?TypeSafe(model):fallback;}
+}
+// Credentials stay in memory unless the player opts in to the macOS Keychain (CredentialStore).
+// This component never writes them to PlayerPrefs, logs, telemetry or exports.
 public class MatchSetup:MonoBehaviour {
  public MatchMode Mode{get;private set;}public bool Open{get;private set;}public bool Started{get;private set;}
- public string TypeSafeModel{get;private set;}="jev-latest";
- readonly List<Button> modeButtons=new(),arenaButtons=new(),lengthButtons=new();ArenaPreview preview;Label arenaCaption;
- VisualElement root,cloud;DropdownField matchup,models,layout,matchLength;Toggle timed;TextField key;Label message,versus,explanation;Button start,check,back;bool checking;int validationGeneration;string verifiedKey,sessionKey;string[] verifiedModels;
- static readonly List<string> Modes=new(){"Human vs Laya","Human vs TypeSafe","Laya vs TypeSafe"};
+ public string TypeSafeModel{get;private set;}="jev-latest";public string LayaModel{get;private set;}="english";
+ public Seat LeftSeat{get;private set;}public Seat RightSeat{get;private set;}=Seat.Laya("english");
+ public string LeftName{get;private set;}="Human";public string RightName{get;private set;}="Laya";
+ public LocalModelList Local{get;private set;}
+ readonly List<Button> modeButtons=new(),arenaButtons=new(),lengthButtons=new(),boostButtons=new();int boost;Label boostNote;ArenaPreview preview;Label arenaCaption;
+ VisualElement root,cloud,keyRow,localBox;DropdownField matchup,models,layout,matchLength,layaModel,watchLeft,watchRight;Toggle timed,remember,rising;TextField key;Label message,versus,explanation,keyNote,localTitle,localInfo;Button start,check,back,forget,download;bool checking,savedLoaded;int validationGeneration;string verifiedKey,sessionKey,savedKey,localError,watchLeftId="laya:english",watchRightId,downloadTarget;string[] verifiedModels;
+ readonly List<string> localIds=new(),seatIds=new();
+ public string DiscoveryEndpoint=LayaClient.TypeSafeEndpoint;
+ static readonly List<string> Modes=new(){"Human vs Laya","Human vs TypeSafe","AI vs AI","2 Players"};
  public void Build(VisualElement parent){
  root=parent;root.AddToClassList("scrim");root.AddToClassList("setup-scrim");
  var shell=Box(root,"setup-shell");
@@ -25,31 +43,114 @@ public class MatchSetup:MonoBehaviour {
  var card=Box(shell,"setup-card");var scroll=new ScrollView(ScrollViewMode.Vertical);card.Add(scroll);
  Text(scroll,"MAKE IT YOUR MATCH","eyebrow cyan");Text(scroll,"Enter the arena","setup-title");
  Text(scroll,"01  /  CHOOSE YOUR OPPONENT","setup-section");
- matchup=new DropdownField("Matchup",Modes,0){name="matchup"};scroll.Add(matchup);Visible(matchup,false);matchup.RegisterValueChangedCallback(_=>Refresh());
- var modesRow=Box(scroll,"row selection-row");string[] modeTitles={"Play Laya","Play TypeSafe","Watch AI"};string[] modeNotes={"ON THIS MAC","CLOUD OPPONENT","LAYA × TYPESAFE"};
- for(int i=0;i<3;i++){int index=i;var choice=Button(modesRow,"",()=>matchup.index=index,"mode-choice");choice.name="mode-"+i;Text(choice,modeTitles[i],"choice-title");Text(choice,modeNotes[i],"choice-note");modeButtons.Add(choice);}
+ matchup=new DropdownField("Matchup",Modes,0){name="matchup"};scroll.Add(matchup);Visible(matchup,false);matchup.RegisterValueChangedCallback(_=>{FillKey();Refresh();AutoConnect();Warm();});
+ var modesRow=Box(scroll,"row selection-row");string[] modeTitles={"Play local AI","Play TypeSafe","Watch AI","2 Players"};string[] modeNotes={"LAYA, VON, KEV…","CLOUD OPPONENT","ANY TWO MODELS","ONE KEYBOARD"};
+ for(int i=0;i<4;i++){int index=i;var choice=Button(modesRow,"",()=>matchup.index=index,"mode-choice");choice.name="mode-"+i;Text(choice,modeTitles[i],"choice-title");Text(choice,modeNotes[i],"choice-note");modeButtons.Add(choice);}
  var pairing=Box(scroll,"setup-pairing");versus=Text(pairing,"","setup-versus");explanation=Text(pairing,"","description");
- cloud=Box(scroll,"setup-cloud");Text(cloud,"CONNECT TYPESAFE","eyebrow orange");key=new TextField("API key"){isPasswordField=true,name="typesafe-key"};cloud.Add(key);key.RegisterValueChangedCallback(_=>{validationGeneration++;verifiedKey=null;verifiedModels=null;Refresh();});Text(cloud,"Your key stays in this session.","muted");
+ localBox=Box(scroll,"setup-cloud setup-local");localTitle=Text(localBox,"","eyebrow cyan");
+ layaModel=new DropdownField("Local model",new List<string>{"english"},0){name="laya-model"};localBox.Add(layaModel);layaModel.RegisterValueChangedCallback(_=>{if(layaModel.index>=0&&layaModel.index<localIds.Count)LayaModel=localIds[layaModel.index];Warm();Refresh();});
+ watchLeft=new DropdownField("Cyan player",new List<string>(),0){name="watch-left"};localBox.Add(watchLeft);watchLeft.RegisterValueChangedCallback(_=>{if(watchLeft.index>=0&&watchLeft.index<seatIds.Count)watchLeftId=seatIds[watchLeft.index];SeatChanged();});
+ watchRight=new DropdownField("Orange player",new List<string>(),0){name="watch-right"};localBox.Add(watchRight);watchRight.RegisterValueChangedCallback(_=>{if(watchRight.index>=0&&watchRight.index<seatIds.Count)watchRightId=seatIds[watchRight.index];SeatChanged();});
+ localInfo=Text(localBox,"","muted local-info");download=Button(localBox,"",Download,"large");download.name="download-model";Text(localBox,"Add other open System One models with ai/models.py (see ai/README.md).","muted");
+ cloud=Box(scroll,"setup-cloud");Text(cloud,"CONNECT TYPESAFE","eyebrow orange");key=new TextField("API key"){isPasswordField=true,name="typesafe-key"};cloud.Add(key);key.RegisterValueChangedCallback(_=>{validationGeneration++;verifiedKey=null;verifiedModels=null;RebuildChoices();Refresh();});
+ keyRow=Box(cloud,"row rule-row");remember=new Toggle(){value=PlayerPrefs.GetInt("remember_key",1)==1,name="remember-key"};remember.AddToClassList("rule-toggle");keyRow.Add(remember);var rememberLabel=Text(keyRow,"Remember key on this Mac","muted");rememberLabel.pickingMode=PickingMode.Position;rememberLabel.RegisterCallback<ClickEvent>(_=>remember.value=!remember.value);remember.RegisterValueChangedCallback(e=>SetRemember(e.newValue));forget=Button(keyRow,"Forget saved key",Forget,"quiet");forget.name="forget-key";keyNote=Text(cloud,"","muted");
  models=new DropdownField("Model",new List<string>{"jev-latest"},0){name="typesafe-model"};cloud.Add(models);models.RegisterValueChangedCallback(_=>Refresh());check=Button(cloud,"Connect & load models",()=>StartCoroutine(CheckKey()),"large");check.name="check-typesafe";Button(cloud,"Get an API key ↗",()=>Application.OpenURL("https://console.typesafe.ai"),"quiet");Text(cloud,"TypeSafe receives arena observations and action instructions over HTTPS. Requests use your API account and begin when you enter the arena.","muted");
  Text(scroll,"02  /  PICK YOUR ROOFTOP","setup-section");
- layout=new DropdownField("Arena",new List<string>{"Foundry","Crossfire","Flank","Rotation"},3);scroll.Add(layout);Visible(layout,false);layout.RegisterValueChangedCallback(_=>RefreshSelections());
+ layout=new DropdownField("Arena",new List<string>{"Foundry","Crossfire","Flank","Rotation"},3){name="arena"};scroll.Add(layout);Visible(layout,false);layout.RegisterValueChangedCallback(_=>RefreshSelections());
  var arenasRow=Box(scroll,"row selection-row");string[] arenaNotes={"CLASSIC","CENTRAL PROPS","SIDE ROUTES","ALL THREE"};
  for(int i=0;i<4;i++){int index=i;var choice=Button(arenasRow,"",()=>layout.index=index,"arena-choice");choice.name="arena-"+i;Text(choice,"0"+(i+1),"choice-index");Text(choice,layout.choices[i],"choice-title");Text(choice,arenaNotes[i],"choice-note");arenaButtons.Add(choice);}
  Text(scroll,"03  /  SET THE STAKES","setup-section");
- matchLength=new DropdownField("Match length",new List<string>{"First to 3","First to 5","First to 7"},1);scroll.Add(matchLength);Visible(matchLength,false);matchLength.RegisterValueChangedCallback(_=>RefreshSelections());
+ matchLength=new DropdownField("Match length",new List<string>{"First to 3","First to 5","First to 7"},1){name="match-length"};scroll.Add(matchLength);Visible(matchLength,false);matchLength.RegisterValueChangedCallback(_=>RefreshSelections());
  var lengthRow=Box(scroll,"row length-row");Text(lengthRow,"ROUND WINS","eyebrow");for(int i=0;i<3;i++){int index=i;var choice=Button(lengthRow,new[]{"3","5","7"}[i],()=>matchLength.index=index,"length-choice");choice.name="length-"+i;lengthButtons.Add(choice);}
  var ruleRow=Box(scroll,"row rule-row");timed=new Toggle(){value=true,tooltip="Sudden death after 60 seconds"};timed.AddToClassList("rule-toggle");ruleRow.Add(timed);var ruleLabel=Text(ruleRow,"Sudden death after 60 seconds","muted");ruleLabel.pickingMode=PickingMode.Position;ruleLabel.RegisterCallback<ClickEvent>(_=>timed.value=!timed.value);
+ var risingRow=Box(scroll,"row rule-row");rising=new Toggle(){value=true,name="rising-knockback",tooltip="Each hit taken this round adds 12% knockback, up to 60%"};rising.AddToClassList("rule-toggle");risingRow.Add(rising);var risingLabel=Text(risingRow,"Knockback grows with each hit (+12%, up to +60%)","muted");risingLabel.pickingMode=PickingMode.Position;risingLabel.RegisterCallback<ClickEvent>(_=>rising.value=!rising.value);
+ var boostRow=Box(scroll,"row length-row");Text(boostRow,"RIVAL BOOST","eyebrow");string[] boostLabels={"Off","+25%","+50%"};for(int i=0;i<3;i++){int index=i;var choice=Button(boostRow,boostLabels[i],()=>{boost=index;RefreshSelections();},"length-choice");choice.name="boost-"+i;boostButtons.Add(choice);}
+ boostNote=Text(scroll,"","muted boost-note");
  var footer=Box(card,"setup-actions");message=Text(footer,"","setup-message");start=Button(footer,"LET’S PLAY    →",StartSelected,"primary launch-button");start.name="start-match";back=Button(footer,"Back to current match",Close,"quiet");
- RefreshSelections();Visible(root,false);
+ Restore();RebuildChoices();RefreshSelections();Visible(root,false);StartCoroutine(PollLocal());
  }
- void RefreshSelections(){for(int i=0;i<modeButtons.Count;i++)modeButtons[i].EnableInClassList("selected",matchup.index==i);for(int i=0;i<arenaButtons.Count;i++)arenaButtons[i].EnableInClassList("selected",layout.index==i);for(int i=0;i<lengthButtons.Count;i++)lengthButtons[i].EnableInClassList("selected",matchLength.index==i);if(preview!=null){preview.Layout=layout.index;Set(arenaCaption,"THE ROOFTOP / "+layout.value.ToUpperInvariant());}}
- public void Show(){if(root==null)return;var a=Arena.Instance;if(a.Tutorial.Running)a.Tutorial.Stop();a.Research.Close(false);a.GetComponent<ExecutorDebugPanel>().Open=false;a.Match.Practice=false;Open=true;a.HUD.Pause(true);a.Match.Generation++;a.Client.CancelPending();a.LeftClient.CancelPending();a.StopExecutors("match_setup");matchup.SetValueWithoutNotify(Modes[(int)Mode]);key.SetValueWithoutNotify(sessionKey??Environment.GetEnvironmentVariable("TYPESAFE_API_KEY")??"");Visible(root,true);Refresh();}
- void Refresh(){if(start==null)return;RefreshSelections();bool remote=matchup.index!=0;Visible(cloud,remote);Visible(back,Started);Set(versus,matchup.index==2?"LAYA    ×    TYPESAFE":matchup.index==1?"YOU    ×    TYPESAFE":"YOU    ×    LAYA");Set(explanation,matchup.index==2?"Watch two independent AI players compete. Cyan is local Laya; orange is TypeSafe. The fixed view keeps the whole arena visible.":matchup.index==1?"Take the cyan corner against TypeSafe's cloud model.":"Take the cyan corner against Laya, running locally on this Mac.");bool verified=verifiedKey==key.value&&verifiedModels!=null&&Array.IndexOf(verifiedModels,models.value)>=0;start.SetEnabled(!checking&&(!remote||verified));check.SetEnabled(!checking&&!string.IsNullOrWhiteSpace(key.value));Set(message,!remote?"ENTER / Start    ·    WASD / Move    ·    F / Push or throw":checking?"Checking TypeSafe access…":verified?"Connected · "+models.value+" · ready to play":"Enter a key and check access before starting.");}
- IEnumerator CheckKey(){checking=true;verifiedKey=null;verifiedModels=null;int version=validationGeneration;string submitted=key.value.Trim();Refresh();yield return LayaClient.DiscoverModels(submitted,(names,error)=>{if(version!=validationGeneration)return;if(error!=null){Set(message,error);return;}verifiedKey=submitted;key.SetValueWithoutNotify(submitted);verifiedModels=names;models.choices=new List<string>(names);models.SetValueWithoutNotify(Array.IndexOf(names,TypeSafeModel)>=0?TypeSafeModel:names[0]);});checking=false;if(version==validationGeneration&&verifiedModels!=null)Refresh();else{start.SetEnabled(matchup.index==0);check.SetEnabled(!string.IsNullOrWhiteSpace(key.value));}}
+ // Non-secret choices persist in PlayerPrefs. The API key never does.
+ void Restore(){matchup.SetValueWithoutNotify(Modes[Mathf.Clamp(PlayerPrefs.GetInt("setup_mode",0),0,Modes.Count-1)]);layout.SetValueWithoutNotify(layout.choices[Mathf.Clamp(PlayerPrefs.GetInt("setup_layout",3),0,layout.choices.Count-1)]);matchLength.SetValueWithoutNotify(matchLength.choices[Mathf.Clamp(PlayerPrefs.GetInt("setup_length",1),0,matchLength.choices.Count-1)]);timed.SetValueWithoutNotify(PlayerPrefs.GetInt("setup_timed",1)==1);boost=Mathf.Clamp(PlayerPrefs.GetInt("setup_boost",0),0,2);rising.SetValueWithoutNotify(PlayerPrefs.GetInt("setup_rising",1)==1);TypeSafeModel=PlayerPrefs.GetString("typesafe_model",TypeSafeModel);LayaModel=PlayerPrefs.GetString("laya_model",LayaModel);watchLeftId=PlayerPrefs.GetString("watch_left",watchLeftId);watchRightId=PlayerPrefs.GetString("watch_right","typesafe:"+TypeSafeModel);}
+ void SaveChoices(){PlayerPrefs.SetInt("setup_mode",matchup.index);PlayerPrefs.SetInt("setup_layout",layout.index);PlayerPrefs.SetInt("setup_length",matchLength.index);PlayerPrefs.SetInt("setup_timed",timed.value?1:0);PlayerPrefs.SetInt("setup_boost",boost);PlayerPrefs.SetInt("setup_rising",rising.value?1:0);PlayerPrefs.SetString("typesafe_model",TypeSafeModel);PlayerPrefs.SetString("laya_model",LayaModel);PlayerPrefs.SetString("watch_left",watchLeftId);PlayerPrefs.SetString("watch_right",watchRightId);PlayerPrefs.Save();}
+ string SavedKey(){if(!savedLoaded){savedLoaded=true;savedKey=CredentialStore.Load();}return savedKey;}
+ Seat SelectedLeft=>matchup.index==2?Seat.Parse(watchLeftId,Seat.Laya(LayaModel)):default;
+ Seat SelectedRight=>matchup.index==0?Seat.Laya(LayaModel):matchup.index==1?Seat.TypeSafe(models.value):Seat.Parse(watchRightId,Seat.TypeSafe(TypeSafeModel));
+ IEnumerable<Seat> SelectedSeats=>matchup.index==2?new[]{SelectedLeft,SelectedRight}:matchup.index==3?new Seat[0]:new[]{SelectedRight};
+ // Records are kept per matchup from the cyan side, e.g. "Laya · english" or "Player 1 vs Player 2".
+ public static string RecordKey(MatchMode mode,Seat left,Seat right)=>mode==MatchMode.HumanVsHuman?"Player 1 vs Player 2":mode==MatchMode.AIVsAI?$"{left.ProviderName} · {left.Model} vs {right.ProviderName} · {right.Model}":$"{right.ProviderName} · {right.Model}";
+ public string CurrentRecordKey=>RecordKey(Mode,LeftSeat,RightSeat);
+ string SelectedRecordKey=>RecordKey((MatchMode)matchup.index,SelectedLeft,SelectedRight);
+ bool UsesCloud=>SelectedSeats.Any(s=>s.Provider==AIProvider.TypeSafe);
+ bool Verified=>verifiedKey!=null&&verifiedKey==key.value.Trim()&&verifiedModels!=null;
+ LocalModel LocalEntry(string id)=>Local?.models?.FirstOrDefault(m=>m.name==id);
+ void Awake(){var fallback=Seat.LocalFamily;Seat.LocalFamily=id=>{var m=LocalEntry(id);return m!=null&&!string.IsNullOrEmpty(m.family)?m.family:fallback(id);};}
+ // Reading the Keychain only when a cloud model is selected avoids prompts for local play.
+ void FillKey(){if(!UsesCloud||!string.IsNullOrEmpty(key.value))return;var value=sessionKey??Environment.GetEnvironmentVariable("TYPESAFE_API_KEY")??(remember.value?SavedKey():null);if(!string.IsNullOrEmpty(value))key.SetValueWithoutNotify(value);}
+ void AutoConnect(){if(Open&&UsesCloud&&!checking&&!string.IsNullOrWhiteSpace(key.value)&&verifiedKey!=key.value.Trim())StartCoroutine(CheckKey());}
+ void SeatChanged(){FillKey();Warm();Refresh();AutoConnect();}
+ void SetRemember(bool value){PlayerPrefs.SetInt("remember_key",value?1:0);if(value){if(verifiedKey!=null&&CredentialStore.Save(verifiedKey))savedKey=verifiedKey;}else{CredentialStore.Delete();savedKey=null;savedLoaded=true;}Refresh();}
+ public void Forget(){CredentialStore.Delete();if(key.value.Trim()==savedKey)key.value="";savedKey=null;savedLoaded=true;Refresh();}
+ // Polls the local catalog while setup is open so installs, downloads and loading show live.
+ IEnumerator PollLocal(){while(true){if(Open&&matchup.index!=1){bool first=Local==null;LocalModelList list=null;string error=null;yield return LayaClient.LocalModels((l,e)=>{list=l;error=e;});Local=list;localError=error;RebuildChoices();Refresh();if(first&&list!=null)Warm();}yield return new WaitForSecondsRealtime(Local?.models!=null&&Local.models.Any(m=>m.downloading||m.loading)?.5f:1.5f);}}
+ // Ask the service to load and warm the chosen local models before the first round.
+ void Warm(){if(!Open||Local==null)return;foreach(var seat in SelectedSeats.Where(s=>s.Provider==AIProvider.Laya).Distinct()){var entry=LocalEntry(seat.Model);if(entry!=null&&entry.installed)StartCoroutine(LayaClient.LocalCommand(seat.Model,"load"));}}
+ void Download(){if(downloadTarget==null)return;var entry=LocalEntry(downloadTarget);if(entry!=null)entry.downloading=true;StartCoroutine(LayaClient.LocalCommand(downloadTarget,"download",error=>{if(error!=null)Set(message,error);}));Refresh();}
+ static string LocalLabel(LocalModel m)=>m.installed?m.label:$"{m.label}  ·  {m.size_mb} MB download";
+ static void SetChoices(DropdownField field,List<string> choices,int index){if(!field.choices.SequenceEqual(choices))field.choices=choices;if(index>=0&&index<choices.Count&&field.value!=choices[index])field.SetValueWithoutNotify(choices[index]);}
+ void RebuildChoices(){
+  localIds.Clear();var labels=new List<string>();
+  if(Local?.models!=null)foreach(var m in Local.models){localIds.Add(m.name);labels.Add(LocalLabel(m));}
+  if(!localIds.Contains(LayaModel)){if(Local?.models!=null&&localIds.Count>0)LayaModel=localIds.Contains(Local.@default)?Local.@default:localIds[0];else{localIds.Add(LayaModel);labels.Add(LayaModel);}}
+  SetChoices(layaModel,labels,localIds.IndexOf(LayaModel));
+  seatIds.Clear();var seatLabels=new List<string>();
+  for(int i=0;i<localIds.Count;i++){seatIds.Add("laya:"+localIds[i]);seatLabels.Add("Local  ·  "+labels[i]);}
+  foreach(var model in Verified?verifiedModels:new[]{TypeSafeModel}){if(seatIds.Contains("typesafe:"+model))continue;seatIds.Add("typesafe:"+model);seatLabels.Add("TypeSafe  ·  "+model+(Verified?"":"  ·  connect key"));}
+  foreach(var id in new[]{watchLeftId,watchRightId})if(!seatIds.Contains(id)&&id.StartsWith("typesafe:")&&!Verified){seatIds.Add(id);seatLabels.Add("TypeSafe  ·  "+id.Substring(9)+"  ·  connect key");}
+  if(!seatIds.Contains(watchLeftId))watchLeftId=seatIds[0];if(!seatIds.Contains(watchRightId))watchRightId=seatIds.FirstOrDefault(s=>s.StartsWith("typesafe:"))??seatIds[0];
+  SetChoices(watchLeft,seatLabels,seatIds.IndexOf(watchLeftId));SetChoices(watchRight,new List<string>(seatLabels),seatIds.IndexOf(watchRightId));
+ }
+ // Why a seat cannot start yet, or null when it is ready. An unknown local catalog is allowed:
+ // the game starts the local service on demand and waits without substituting another player.
+ string Problem(Seat seat){
+  if(seat.Provider==AIProvider.Laya){if(Local==null)return null;var m=LocalEntry(seat.Model);if(m==null)return seat.Model+" is not in the local model catalog";if(m.downloading)return $"Downloading {m.label}…";if(!m.installed)return $"Download {m.label} to play";if(!string.IsNullOrEmpty(m.error))return m.error;return null;}
+  if(checking)return "Checking TypeSafe access…";if(!Verified)return string.IsNullOrWhiteSpace(key.value)?"Enter a TypeSafe key and connect before starting.":"Connect TypeSafe to use "+seat.Model;
+  return Array.IndexOf(verifiedModels,seat.Model)<0?seat.Model+" is not available on this TypeSafe account":null;
+ }
+ static string LocalState(LocalModel m)=>!string.IsNullOrEmpty(m.download_error)?"Download failed · "+m.download_error:m.downloading&&m.download_phase=="installing runtime"?"Installing its runtime (first model of this family)…":m.downloading&&m.download_phase=="first start"?"First start · fetching base weights and checking the game question…":m.downloading?$"Downloading · {Mathf.RoundToInt(100*m.download_progress)}% of {m.size_mb} MB":!m.installed?$"Not installed · {m.size_mb} MB download":!string.IsNullOrEmpty(m.error)?m.error:m.loaded?"Ready on this Mac":m.loading?"Loading into memory…":"Installed";
+ void RefreshLocal(){
+  bool watch=matchup.index==2;Visible(layaModel,!watch);Visible(watchLeft,watch);Visible(watchRight,watch);Set(localTitle,watch?"PLAYERS  /  LOCAL OR CLOUD":"LOCAL MODEL  /  ON THIS MAC");
+  var shown=SelectedSeats.Where(s=>s.Provider==AIProvider.Laya).Select(s=>s.Model).Distinct().ToArray();downloadTarget=null;
+  if(Local==null)Set(localInfo,shown.Length==0?"":localError??"Connecting to local Laya…");
+  else{var lines=new List<string>();foreach(var id in shown){var m=LocalEntry(id);if(m==null)continue;lines.Add($"{m.label}: {LocalState(m)}{(m.verified?" · verified":"")}\n{m.description}");if(!m.installed&&!m.downloading&&downloadTarget==null)downloadTarget=id;}Set(localInfo,string.Join("\n",lines));}
+  var target=downloadTarget==null?null:LocalEntry(downloadTarget);Visible(download,target!=null);if(target!=null)download.text=$"Download {target.label}  ·  {target.size_mb} MB";
+ }
+ void RefreshSelections(){for(int i=0;i<modeButtons.Count;i++)modeButtons[i].EnableInClassList("selected",matchup.index==i);for(int i=0;i<arenaButtons.Count;i++)arenaButtons[i].EnableInClassList("selected",layout.index==i);for(int i=0;i<lengthButtons.Count;i++)lengthButtons[i].EnableInClassList("selected",matchLength.index==i);for(int i=0;i<boostButtons.Count;i++)boostButtons[i].EnableInClassList("selected",boost==i);if(boostNote!=null)Set(boostNote,boost==0?"Even rules for both robots.":$"Labelled rule change, recorded with the match: the orange robot shoves {MatchController.BoostLevels[boost]*100:0}% harder and takes {100-100/(1+MatchController.BoostLevels[boost]*.6f):0}% less knockback.");if(preview!=null){preview.Layout=layout.index;Set(arenaCaption,"THE ROOFTOP / "+layout.value.ToUpperInvariant());}}
+ public void Show(){if(root==null)return;var a=Arena.Instance;if(a.Tutorial.Running)a.Tutorial.Stop();a.Research.Close(false);a.GetComponent<ExecutorDebugPanel>().Open=false;a.Match.Practice=false;Open=true;a.HUD.Pause(true);a.Match.Generation++;a.Client.CancelPending();a.LeftClient.CancelPending();a.StopExecutors("match_setup");if(Started)matchup.SetValueWithoutNotify(Modes[(int)Mode]);key.SetValueWithoutNotify("");FillKey();Visible(root,true);Refresh();AutoConnect();Warm();}
+ void Refresh(){if(start==null)return;RefreshSelections();bool watch=matchup.index==2;Visible(localBox,matchup.index==0||matchup.index==2);Visible(cloud,UsesCloud);Visible(models,matchup.index==1);Visible(back,Started);RefreshLocal();
+  Set(versus,watch?$"{Title(SelectedLeft)}    ×    {Title(SelectedRight)}":matchup.index==3?"PLAYER 1    ×    PLAYER 2":matchup.index==1?"YOU    ×    TYPESAFE":"YOU    ×    "+SelectedRight.ProviderName.ToUpperInvariant());
+  var record=MatchRecords.Get(SelectedRecordKey);string recordText=record==null?"":matchup.index==3?$"\nPlayer 1 vs Player 2 so far: {record.wins}–{record.losses}":watch?$"\nHead to head so far: {record.wins}–{record.losses}":$"\nYour record: {record.wins}–{record.losses}";
+  Set(explanation,(watch?"Watch two independent AI players compete under the same rules. Pick any local model (Laya, Von, Kev, …) or TypeSafe model for each corner; local models share this Mac's GPU.":matchup.index==3?"Two players, one keyboard (gamepads work too).\nCyan: WASD move · F push/throw · E grab · Left Shift dodge · Space jump\nOrange: arrows move · . push/throw · , grab · Right Shift dodge · / jump":matchup.index==1?"Take the cyan corner against TypeSafe's cloud model.":$"Take the cyan corner against {(LocalEntry(LayaModel)?.label??SelectedRight.ProviderName)}, running locally on this Mac.")+recordText);
+  string problem=SelectedSeats.Select(Problem).FirstOrDefault(p=>p!=null);start.SetEnabled(!checking&&problem==null);check.SetEnabled(!checking&&!string.IsNullOrWhiteSpace(key.value));
+  Visible(keyRow,CredentialStore.Persistent);Visible(forget,!string.IsNullOrEmpty(savedKey));Set(keyNote,!CredentialStore.Persistent||!remember.value?"Your key stays in this session only.":savedKey!=null&&savedKey==key.value.Trim()?"Saved in your macOS Keychain. Remove it any time with Forget saved key.":"After it connects, the key is saved in your macOS Keychain.");
+  Set(message,problem??(UsesCloud?"Connected · "+string.Join(" + ",SelectedSeats.Where(s=>s.Provider==AIProvider.TypeSafe).Select(s=>s.Model).Distinct())+" · ready to play":"ENTER / Start    ·    WASD / Move    ·    F / Push or throw"));
+ }
+ static string Title(Seat seat)=>(seat.ProviderName+" · "+seat.Model).ToUpperInvariant();
+ public IEnumerator CheckKey(){checking=true;verifiedKey=null;verifiedModels=null;int version=validationGeneration;string submitted=key.value.Trim();Refresh();string failure=null;yield return LayaClient.DiscoverModels(submitted,(names,error)=>{if(version!=validationGeneration)return;if(error!=null){failure=error;return;}verifiedKey=submitted;if(remember.value&&CredentialStore.Persistent&&savedKey!=submitted&&CredentialStore.Save(submitted))savedKey=submitted;key.SetValueWithoutNotify(submitted);verifiedModels=names;models.choices=new List<string>(names);models.SetValueWithoutNotify(Array.IndexOf(names,TypeSafeModel)>=0?TypeSafeModel:names[0]);},DiscoveryEndpoint);checking=false;if(version==validationGeneration){RebuildChoices();Refresh();if(failure!=null)Set(message,failure);}}
  public void StartFromKeyboard(){StartSelected();}
- void StartSelected(){if(!Open)return;var mode=(MatchMode)matchup.index;if(mode!=MatchMode.HumanVsLaya&&(verifiedKey!=key.value||verifiedModels==null||Array.IndexOf(verifiedModels,models.value)<0))return;if(!Configure(mode,models.value,key.value))return;Started=true;Open=false;Visible(root,false);Arena.Instance.Match.Layout=layout.index;Arena.Instance.Match.TimedRounds=timed.value;Arena.Instance.Match.WinsRequired=new[]{3,5,7}[matchLength.index];Arena.Instance.Match.NewMatch();Arena.Instance.HUD.Pause(false);key.SetValueWithoutNotify("");}
- public void StartTutorial(){Configure(MatchMode.HumanVsLaya,TypeSafeModel,sessionKey);Started=true;Open=false;Visible(root,false);Arena.Instance.Tutorial.Begin();}
- public bool Configure(MatchMode mode,string model="jev-latest",string credential=null){if(!Enum.IsDefined(typeof(MatchMode),mode)||mode!=MatchMode.HumanVsLaya&&(string.IsNullOrWhiteSpace(credential)||string.IsNullOrWhiteSpace(model)))return false;var a=Arena.Instance;a.Match.Generation++;a.StopExecutors("matchup_changed");a.Client.CancelPending();a.LeftClient.CancelPending();Mode=mode;TypeSafeModel=model;sessionKey=credential;a.Human.Actor=a.LeftName;a.AI.Actor=a.RightName;a.Human.name=a.LeftName;a.AI.name=a.RightName;a.LeftClient.Configure(AIProvider.Laya);a.Client.Configure(mode==MatchMode.HumanVsLaya?AIProvider.Laya:AIProvider.TypeSafe,model,credential);a.LeftBrain.Enabled=mode==MatchMode.LayaVsTypeSafe;a.Brain.Enabled=true;return true;}
+ void StartSelected(){if(!Open||!start.enabledSelf)return;var mode=(MatchMode)matchup.index;if(UsesCloud&&!Verified)return;if(!Configure(mode,SelectedLeft,SelectedRight,UsesCloud?key.value.Trim():null))return;Started=true;SaveChoices();Open=false;Visible(root,false);Arena.Instance.Match.Layout=layout.index;Arena.Instance.Match.TimedRounds=timed.value;Arena.Instance.Match.RivalBoost=MatchController.BoostLevels[boost];Arena.Instance.Match.RisingKnockback=rising.value;Arena.Instance.Match.WinsRequired=new[]{3,5,7}[matchLength.index];Arena.Instance.Match.NewMatch();Arena.Instance.HUD.Pause(false);key.SetValueWithoutNotify("");}
+ public void StartTutorial(){Configure(MatchMode.HumanVsLaya,default,Seat.Laya(LayaModel),sessionKey);Started=true;Open=false;Visible(root,false);Arena.Instance.Tutorial.Begin();}
+ // Compatibility form: Human vs Laya uses the selected local model; cloud modes use the given TypeSafe model.
+ public bool Configure(MatchMode mode,string model="jev-latest",string credential=null)=>Configure(mode,mode==MatchMode.AIVsAI?Seat.Laya(LayaModel):default,mode==MatchMode.HumanVsLaya?Seat.Laya(LayaModel):mode==MatchMode.HumanVsHuman?default:Seat.TypeSafe(model),credential);
+ public bool Configure(MatchMode mode,Seat left,Seat right,string credential=null){
+  if(!Enum.IsDefined(typeof(MatchMode),mode)||mode==MatchMode.HumanVsLaya&&right.Provider!=AIProvider.Laya||mode==MatchMode.HumanVsTypeSafe&&right.Provider!=AIProvider.TypeSafe)return false;
+  var seats=mode==MatchMode.AIVsAI?new[]{left,right}:mode==MatchMode.HumanVsHuman?new Seat[0]:new[]{right};if(seats.Any(s=>string.IsNullOrWhiteSpace(s.Model)||s.Provider==AIProvider.TypeSafe&&string.IsNullOrWhiteSpace(credential)))return false;
+  var a=Arena.Instance;a.Match.Generation++;a.StopExecutors("matchup_changed");a.Client.CancelPending();a.LeftClient.CancelPending();
+  Mode=mode;LeftSeat=mode==MatchMode.AIVsAI?left:default;RightSeat=right;sessionKey=credential;foreach(var s in seats)if(s.Provider==AIProvider.TypeSafe)TypeSafeModel=s.Model;if(mode==MatchMode.HumanVsLaya)LayaModel=right.Model;
+  if(mode==MatchMode.AIVsAI){string l=left.ProviderName,r=right.ProviderName;if(l==r){l+=" "+left.Model;r+=" "+right.Model;}if(l==r){l+=" (cyan)";r+=" (orange)";}LeftName=l;RightName=r;}else if(mode==MatchMode.HumanVsHuman){LeftName="Player 1";RightName="Player 2";RightSeat=default;}else{LeftName="Human";RightName=right.ProviderName;}
+  a.Human.Actor=a.Human.name=LeftName;a.AI.Actor=a.AI.name=RightName;
+  if(mode==MatchMode.AIVsAI)a.LeftClient.Configure(left.Provider,left.Model,left.Provider==AIProvider.TypeSafe?credential:null);else a.LeftClient.Configure(AIProvider.Laya,LayaModel);
+  if(mode==MatchMode.HumanVsHuman)a.Client.Configure(AIProvider.Laya,LayaModel);else a.Client.Configure(right.Provider,right.Model,right.Provider==AIProvider.TypeSafe?credential:null);a.Client.Family=right.ProviderName;a.LeftClient.Family=mode==MatchMode.AIVsAI?left.ProviderName:Seat.LocalFamily(LayaModel);a.LeftBrain.Enabled=mode==MatchMode.AIVsAI;a.Brain.Enabled=mode!=MatchMode.HumanVsHuman;foreach(var player in HumanInput.All)player.Capture(false);return true;
+ }
  public void Close(){if(!Started)return;validationGeneration++;Open=false;Visible(root,false);key.SetValueWithoutNotify("");Arena.Instance.HUD.Pause(false);}
 }
 }

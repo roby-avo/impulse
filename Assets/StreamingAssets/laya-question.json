@@ -12,7 +12,9 @@
       "DODGE_RIGHT": "Evade an incoming projectile or close enemy attack by dodging right.",
       "MOVE_TOWARD_SAFETY": "Escape a dangerous edge or shrinking boundary by moving toward the center.",
       "TAKE_COVER": "Get behind solid cover against a distant enemy holding a throwable weapon.",
-      "JUMP": "Jump over a low obstacle or low projectile."
+      "JUMP": "Jump over a low obstacle or low projectile.",
+      "ATTACK_OPPONENT": "Close in and shove a distant enemy.",
+      "CUT_OFF_OPPONENT": "Step around to the enemy's center side."
     }
   }
 }

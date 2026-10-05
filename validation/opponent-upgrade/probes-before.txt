@@ -1,0 +1,9 @@
+OK rush: enemy far, little roof behind    -> APPROACH_OPPONENT              top3=[('APPROACH_OPP', 0.2), ('TAKE_COVER', 0.18), ('MOVE_TOWARD_', 0.16)]
+OK in reach, little roof behind           -> PUSH_OPPONENT                  top3=[('PUSH_OPPONEN', 0.88), ('APPROACH_OPP', 0.03), ('MOVE_TOWARD_', 0.02)]
+-- enemy near edge but I am on edge side  -> TAKE_COVER                     top3=[('TAKE_COVER', 0.18), ('APPROACH_OPP', 0.16), ('DODGE_LEFT', 0.14)]
+OK open center fight                      -> GRAB_NEAREST_OBJECT            top3=[('GRAB_NEAREST', 0.22), ('TAKE_COVER', 0.2), ('APPROACH_OPP', 0.14)]
+-- edge pressure                          -> PUSH_OPPONENT                  top3=[('PUSH_OPPONEN', 0.36), ('DODGE_LEFT', 0.11), ('GRAB_NEAREST', 0.11)]
+OK incoming throw                         -> TAKE_COVER                     top3=[('TAKE_COVER', 0.29), ('GRAB_NEAREST', 0.2), ('DODGE_LEFT', 0.15)]
+-- enemy winding up close                 -> PUSH_OPPONENT                  top3=[('PUSH_OPPONEN', 0.61), ('GRAB_NEAREST', 0.07), ('APPROACH_OPP', 0.06)]
+OK held barrel at range                   -> THROW_HELD_OBJECT_AT_OPPONENT  top3=[('THROW_HELD_O', 0.56), ('TAKE_COVER', 0.14), ('APPROACH_OPP', 0.07)]
+5/8 match the example sets

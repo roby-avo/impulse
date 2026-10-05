@@ -19,3 +19,11 @@ PASS fresh default has four decisions per second
 PASS untouched factory profile upgrades
 PASS custom criteria survive factory migration
 PASS named experiments are never upgraded implicitly
+PASS the untouched previous default gains the attack action and observation; cut-off is opt-in
+PASS an edited previous profile is left exactly as saved
+PASS attack is offered with the shove ready
+PASS one attack decision closes the gap and lands the shove
+PASS holding a prop, the attack is a throw instead
+PASS cut-off point sits on the enemy's roof-center side
+PASS cutting off leaves little roof behind the enemy
+PASS observation reports roof left behind the enemy

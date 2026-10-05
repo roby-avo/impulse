@@ -22,6 +22,7 @@ PASS credentials absent from complete match log
 PASS separate per-player distributions and latency
 PASS AI-vs-AI match ends with correct winner
 PASS opposite AI winner and rematch score reset
+PASS finished matches update the head-to-head record (memory only in tests)
 PASS request in flight before matchup switch
 PASS HUD reports elapsed in-flight time
 PASS cancelled request does not leave deciding status behind
@@ -31,4 +32,21 @@ PASS setup pauses game
 PASS cannot bypass initial setup by unpausing
 PASS API key UI is masked
 PASS unverified cloud key cannot start paid requests
+PASS native Keychain saves, updates, reads and deletes a secret
+PASS verified key is saved when Remember is on
+PASS saved key fills in and reconnects automatically
+PASS Forget removes the saved key and clears the field
+PASS key saved again after reconnecting
+PASS turning Remember off deletes the saved key
+PASS key is not saved while Remember is off
+PASS chosen matchup, arena and match length persist for the next launch
 PASS exports include actor provenance and exclude credentials
+PASS setup lists the local model catalog from the service
+PASS an uninstalled model blocks Start and offers Download
+PASS an installed model can start
+PASS two local models map to distinct named players
+PASS a cloud seat still requires credentials
+PASS two local models share the service and both decide
+PASS each local player is served by its own model, never a substitute
+PASS a second model family is named by family
+PASS Laya vs Von: each side is served by its own model through the local service

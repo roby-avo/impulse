@@ -168,6 +168,7 @@ MonoBehaviour:
   Setup: {fileID: 0}
   Guide: {fileID: 0}
   Tutorial: {fileID: 0}
+  Markers: {fileID: 0}
 --- !u!4 &174398566
 Transform:
   m_ObjectHideFlags: 0

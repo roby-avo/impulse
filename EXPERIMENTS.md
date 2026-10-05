@@ -9,7 +9,7 @@ resume without applying changes. **Restore defaults** changes the draft only.
 
 The cap is request starts per **game second**, excluding pauses (0.25–10 Hz).
 Each AI player has at most one request in flight and one committed action at a time.
-In Laya-vs-TypeSafe mode the same cap and schema apply independently to both players. Inference and
+In AI-vs-AI mode the same cap and schema apply independently to both players. Inference and
 action duration can lower the actual rate. Neither inference latency nor model
 mistakes are hidden by a replacement policy.
 
@@ -90,6 +90,12 @@ Match metadata includes the matchup and both participants' actor, controller,
 requested model and endpoint. Decisions include `actor`, `provider`, `model`
 (requested alias), and `response_model` (the version returned by the service).
 Decision IDs include actor identity so the two independent loops cannot collide.
+Since runtime 0.10.0 the local service returns the catalog id it served (for
+example `english`) as `response_model`; earlier recordings show `laya-rl-agent`.
+The matchup value for AI-vs-AI is `AIVsAI` (earlier: `LayaVsTypeSafe`). When both
+players use the same provider, actor names include the model, for example
+`Laya english` and `Laya typed-decisions`. Local model sources and pinned
+revisions are listed in `ai/models.json`.
 Each request captures its original match, actor and profile; switching matchups
 aborts outstanding requests, and late results remain in the original recording.
 
@@ -130,3 +136,23 @@ committed push's existing movement limits, clamps retreat destinations inside th
 roof, and checks cover/object reachability. These execution semantics apply to
 both AI providers. They do not grant different speed, damage, cooldowns, or
 invulnerability, and no policy runs when the provider is unavailable.
+
+## Opponent update (0.14)
+
+Two actions are appended to the schema (existing indices are unchanged, so older
+`action_counts` arrays stay comparable): `ATTACK_OPPONENT` (on by default) closes the
+gap and executes the same shove as `PUSH_OPPONENT` within one decision;
+`CUT_OFF_OPPONENT` (opt-in) moves to the opponent's roof-center side. The new
+observation `opponent.edge_behind_m` measures roof left behind the opponent along the
+line from the deciding player through them. An untouched previous factory profile
+migrates in memory; edited profiles keep their exact action and observation sets.
+To reproduce earlier conditions, deselect `ATTACK_OPPONENT` and
+`opponent.edge_behind_m` (and note that `situation` now mentions roof behind the
+opponent).
+
+Matches also changed in two ways that affect comparisons: props knocked off the roof
+return after 8 s (`prop_returned` events), and the optional **Rival boost** is recorded
+as `rival_boost` in match metadata (0, 0.25 or 0.5; it multiplies the orange robot's
+shove and divides the knockback it receives by 1 + 0.6 × boost). Compare recordings
+with the same boost. Measurements and probe wording are in
+[validation/OPPONENT_UPGRADE.md](validation/OPPONENT_UPGRADE.md).

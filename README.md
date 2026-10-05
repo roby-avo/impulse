@@ -29,25 +29,34 @@ send a robot off the roof.
 It's a fun, hands-on way to explore how different decision-making models behave
 in the same game, with tools to inspect the choices behind the action.
 
-- **Play or spectate.** Challenge local Laya, face a model through TypeSafe, or watch Laya versus TypeSafe.
+- **Play or spectate.** Challenge a local open-source model, face a model through TypeSafe, or watch any two models face off.
 - **Make it your experiment.** Adjust instructions, observations, available actions, and decision frequency in the built-in experiment lab.
 - **See more than the score.** Inspect action distributions, model responses, inference latency, and recorded matches.
 - **Keep the physics shared.** Every fighter uses the same movement, cooldowns, interactions, and combat rules.
-- **Bring some chaos.** Three arena layouts, throwable props, first-to-3/5/7 matches, and optional sudden death.
+- **Bring some chaos.** Three arena layouts, throwable props that return when knocked off, first-to-3/5/7 matches, optional sudden death, and an optional, clearly labelled **Rival boost**.
 
 ## Choose your matchup
 
 | Mode | Who plays | What you need |
 |---|---|---|
-| **Play Laya** | You versus local Laya | Local Python setup and downloaded model weights; no API key |
+| **Play local AI** | You versus a model on this Mac: Laya, Von, Kev, System One, OpenThai, … | Local Python setup; models download from the setup screen; no API key |
 | **Play TypeSafe** | You versus a model available through TypeSafe | A TypeSafe API key and internet access |
-| **Watch AI** | Local Laya versus your selected TypeSafe model | Both of the above |
+| **Watch AI** | Any two models: local Laya models, TypeSafe models, or one of each | Whatever each side needs; two local models need no API key |
+| **2 Players** | Two people on one keyboard (or two gamepads) | Nothing extra |
 
 ![IMPULSE matchup menu with local, cloud, and AI-versus-AI modes](docs/images/match-setup.jpg)
 
+Local models come from a catalog of open System One models from Hugging Face: Laya,
+Von, Kev, System One, OpenThai and more, plus any you add. Each non-Laya family runs
+in its own isolated environment behind the same local service. The setup screen shows
+which are installed and downloads a missing one with a click. See
+[local models](ai/README.md#models) and the [measured comparison](validation/LOCAL_MODELS.md).
+
 TypeSafe models are discovered from your account in the setup screen. Cloud
-requests use your account's allowance. Keys stay in session memory and are
-excluded from saved settings and match exports. See [TypeSafe setup](TYPESAFE.md).
+requests use your account's allowance. With **Remember key on this Mac** (on by
+default) the key is stored in your macOS Keychain and reconnects automatically next
+launch; otherwise it stays in session memory. Keys are never written to settings,
+recordings or exports. See [TypeSafe setup](TYPESAFE.md).
 
 ## Get started
 
@@ -115,18 +124,28 @@ and throws aim automatically, so gameplay stays keyboard-only.
 | Key | Action |
 |---|---|
 | **WASD / arrows** | Move |
-| **Space** | Jump |
+| **Space** | Jump; right after slipping off the edge, a last-chance save |
 | **Shift** | Dodge |
 | **E** | Grab or drop a prop |
-| **F** | Push, or throw a held prop |
+| **F** | Push, or throw a held prop; hold F for a charged push |
 | **Enter** | Start the selected matchup |
-| **Escape** | Pause, change matchup, or adjust graphics |
-| **R** | Start a fresh match |
+| **Escape** | Pause, change matchup, or adjust graphics and volume |
+| **R** (hold) | Start a fresh match |
 | **H** | Show controls |
 | **Tab** (hold) | Match statistics |
 | **F4** | Model diagnostics |
 | **F2** | Experiment lab |
 | **F3** | Export and inspect a match |
+
+**Gamepad:** left stick or d-pad to move, A jump, X push/throw (hold to charge), Y grab,
+B or right bumper to dodge, Start to pause. **2 Players:** cyan uses WASD, F, E, Left Shift
+and Space; orange uses the arrows, `.` (push/throw), `,` (grab), Right Shift and `/` (jump).
+Gamepad 1 controls cyan and gamepad 2 controls orange.
+
+Knockback grows with each hit taken in a round (+12% per hit, up to +60%; a setup
+toggle). The fan vents launch anything that lands on them. Props knocked off the roof
+drop back in after a few seconds. Your win/loss record against each opponent is kept
+across sessions.
 
 ## Experiment with decisions
 

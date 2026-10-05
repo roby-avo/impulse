@@ -7,7 +7,7 @@ using UnityEngine.AI;
 namespace Playground.Editor {
 // Test-only scripted HUMAN inputs. The Laya opponent remains entirely model-controlled.
 public class LiveMatchValidation:MonoBehaviour {
- IEnumerator Start(){yield return new WaitForSeconds(.6f);var a=Arena.Instance;var h=a.Human;h.GetComponent<HumanInput>().enabled=false;float deadline=Time.time+180;int round=0;var path=new NavMeshPath();
+ IEnumerator Start(){yield return new WaitForSeconds(.6f);var a=Arena.Instance;var h=a.Human;h.GetComponent<HumanInput>().enabled=false;var args=System.Environment.GetCommandLineArgs();int boostArg=System.Array.IndexOf(args,"-pgRivalBoost");if(boostArg>=0&&boostArg+1<args.Length){a.Match.RivalBoost=float.Parse(args[boostArg+1],System.Globalization.CultureInfo.InvariantCulture);a.Match.NewMatch();}float deadline=Time.time+180;int round=0;var path=new NavMeshPath();
   while(a.Match.Phase!=RoundPhase.MatchOver&&Time.time<deadline){
    if(a.Match.Round!=round){round=a.Match.Round;Debug.Log($"LIVE MATCH round {round} score {a.Match.HumanWins}:{a.Match.AIWins}");}
    if(a.Match.Phase==RoundPhase.Fight){var delta=a.AI.transform.position-h.transform.position;var target=h.Edge<1.3f?Vector3.zero:a.AI.transform.position;
@@ -18,7 +18,7 @@ public class LiveMatchValidation:MonoBehaviour {
    yield return null;
   }
   bool ok=a.Match.Phase==RoundPhase.MatchOver&&a.Brain.ExecutedDecisions>=a.Match.WinsRequired;
-  var report=$"{(ok?"PASS":"FAIL")} LIVE full physical match: Human {a.Match.HumanWins}, Laya {a.Match.AIWins}, {a.Brain.ExecutedDecisions} real model decisions, {a.Telemetry.TotalLatency/Mathf.Max(1,a.Telemetry.DecisionCount):0} ms average, {Time.time:0}s elapsed. Log: {a.Telemetry.FilePath}";
+  var report=$"{(ok?"PASS":"FAIL")} LIVE full physical match (rival boost {a.Match.RivalBoost:0.##}): Human {a.Match.HumanWins}, Laya {a.Match.AIWins}, {a.Brain.ExecutedDecisions} real model decisions, {a.Telemetry.TotalLatency/Mathf.Max(1,a.Telemetry.DecisionCount):0} ms average, {Time.time:0}s elapsed. Log: {a.Telemetry.FilePath}";
   Debug.Log(report);File.WriteAllText("validation/live-match.txt",report+"\n");SessionState.SetBool("PG.LiveMatch",false);EditorApplication.Exit(ok?0:1);
  }
 }

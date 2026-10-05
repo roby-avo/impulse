@@ -25,11 +25,14 @@ public class PlayValidation:MonoBehaviour {
   }
   File.AppendAllText("validation/results.txt","M2 COMPLETE\n");
  }
- if(SessionState.GetInt("PG.Milestone",1)>=3){a.ResetArena();yield return new WaitForSeconds(.3f);DecisionResult result=null;yield return a.Client.Decide(AIPerception.Capture(a.Executor,a.Executor.ObserveContext()),r=>result=r);Check(result!=null&&result.Valid,"M3 real Laya action in Play Mode");Check(result.LatencyMs>0,"M3 measured asynchronous latency");File.WriteAllText("validation/unity-laya-response.json",result.Raw);File.AppendAllText("validation/results.txt","M3 COMPLETE\n");}
+ if(SessionState.GetInt("PG.Milestone",1)>=3){a.ResetArena();yield return new WaitForSeconds(.3f);
+  // Like the setup screen, ask the service to load the model first: it may have unloaded it for others.
+  yield return LayaClient.LocalCommand(a.Client.Model,"load");bool resident=false;float warm=Time.realtimeSinceStartup+90;while(!resident&&Time.realtimeSinceStartup<warm){yield return LayaClient.LocalModels((list,error)=>resident=list?.models!=null&&System.Array.Exists(list.models,m=>m.name==a.Client.Model&&m.loaded));if(!resident)yield return new WaitForSecondsRealtime(.5f);}
+  DecisionResult result=null;yield return a.Client.Decide(AIPerception.Capture(a.Executor,a.Executor.ObserveContext()),r=>result=r);Check(result!=null&&result.Valid,"M3 real Laya action in Play Mode");Check(result.LatencyMs>0,"M3 measured asynchronous latency");File.WriteAllText("validation/unity-laya-response.json",result.Raw);File.AppendAllText("validation/results.txt","M3 COMPLETE\n");}
  if(SessionState.GetInt("PG.Milestone",1)>=4){
   a.Match.Practice=false;a.Match.NewMatch();a.Brain.Enabled=true;float deadline=Time.time+20;while(a.Brain.ExecutedDecisions<3&&Time.time<deadline)yield return null;Check(a.Brain.ExecutedDecisions>=3,"M4 autonomous real Laya loop");Check(System.Array.IndexOf(ActionSchema.Available(a.Executor,a.Executor.ObserveContext()),a.AI.Held?"GRAB_NEAREST_OBJECT":"THROW_HELD_OBJECT_AT_OPPONENT")<0,"M4 impossible interaction actions excluded");
   a.Brain.Enabled=false;while(a.Client.Busy)yield return null;a.Executor.Finish(false,"validation");
-  a.Match.NewMatch();yield return new WaitForSeconds(2.6f);a.Match.RingOut(a.Human);a.Match.RingOut(a.AI);yield return null;yield return null;Check(a.Match.HumanWins==0&&a.Match.AIWins==0,"M4 simultaneous ring-out draw");
+  a.Match.NewMatch();yield return new WaitForSeconds(2.6f);a.Match.RingOut(a.Human);a.Match.RingOut(a.AI);yield return null;yield return null;Check(a.Match.HumanWins==0&&a.Match.AIWins==0,"M4 simultaneous ring-out draw");Check(a.Match.LastRoundWinner==null,"draw celebrates neither fighter");
   a.Match.NewMatch();
   for(int round=0;round<5;round++){while(a.Match.Phase!=RoundPhase.Fight)yield return null;a.AI.ResetAt(new Vector3(12,.5f,0));float until=Time.time+5;while(a.Match.Phase==RoundPhase.Fight&&Time.time<until)yield return null;Check(a.Match.HumanWins==round+1,"M4 ring-out score round "+(round+1));yield return new WaitForSeconds(2.4f);}
   Check(a.Match.Phase==RoundPhase.MatchOver&&a.Match.HumanWins==5,"M4 first-to-five match completed");Check(File.Exists(a.Telemetry.FilePath)&&new FileInfo(a.Telemetry.FilePath).Length>0,"M4 JSONL telemetry persisted");

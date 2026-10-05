@@ -11,7 +11,9 @@ namespace Playground {
  public int schema_version=1;
  public string experiment_id="rooftop",condition_id="baseline",notes="";
  public float max_decisions_per_second=4;
- public string[] actions=Enum.GetNames(typeof(SemanticAction));
+ // CUT_OFF_OPPONENT is opt-in (F2 lab): the pretrained Laya checkpoint never selected it in probes.
+ public static readonly string[] OptIn={"CUT_OFF_OPPONENT"};
+ public string[] actions=Enum.GetNames(typeof(SemanticAction)).Where(a=>!OptIn.Contains(a)).ToArray();
  public string[] state_fields=StateSchema.Paths;
  public QuestionFile questions;
  public ExperimentProfile Copy()=>JsonUtility.FromJson<ExperimentProfile>(JsonUtility.ToJson(this));
@@ -33,9 +35,19 @@ public class ExperimentSettings:MonoBehaviour {
  public string ProfilePath,Error;
  public bool Ready=>current!=null&&Error==null;
  public ExperimentProfile Defaults()=>new ExperimentProfile{questions=JsonUtility.FromJson<QuestionFile>(File.ReadAllText(Path.Combine(Application.streamingAssetsPath,"laya-question.json")))};
- void Awake(){ProfilePath=Path.Combine(Application.persistentDataPath,"Experiments","profile.json");Directory.CreateDirectory(Path.GetDirectoryName(ProfilePath));try{current=File.Exists(ProfilePath)?JsonUtility.FromJson<ExperimentProfile>(File.ReadAllText(ProfilePath)):Defaults();if(IsLegacyDefault(current))current=Defaults();Error=current?.Validate()??(current==null?"Empty profile":null);}catch(Exception e){Error=e.Message;}if(current==null)current=Defaults();}
+ void Awake(){ProfilePath=Path.Combine(Application.persistentDataPath,"Experiments","profile.json");Directory.CreateDirectory(Path.GetDirectoryName(ProfilePath));try{current=File.Exists(ProfilePath)?JsonUtility.FromJson<ExperimentProfile>(File.ReadAllText(ProfilePath)):Defaults();if(IsLegacyDefault(current)||IsPreviousFactoryDefault(current,Defaults()))current=Defaults();Error=current?.Validate()??(current==null?"Empty profile":null);}catch(Exception e){Error=e.Message;}if(current==null)current=Defaults();}
+ // The untouched factory profile from before ATTACK_OPPONENT, CUT_OFF_OPPONENT and opponent.edge_behind_m
+ // existed. Edited profiles are left exactly as saved; only the pristine default moves forward.
+ public static readonly string[] Added={"ATTACK_OPPONENT","CUT_OFF_OPPONENT"};public static readonly string[] AddedFields={"opponent.edge_behind_m","self.knockback_bonus","opponent.knockback_bonus"};
+ public static bool IsPreviousFactoryDefault(ExperimentProfile p,ExperimentProfile now){
+  if(p==null||p.schema_version!=1||p.experiment_id!="rooftop"||p.condition_id!="baseline"||!string.IsNullOrEmpty(p.notes)||p.max_decisions_per_second!=now.max_decisions_per_second||p.questions?.action?.criteria==null||p.state_fields==null)return false;
+  var oldActions=now.actions.Where(a=>!Added.Contains(a)).ToArray();if(p.actions==null||!p.actions.SequenceEqual(oldActions))return false;
+  if(!new HashSet<string>(p.state_fields).SetEquals(now.state_fields.Where(f=>!AddedFields.Contains(f))))return false;
+  if(p.questions.action.type!=now.questions.action.type||p.questions.action.instructions!=now.questions.action.instructions)return false;
+  return oldActions.All(key=>(string)typeof(ChoiceCriteria).GetField(key).GetValue(p.questions.action.criteria)==(string)typeof(ChoiceCriteria).GetField(key).GetValue(now.questions.action.criteria));
+ }
  public static bool IsLegacyDefault(ExperimentProfile p){
-  if(p==null||p.schema_version!=1||p.experiment_id!="rooftop"||p.condition_id!="baseline"||!string.IsNullOrEmpty(p.notes)||p.max_decisions_per_second!=2||p.actions==null||!p.actions.SequenceEqual(Enum.GetNames(typeof(SemanticAction)))||p.state_fields==null||p.questions?.action?.criteria==null||p.questions.action.type!="choice"||p.state_fields.Distinct().Count()!=p.state_fields.Length)return false;
+  if(p==null||p.schema_version!=1||p.experiment_id!="rooftop"||p.condition_id!="baseline"||!string.IsNullOrEmpty(p.notes)||p.max_decisions_per_second!=2||p.actions==null||!p.actions.SequenceEqual(Enum.GetNames(typeof(SemanticAction)).Where(a=>!Added.Contains(a)))||p.state_fields==null||p.questions?.action?.criteria==null||p.questions.action.type!="choice"||p.state_fields.Distinct().Count()!=p.state_fields.Length)return false;
   string[] oldFields={"self.distance_to_edge_m","self.speed","self.balance","self.near_edge","self.holding_object","self.grounded","self.held_object_type","opponent.distance_m","opponent.distance_to_edge_m","opponent.speed","opponent.near_edge","opponent.holding_object","opponent.facing_self","opponent.held_object_type","nearest_object.type","nearest_object.id","nearest_object.mass_class","nearest_object.distance_m","incoming_projectile","cover_available","previous_action","previous_outcome"};
   var expanded=oldFields.Concat(new[]{"self.push_ready_in","self.dodge_ready_in","opponent.winding_up","opponent.recovering","sudden_death"});
   if(!(new HashSet<string>(p.state_fields).SetEquals(oldFields)||new HashSet<string>(p.state_fields).SetEquals(expanded)))return false;

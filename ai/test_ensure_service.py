@@ -58,6 +58,30 @@ class StartupTests(unittest.TestCase):
         self.assertEqual(service.ensure()['state'], 'starting')
         spawn.assert_not_called()
 
+    @patch.object(service, 'health', return_value={'status': 'ok', 'runtime_version': '0.0.1'})
+    @patch.object(service, 'managed_pid', return_value=None)
+    @patch.object(service.subprocess, 'Popen')
+    def test_outdated_foreign_service_is_reported_not_killed(self, spawn, pid, health):
+        with patch.object(service.os, 'kill') as kill:
+            result = service.ensure()
+        self.assertEqual(result['state'], 'error')
+        self.assertIn('older local Laya', result['message'])
+        kill.assert_not_called()
+        spawn.assert_not_called()
+
+    @patch.object(service.socket, 'socket')
+    @patch.object(service.subprocess, 'Popen')
+    def test_outdated_managed_service_is_replaced(self, spawn, socket):
+        socket.return_value.__enter__.return_value.connect_ex.return_value = 1
+        spawn.return_value = Mock(pid=456)
+        states = iter([{'status': 'ok', 'runtime_version': '0.0.1'}] * 3 + [None] * 10)
+        with patch.object(service, 'health', side_effect=lambda: next(states)), \
+                patch.object(service, 'managed_pid', side_effect=[123, None]), patch.object(service.os, 'kill') as kill:
+            result = service.ensure()
+        kill.assert_called_once_with(123, service.signal.SIGTERM)
+        self.assertEqual(result['state'], 'starting')
+        spawn.assert_called_once()
+
 
 if __name__ == '__main__':
     unittest.main()

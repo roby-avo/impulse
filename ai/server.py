@@ -1,53 +1,261 @@
-"""Local Laya inference with a warmed checkpoint and a bounded worker.
-The SDK selects every answer; this module contains no game policy.
+"""Local System One inference for IMPULSE with catalog checkpoints and one bounded worker.
+The requested checkpoint selects every answer; this module contains no game policy and
+never substitutes another model for the one a request names.
 """
 import os
 os.environ.setdefault('USE_TF', '0')
 os.environ.setdefault('HF_HUB_OFFLINE', '1')
 os.environ.setdefault('LAYA_THREADS', '4')
-os.environ['LAYA_MODELS'] = 'english'
-os.environ['LAYA_PRELOAD'] = '1'
-os.environ['LAYA_AUTO_TASK'] = '0'
 import asyncio
+from collections import OrderedDict
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import asynccontextmanager
+import gc
 import json
 import logging
 from pathlib import Path
+import subprocess
+import sys
+import threading
 import time
 import torch
 from fastapi import FastAPI, Header, HTTPException, Request
-from laya.serve import build_router
+from fastapi.responses import JSONResponse
 import uvicorn
+import models as catalog
+from models import RUNTIME_VERSION
 
-RUNTIME_VERSION = '0.9.1'
+QUEUE_WAIT_S = .6     # Two AI players share one worker; a short wait beats a 429 storm.
+REWARM_AFTER_S = 60   # Accelerators page out after long idle; the game asks for a re-warm.
+log = logging.getLogger('uvicorn.error')
+SERVERS_FILE = catalog.AI / '.runtime' / 'model-servers.json'
 
-def warmup_payload():
-    root = Path(__file__).resolve().parent.parent
-    return {'model': 'english', 'state': {
-        'self': {'distance_to_edge_m': 4, 'holding_object': False, 'speed': 0, 'balance': 1},
-        'opponent': {'distance_m': 3, 'near_edge': True, 'holding_object': False},
-        'nearest_object': {'type': 'barrel', 'distance_m': 1.5},
-        'incoming_projectile': False, 'previous_action': 'none'},
-        'questions': json.loads((root/'Assets/StreamingAssets/laya-question.json').read_text())}
+
+class ServerModel:
+    """A model answered by its own /v1/systemone process (a catalog runtime). The process is
+    started by this service, bound to 127.0.0.1 on a free port and stopped when unloaded."""
+    def __init__(self, item):
+        self.item = item
+        self.port = catalog.free_port()
+        self.process = catalog.start_server(item, self.port)
+        self.device = item['runtime']
+        _remember_servers()
+
+    @property
+    def alive(self):
+        return self.process.poll() is None
+
+    def wait(self):
+        catalog.wait_ready(self.item, self.port, self.process, catalog.START_TIMEOUT)
+
+    def system_one(self, state, questions):
+        result, _ = catalog.post(self.port, {'state': state, 'questions': questions}, self.item, timeout=30)
+        return result
+
+    def close(self):
+        catalog.stop_server(self.process)
+        _remember_servers()
+
+
+_servers = set()
+
+
+def _remember_servers():
+    """Record child server PIDs so a later start can clean up after a crash."""
+    alive = [m for m in _servers if m.alive]
+    SERVERS_FILE.parent.mkdir(parents=True, exist_ok=True)
+    SERVERS_FILE.write_text(json.dumps([m.process.pid for m in alive]))
+
+
+def stop_orphaned_servers():
+    try:
+        pids = json.loads(SERVERS_FILE.read_text())
+    except (OSError, ValueError):
+        return
+    for pid in pids:
+        command = subprocess.run(['ps', '-p', str(pid), '-o', 'command='], capture_output=True, text=True).stdout
+        if str(catalog.RUNTIMES_DIR) in command:
+            try:
+                os.killpg(pid, 15)
+            except OSError:
+                pass
+    SERVERS_FILE.unlink(missing_ok=True)
+
 
 class InferenceRuntime:
-    def __init__(self, router):
-        self.router = router
-        self.agent = router.load('english')
-        self.agent.cfg.update(max_len=1024, head_max_len=384)
+    def __init__(self, device, max_loaded=2, loader=catalog.load_agent):
+        self.device = device
+        self.max_loaded = max(1, max_loaded)
+        self.load_agent = loader
+        self.agents = OrderedDict()   # least recently used first
+        self.loading = set()
+        self.errors = {}
+        self.downloads = {}
+        self.download_errors = {}
+        self.lock = threading.RLock()
         self.busy = False
         self.last_ms = 0.0
+        self.last_used = time.monotonic()
         self.completed = 0
         self.worker = ThreadPoolExecutor(max_workers=1, thread_name_prefix='laya-inference')
+        self.loader = ThreadPoolExecutor(max_workers=1, thread_name_prefix='laya-loader')
 
-    def predict(self, body):
+    @property
+    def actual_device(self):
+        with self.lock:
+            agent = next(reversed(self.agents.values()), None)
+        return str(agent.device) if agent is not None else str(self.device)
+
+    def run(self, agent, name, state, questions):
         started = time.perf_counter()
         with torch.inference_mode():
-            result = self.router.predict(body.get('state'), body['questions'], model='english')
-        self.last_ms = (time.perf_counter()-started)*1000
+            result = agent.system_one(state, questions)
+        self.last_ms = (time.perf_counter() - started) * 1000
+        self.last_used = time.monotonic()
         self.completed += 1
+        result['model'] = name
         return result
+
+    def warm(self, name, item, agent):
+        """Runs on the inference worker. The warm-up doubles as a legality check."""
+        request = catalog.game_request()
+        try:
+            result = self.run(agent, name, request['state'], request['questions'])
+        except RuntimeError:
+            if isinstance(agent, ServerModel) or agent.device.type == 'cpu':
+                raise
+            # Device recovery keeps exactly the same checkpoint and weights, never another model.
+            agent.device = torch.device('cpu')
+            agent.model.to('cpu')
+            result = self.run(agent, name, request['state'], request['questions'])
+        ok, answer = catalog.check_answer(result, request['questions'])
+        catalog.record_verification(item, ok, answer, self.last_ms, agent.device)
+        if not ok:
+            raise catalog.ModelError(f'{name} returned an answer the game cannot execute')
+
+    def install(self, name, item, agent):
+        """Runs on the inference worker: Metal is not thread-safe, so every accelerator step
+        (move, warm-up, eviction, cache release) shares the thread that serves inference."""
+        if str(self.device) != 'cpu' and not isinstance(agent, ServerModel):
+            agent.model.to(self.device)
+            agent.device = torch.device(self.device)
+        self.warm(name, item, agent)
+        with self.lock:
+            self.agents[name] = agent
+            self.agents.move_to_end(name)
+            self.loading.discard(name)   # loaded and loading must never both be true
+            evicted = []
+            while len(self.agents) > self.max_loaded:
+                evicted.append(self.agents.popitem(last=False))
+            self.errors.pop(name, None)
+        for old_name, old in evicted:
+            if isinstance(old, ServerModel):
+                old.close()
+            log.info('Unloaded %s to stay within %d resident models', old_name, self.max_loaded)
+        evicted.clear()  # release evicted weights here, on the worker
+        gc.collect()
+        if torch.backends.mps.is_available():
+            torch.mps.empty_cache()
+
+    def load(self, name):
+        """Read weights on the loader thread (CPU only), then install on the worker. Blocking."""
+        try:
+            item = catalog.entry(name)
+            if catalog.is_server(item):
+                if not catalog.installed(item):
+                    raise catalog.ModelError(f'{name} is not installed')
+                # Its own process does the accelerator work; this thread only waits for it over HTTP.
+                agent = ServerModel(item)
+                _servers.add(agent)
+                try:
+                    agent.wait()
+                except Exception:
+                    agent.close()
+                    raise
+            else:
+                agent = self.load_agent(item, 'cpu')
+            self.worker.submit(self.install, name, item, agent).result()
+            log.info('Model ready: %s on %s (warm-up %.0f ms)', name, agent.device, self.last_ms)
+        except Exception as exc:
+            message = str(exc) if isinstance(exc, catalog.ModelError) else f'{name} failed to load ({type(exc).__name__})'
+            log.error('Model load failed: %s', message)
+            with self.lock:
+                self.errors[name] = message
+        finally:
+            with self.lock:
+                self.loading.discard(name)
+
+    def ensure(self, name, retry=False):
+        """'loaded', 'loading' or 'error'. Loads in the background; never blocks a request."""
+        with self.lock:
+            agent = self.agents.get(name)
+            if isinstance(agent, ServerModel) and not agent.alive:
+                del self.agents[name]
+                self.errors[name] = f'{name} server stopped unexpectedly; see ai/.runtime/models/{name}.log'
+                log.error(self.errors[name])
+            if name in self.agents:
+                self.agents.move_to_end(name)
+                return 'loaded'
+            if name in self.loading:
+                return 'loading'
+            if name in self.errors and not retry:
+                return 'error'
+            self.errors.pop(name, None)
+            self.loading.add(name)
+        self.loader.submit(self.load, name)
+        return 'loading'
+
+    def rewarm(self, name):
+        """After long idle, run one game-shaped inference so the next real one is fast."""
+        with self.lock:
+            agent = self.agents.get(name)
+        if agent is None or self.busy or time.monotonic() - self.last_used < REWARM_AFTER_S:
+            return False
+        request = catalog.game_request()
+        self.worker.submit(self.run, agent, name, request['state'], request['questions'])
+        return True
+
+    def download(self, name):
+        item = catalog.entry(name)
+        if catalog.installed(item):
+            return 'installed'
+        process = self.downloads.get(name)
+        if process and process.poll() is None:
+            return 'downloading'
+        self.download_errors.pop(name, None)
+        # A separate process can go online even though this service stays offline.
+        env = dict(os.environ, HF_HUB_OFFLINE='0')
+        self.downloads[name] = subprocess.Popen(
+            [sys.executable, str(catalog.AI / 'models.py'), '--json', 'download', name],
+            cwd=catalog.AI, env=env, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
+        return 'downloading'
+
+    def download_state(self, name):
+        process = self.downloads.get(name)
+        if process is None:
+            return None
+        if process.poll() is None:
+            return 'downloading'
+        output, _ = process.communicate()
+        del self.downloads[name]
+        try:
+            result = json.loads(output.strip().splitlines()[-1])
+        except (ValueError, IndexError):
+            result = {'state': 'error', 'message': f'download of {name} stopped unexpectedly'}
+        if result.get('state') == 'error':
+            self.download_errors[name] = result.get('message')
+        return None
+
+    def describe(self, item):
+        name = item['id']
+        state = catalog.status(item)
+        downloading = self.download_state(name) == 'downloading'
+        with self.lock:
+            state.update(loaded=name in self.agents, loading=name in self.loading, error=self.errors.get(name))
+        state.update(downloading=downloading, download_error=self.download_errors.get(name))
+        if not downloading:
+            state['download_progress'] = None
+        return state
 
     def released(self, future):
         self.busy = False
@@ -57,66 +265,125 @@ class InferenceRuntime:
 
 
 def create_game_app(runtime):
+    gate = asyncio.Semaphore(1)
+
     @asynccontextmanager
     async def lifespan(_):
         yield
+        runtime.loader.shutdown(wait=False, cancel_futures=True)
+        for model in list(_servers):
+            model.close()
         runtime.worker.shutdown(wait=True, cancel_futures=True)
 
-    app = FastAPI(title='Physics Playground · local Laya', lifespan=lifespan)
+    app = FastAPI(title='IMPULSE · local System One', lifespan=lifespan)
+
+    def check_auth(authorization):
+        api_key = os.environ.get('LAYA_API_KEY')
+        if api_key and authorization != 'Bearer ' + api_key:
+            raise HTTPException(401, 'invalid or missing bearer token')
+
+    def known(name):
+        try:
+            return catalog.entry(name)
+        except catalog.ModelError as exc:
+            raise HTTPException(404, str(exc)) from None
 
     @app.get('/health')
     async def health():
-        return {'status': 'ok', 'loaded': runtime.router.loaded,
-                'device': str(runtime.agent.device), 'runtime_version': RUNTIME_VERSION,
+        with runtime.lock:
+            loaded, loading = list(runtime.agents), sorted(runtime.loading)
+        return {'status': 'ok', 'loaded': loaded, 'loading': loading, 'default': catalog.default_model(),
+                'device': runtime.actual_device, 'runtime_version': RUNTIME_VERSION,
                 'threads': torch.get_num_threads(), 'busy': runtime.busy,
                 'last_inference_ms': round(runtime.last_ms, 1), 'completed': runtime.completed}
 
+    @app.get('/v1/models')
+    async def models(authorization: str | None = Header(default=None)):
+        check_auth(authorization)
+        return {'default': catalog.default_model(), 'models': [runtime.describe(item) for item in catalog.catalog().values()]}
+
+    @app.post('/v1/models/{name}/load')
+    async def load(name: str, authorization: str | None = Header(default=None)):
+        check_auth(authorization)
+        item = known(name)
+        if not catalog.installed(item):
+            raise HTTPException(409, f'{name} is not installed')
+        state = runtime.ensure(name, retry=True)
+        rewarmed = state == 'loaded' and runtime.rewarm(name)
+        return {'name': name, 'state': state, 'rewarming': rewarmed}
+
+    @app.post('/v1/models/{name}/download')
+    async def download(name: str, authorization: str | None = Header(default=None)):
+        check_auth(authorization)
+        known(name)
+        try:
+            return {'name': name, 'state': runtime.download(name)}
+        except catalog.ModelError as exc:
+            raise HTTPException(409, str(exc)) from None
+
     @app.post('/v1/systemone')
     async def systemone(request: Request, authorization: str | None = Header(default=None)):
-        api_key = os.environ.get('LAYA_API_KEY')
-        if api_key and authorization != 'Bearer '+api_key:
-            raise HTTPException(401, 'invalid or missing bearer token')
+        check_auth(authorization)
         body = await request.json()
         if not isinstance(body, dict) or not isinstance(body.get('questions'), dict) or not body['questions']:
             raise HTTPException(400, 'questions must be a non-empty object')
-        if body.get('model', 'english') != 'english':
-            raise HTTPException(422, 'this game service only hosts the English Laya checkpoint')
-        if runtime.busy:
+        name = body.get('model') or catalog.default_model()
+        item = known(name)
+        if not catalog.installed(item):
+            raise HTTPException(404, f'{name} is not installed; download it from the match setup screen')
+        state = runtime.ensure(name)
+        if state == 'error':
+            raise HTTPException(422, runtime.errors.get(name) or f'{name} could not be loaded')
+        if state == 'loading':
+            raise HTTPException(503, f'{name} is loading', headers={'Retry-After': '1', 'X-Laya-Status': 'loading'})
+        with runtime.lock:
+            agent = runtime.agents.get(name)
+        if agent is None:
+            raise HTTPException(503, f'{name} is loading', headers={'Retry-After': '1', 'X-Laya-Status': 'loading'})
+        try:
+            await asyncio.wait_for(gate.acquire(), QUEUE_WAIT_S)
+        except asyncio.TimeoutError:
             # Reject overload instead of building a queue of obsolete world states.
-            raise HTTPException(429, 'inference busy; retry with fresh state', headers={'Retry-After': '1'})
+            raise HTTPException(429, 'inference busy; retry with fresh state', headers={'Retry-After': '1'}) from None
         runtime.busy = True
-        future = asyncio.get_running_loop().run_in_executor(runtime.worker, runtime.predict, body)
+        future = asyncio.get_running_loop().run_in_executor(runtime.worker, runtime.run, agent, name, body.get('state'), body['questions'])
         future.add_done_callback(runtime.released)
+        future.add_done_callback(lambda _: gate.release())
         try:
             result = await asyncio.shield(future)
         except Exception as exc:
-            logging.getLogger("uvicorn.error").error("Local inference failed (%s)", type(exc).__name__)
+            log.error('Local inference failed (%s)', type(exc).__name__)
             raise HTTPException(422, 'local inference failed; check service diagnostics') from None
-        from fastapi.responses import JSONResponse
         return JSONResponse(result, headers={'Server-Timing': f'inference;dur={runtime.last_ms:.1f}',
-                                             'X-Laya-Device': str(runtime.agent.device),
+                                             'X-Laya-Device': str(agent.device),
                                              'X-Laya-Inference-Ms': f'{runtime.last_ms:.1f}'})
     return app
 
 
 def main():
     # Prefer the Apple GPU when present. CPU remains available as an explicit override.
-    os.environ.setdefault('LAYA_DEVICE', 'mps' if torch.backends.mps.is_available() else 'cpu')
+    device = os.environ.get('LAYA_DEVICE') or ('mps' if torch.backends.mps.is_available() else 'cpu')
+    torch.set_num_threads(int(os.environ['LAYA_THREADS']))
     torch.set_num_interop_threads(1)
-    runtime = InferenceRuntime(build_router())
-    # Warm on the SAME worker that serves gameplay, before reporting readiness.
-    try:
-        runtime.worker.submit(runtime.predict, warmup_payload()).result()
-    except RuntimeError:
-        if runtime.agent.device.type == 'cpu':
-            raise
-        # Device recovery uses exactly the same checkpoint and weights, never another policy.
-        runtime.agent.device = torch.device('cpu')
-        runtime.agent.model.to('cpu')
-        runtime.worker.submit(runtime.predict, warmup_payload()).result()
-    print(f'Laya ready: convaiinnovations/laya; {runtime.agent.device}; '
-          f'warmup {runtime.last_ms:.0f} ms; runtime {RUNTIME_VERSION}; no fallback policy.', flush=True)
+    stop_orphaned_servers()
+    runtime = InferenceRuntime(device, int(os.environ.get('LAYA_MAX_LOADED', '2')))
+    default = catalog.default_model()
+    item = catalog.entry(default)
+    if not catalog.installed(item):
+        try:
+            # Earlier setups cached weights in the Hugging Face cache; adopt them offline.
+            catalog.download(default, allow_network=False)
+        except catalog.ModelError as exc:
+            print(f'Default model not installed: {exc}', flush=True)
+    if catalog.installed(item):
+        runtime.loading.add(default)
+        runtime.load(default)
+        if default not in runtime.agents:
+            raise SystemExit(runtime.errors.get(default, 'default model failed to load'))
+        print(f'Laya ready: {default} ({catalog.source_string(item)}); {runtime.actual_device}; '
+              f'warm-up {runtime.last_ms:.0f} ms; runtime {RUNTIME_VERSION}; no fallback policy.', flush=True)
     uvicorn.run(create_game_app(runtime), host='127.0.0.1', port=8000, log_level='info')
+
 
 if __name__ == '__main__':
     main()

@@ -13,6 +13,9 @@ __pycache__/
 *.sln
 *.slnx
 ai/.runtime/
+ai/models/
+ai/runtimes/
+ai/models.local.json
 validation/*.log
 
 # Local credentials and generated diagnostics
